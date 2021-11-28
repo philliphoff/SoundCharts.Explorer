@@ -2,8 +2,6 @@ name: Build Xamarin.MacOS app
 
 on: [push]
 
-workflow_dispatch:
-
 jobs:
   build:
 
