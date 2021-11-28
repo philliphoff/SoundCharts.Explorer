@@ -13,12 +13,11 @@ jobs:
       run: |
         $VM_ASSETS/select-xamarin-sdk-v2.sh --mono=6.12 --mac=8.2
     
-    - name: Set default Xcode 13.1
-      run: |
-        XCODE_ROOT=/Applications/Xcode_13.1.0.app
-        echo "MD_APPLE_SDK_ROOT=$XCODE_ROOT" >> $GITHUB_ENV
-        sudo xcode-select -s $XCODE_ROOT
-        sudo xcode-select --install
+#    - name: Set default Xcode 13.1
+#      run: |
+#        XCODE_ROOT=/Applications/Xcode_13.1.0.app
+#        echo "MD_APPLE_SDK_ROOT=$XCODE_ROOT" >> $GITHUB_ENV
+#        sudo xcode-select -s $XCODE_ROOT
 
     - name: Setup .NET SDK 6.0.x
       uses: actions/setup-dotnet@v1
