@@ -17,8 +17,8 @@ namespace SoundCharts.Explorer.MacOS
 
         public override async void LoadTileAtPath(MKTileOverlayPath path, /* [BlockProxy(typeof(NIDMKTileOverlayLoadTileCompletionHandler))] */ MKTileOverlayLoadTileCompletionHandler result)
         {
-            NSData encodedImage = null;
-            NSError error = null;
+            NSData? encodedImage = null;
+            NSError? error = null;
 
             var index = new TileIndex((int)path.X, (int)path.Y, (int)path.Z);
 
@@ -37,7 +37,9 @@ namespace SoundCharts.Explorer.MacOS
                 // TODO: Return NSError?
             }
 
-            result(encodedImage, error);
+            // NOTE: Arguments may be null.
+            result(encodedImage!, error!);
+
         }
     }
 }

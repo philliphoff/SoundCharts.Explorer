@@ -3,9 +3,8 @@ using System.Net.Http;
 using AppKit;
 using Foundation;
 using MapKit;
+using SoundCharts.Explorer.Tiles.Caches;
 using SoundCharts.Explorer.Tiles.Sources;
-
-#nullable enable
 
 namespace SoundCharts.Explorer.MacOS
 {
@@ -30,7 +29,10 @@ namespace SoundCharts.Explorer.MacOS
 					_ => null! // TODO: Throw instead?
 				};
 
-			this.overlay = new TileSourceOverlay(new HttpTileSource(new HttpClient(), HttpTileSets.NoaaQuiltedTileSet));
+			this.overlay = new TileSourceOverlay(
+				new CachedTileSource(
+					new InMemoryTileCache(), // TODO: Dispose of cache.
+					new HttpTileSource(new HttpClient(), HttpTileSets.NoaaQuiltedTileSet)));
 
 			this.mapView.AddOverlay(this.overlay, MKOverlayLevel.AboveLabels);
 		}

@@ -6,6 +6,6 @@ namespace SoundCharts.Explorer.Tiles
 {
 	public interface ITileSource
 	{
-		Task<TileData> GetTileAsync(TileIndex index, CancellationToken cancellationToken = default);
+		Task<TileData?> GetTileAsync(TileIndex index, CancellationToken cancellationToken = default);
 	}
 }

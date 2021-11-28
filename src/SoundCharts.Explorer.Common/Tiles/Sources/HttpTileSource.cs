@@ -22,17 +22,15 @@ namespace SoundCharts.Explorer.Tiles.Sources
 
         #region ITileSource Members
 
-        public async Task<TileData> GetTileAsync(TileIndex index, CancellationToken cancellationToken = default)
+        public async Task<TileData?> GetTileAsync(TileIndex index, CancellationToken cancellationToken = default)
         {
             Uri uri = this.tileUriDelegate(index);
 
             using (var response = await this.client.GetAsync(uri, cancellationToken).ConfigureAwait(false))
             {
-                byte[] data = null;
-
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
-                    data = await response.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
+                    var data = await response.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
 
                     return new TileData(GetTileFormat(response.Content.Headers), data);
                 }

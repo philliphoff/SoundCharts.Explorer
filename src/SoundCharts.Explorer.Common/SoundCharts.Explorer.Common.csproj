@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <RootNamespace>SoundCharts.Explorer</RootNamespace>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -14,9 +15,13 @@
   <ItemGroup>
     <None Remove="Tiles\" />
     <None Remove="Tiles\Sources\" />
+    <None Remove="Tiles\Caches\" />
+    <None Remove="Utilities\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Tiles\" />
     <Folder Include="Tiles\Sources\" />
+    <Folder Include="Tiles\Caches\" />
+    <Folder Include="Utilities\" />
   </ItemGroup>
 </Project>
