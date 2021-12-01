@@ -30,18 +30,22 @@ namespace SoundCharts.Explorer.MacOS
 					_ => null! // TODO: Throw instead?
 				};
 
-			string fileCacheDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".soundcharts", "explorer", "caches", "noaa");
+			string cacheDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".soundcharts", "explorer", "caches");
+			string displayCacheDirectory = Path.Combine(cacheDirectory, "display");
+			string noaaCacheDirectory = Path.Combine(cacheDirectory, "noaa");
 
 			this.overlay = new TileSourceOverlay(
 				new CachedTileSource(
 					new InMemoryTileCache(), // TODO: Dispose of cache.
-					new TransformedTileSource(
-						TileSourceTransforms.OverzoomedTransform,
+					new CachedTileSource(
+						new FileTileCache(displayCacheDirectory), // TODO: Dispose of cache.
 						new TransformedTileSource(
-							TileSourceTransforms.EmptyTileTransformAsync,
-							new CachedTileSource(
-								new FileTileCache(fileCacheDirectory), // TODO: Dispose of cache.
-								new HttpTileSource(new HttpClient(), HttpTileSets.NoaaQuiltedTileSet))))));
+							TileSourceTransforms.OverzoomedTransform,
+							new TransformedTileSource(
+								TileSourceTransforms.EmptyTileTransformAsync,
+								new CachedTileSource(
+									new FileTileCache(noaaCacheDirectory), // TODO: Dispose of cache.
+									new HttpTileSource(new HttpClient(), HttpTileSets.NoaaQuiltedTileSet)))))));
 
 			this.mapView.AddOverlay(this.overlay, MKOverlayLevel.AboveLabels);
 		}
