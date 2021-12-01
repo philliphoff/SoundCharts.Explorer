@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Net.Http;
 using AppKit;
 using Foundation;
@@ -29,10 +30,14 @@ namespace SoundCharts.Explorer.MacOS
 					_ => null! // TODO: Throw instead?
 				};
 
+			string fileCacheDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".soundcharts", "explorer", "caches", "noaa");
+
 			this.overlay = new TileSourceOverlay(
 				new CachedTileSource(
 					new InMemoryTileCache(), // TODO: Dispose of cache.
-					new HttpTileSource(new HttpClient(), HttpTileSets.NoaaQuiltedTileSet)));
+					new CachedTileSource(
+						new FileTileCache(fileCacheDirectory), // TODO: Dispose of cache.
+						new HttpTileSource(new HttpClient(), HttpTileSets.NoaaQuiltedTileSet))));
 
 			this.mapView.AddOverlay(this.overlay, MKOverlayLevel.AboveLabels);
 		}

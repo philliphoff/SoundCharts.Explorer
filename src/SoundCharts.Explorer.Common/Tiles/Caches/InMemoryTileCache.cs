@@ -6,48 +6,21 @@ using SoundCharts.Explorer.Utilities;
 
 namespace SoundCharts.Explorer.Tiles.Caches
 {
-	public sealed class InMemoryTileCache : ITileCache, IDisposable
+	public sealed class InMemoryTileCache : TileCacheBase
 	{
-        private readonly TaskCache<TileIndex, TileData?> taskCache = new ();
-        private readonly ConcurrentDictionary<TileIndex, TileData> tiles = new ();
+        private readonly ConcurrentDictionary<TileIndex, TileData> tiles = new();
 
-        public InMemoryTileCache()
-		{
-		}
-
-        #region ITileCache Members
-
-        public Task<TileData?> GetTileAsync(TileIndex index, TileCacheMissDelegate cacheMissDelegate, CancellationToken cancellationToken = default)
+        protected override Task<TileData?> GetCachedTileAsync(TileIndex index, CancellationToken cancellationToken)
         {
-            return this.taskCache.GetTaskAsync(
-                index,
-                async (_, ct) =>
-                {
-                    if (!this.tiles.TryGetValue(index, out TileData? tileData))
-                    {
-                        tileData = await cacheMissDelegate(index, ct).ConfigureAwait(false);
-
-                        if (tileData is not null)
-                        {
-                            this.tiles.TryAdd(index, tileData);
-                        }
-                    }
-
-                    return tileData;
-                },
-                cancellationToken);
+            return Task.FromResult(this.tiles.TryGetValue(index, out TileData? tileData) ? tileData : null);
         }
 
-        #endregion
-
-        #region IDisposable Members
-
-        public void Dispose()
+        protected override Task SetCachedTileAsync(TileIndex index, TileData data, CancellationToken cancellationToken)
         {
-            this.taskCache.Dispose();
-        }
+            this.tiles.TryAdd(index, data);
 
-        #endregion
+            return Task.CompletedTask;
+        }
     }
 }
 
