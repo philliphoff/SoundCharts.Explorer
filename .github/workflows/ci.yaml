@@ -1,0 +1,31 @@
+name: Build Xamarin.MacOS app
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: macos-11
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set default Xamarin SDK versions
+      run: |
+        $VM_ASSETS/select-xamarin-sdk-v2.sh --mono=6.12 --mac=8.2
+    
+    - name: Setup .NET SDK 6.0.x
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '6.0.x'
+
+    - name: Install dependencies
+      run: nuget restore src/SoundCharts.Explorer.sln
+
+    - name: Build
+      run: msbuild src/SoundCharts.Explorer.MacOS/SoundCharts.Explorer.MacOS.csproj /p:Configuration=Release /t:Rebuild
+
+    - name: 'Upload Artifact'
+      uses: actions/upload-artifact@v2
+      with:
+        name: packages
+        path: "src/SoundCharts.Explorer.MacOS/bin/Release/SoundCharts Explorer-1.0.pkg"
