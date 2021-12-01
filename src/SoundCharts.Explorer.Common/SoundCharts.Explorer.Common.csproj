@@ -17,11 +17,15 @@
     <None Remove="Tiles\Sources\" />
     <None Remove="Tiles\Caches\" />
     <None Remove="Utilities\" />
+    <None Remove="SixLabors.ImageSharp" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Tiles\" />
     <Folder Include="Tiles\Sources\" />
     <Folder Include="Tiles\Caches\" />
     <Folder Include="Utilities\" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="SixLabors.ImageSharp" Version="1.0.4" />
   </ItemGroup>
 </Project>
