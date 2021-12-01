@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace SoundCharts.Explorer.Tiles.Sources
 {
-    public delegate Task<TileData?> TileTransformDelegate(TileIndex index, TileData? data, CancellationToken cancellationToken = default);
+    public delegate Task<TileData?> TileTransformDelegate(TileIndex index, TileData? data, ITileSource source, CancellationToken cancellationToken = default);
 
 	public sealed class TransformedTileSource : ITileSource
 	{
@@ -23,7 +23,7 @@ namespace SoundCharts.Explorer.Tiles.Sources
         {
             var data = await this.tileSource.GetTileAsync(index, cancellationToken).ConfigureAwait(false);
 
-            data = await this.tileTransformDelegate(index, data, cancellationToken).ConfigureAwait(false);
+            data = await this.tileTransformDelegate(index, data, this.tileSource, cancellationToken).ConfigureAwait(false);
 
             return data;
         }

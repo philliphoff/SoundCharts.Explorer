@@ -36,10 +36,12 @@ namespace SoundCharts.Explorer.MacOS
 				new CachedTileSource(
 					new InMemoryTileCache(), // TODO: Dispose of cache.
 					new TransformedTileSource(
-						TileSourceTransforms.EmptyTileTransformAsync,
-						new CachedTileSource(
-							new FileTileCache(fileCacheDirectory), // TODO: Dispose of cache.
-							new HttpTileSource(new HttpClient(), HttpTileSets.NoaaQuiltedTileSet)))));
+						TileSourceTransforms.OverzoomedTransform,
+						new TransformedTileSource(
+							TileSourceTransforms.EmptyTileTransformAsync,
+							new CachedTileSource(
+								new FileTileCache(fileCacheDirectory), // TODO: Dispose of cache.
+								new HttpTileSource(new HttpClient(), HttpTileSets.NoaaQuiltedTileSet))))));
 
 			this.mapView.AddOverlay(this.overlay, MKOverlayLevel.AboveLabels);
 		}
