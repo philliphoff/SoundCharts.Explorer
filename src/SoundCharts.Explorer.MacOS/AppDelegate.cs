@@ -8,7 +8,10 @@ namespace SoundCharts.Explorer.MacOS
 	[Register ("AppDelegate")]
 	public class AppDelegate : NSApplicationDelegate
 	{
-		public static ServiceProvider? Services { get; private set; }
+		public static readonly ServiceProvider Services =
+				new ServiceCollection()
+					.AddSingleton<IApplicationStateManager, ApplicationStateManager>()
+					.BuildServiceProvider();
 
 		public AppDelegate ()
 		{
@@ -16,10 +19,6 @@ namespace SoundCharts.Explorer.MacOS
 
 		public override void DidFinishLaunching (NSNotification notification)
 		{
-			Services =
-				new ServiceCollection()
-					.AddSingleton<IApplicationStateManager, ApplicationStateManager>()
-					.BuildServiceProvider();
 		}
 
 		public override void WillTerminate (NSNotification notification)

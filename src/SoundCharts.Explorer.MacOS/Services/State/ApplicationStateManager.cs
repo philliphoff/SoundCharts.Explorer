@@ -5,18 +5,18 @@ namespace SoundCharts.Explorer.MacOS.Services.State
 {
 	internal sealed class ApplicationStateManager : IApplicationStateManager, IDisposable
 	{
-        private readonly BehaviorSubject<ApplicationState?> currentState = new(null);
+        private readonly BehaviorSubject<ApplicationStateUpdate> currentState = new(new ApplicationStateUpdate());
         private readonly object stateLock = new();
 
         #region IApplicationStateManager Members
 
-        public IObservable<ApplicationState?> CurrentState => this.currentState;
+        public IObservable<ApplicationStateUpdate> CurrentState => this.currentState;
 
-        public void UpdateState(ApplicationStateUpdater setter)
+        public void UpdateState(ApplicationStateUpdater setter, object? context = default)
         {
             lock (this.stateLock)
             {
-                this.currentState.OnNext(setter(this.currentState.Value));
+                this.currentState.OnNext(new ApplicationStateUpdate(setter(this.currentState.Value.State), context));
             }
         }
 

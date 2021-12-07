@@ -4,11 +4,13 @@ namespace SoundCharts.Explorer.MacOS.Services.State
 {
 	internal delegate ApplicationState? ApplicationStateUpdater(ApplicationState? state);
 
+	internal record ApplicationStateUpdate(ApplicationState? State = default, object? Context = default);
+
 	internal interface IApplicationStateManager
 	{
-		IObservable<ApplicationState?> CurrentState { get; }
+		IObservable<ApplicationStateUpdate> CurrentState { get; }
 
-		void UpdateState(ApplicationStateUpdater setter);
+		void UpdateState(ApplicationStateUpdater setter, object? context = default);
 	}
 }
 

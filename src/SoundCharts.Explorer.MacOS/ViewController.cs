@@ -2,6 +2,7 @@
 using System.IO;
 using System.Net.Http;
 using System.Reactive.Linq;
+using System.Threading;
 using AppKit;
 using Foundation;
 using MapKit;
@@ -14,6 +15,7 @@ namespace SoundCharts.Explorer.MacOS
 {
 	public partial class ViewController : NSViewController
 	{
+		private IDisposable? applicationStateListener;
 		private TileSourceOverlay? overlay;
 		private IDisposable? regionChangeListener;
 
@@ -34,6 +36,22 @@ namespace SoundCharts.Explorer.MacOS
 					_ => null! // TODO: Throw instead?
 				};
 
+			var applicationStateManager = AppDelegate.Services?.GetService<IApplicationStateManager>();
+
+			this.applicationStateListener = applicationStateManager?.CurrentState
+				.Where(update => update.State?.MapRegion is not null && update.Context != this)
+				.ObserveOn(SynchronizationContext.Current)
+				.Subscribe(
+					update =>
+					{
+						var mapRegion = update.State!.MapRegion!;
+
+						this.mapView.Region =
+							new MKCoordinateRegion(
+								new CoreLocation.CLLocationCoordinate2D(mapRegion.Center.Latitude, mapRegion.Center.Longitude),
+								new MKCoordinateSpan(mapRegion.Span.LatitudeDegrees, mapRegion.Span.LongitudeDegrees));
+					});
+
 			this.regionChangeListener = Observable
 				.FromEventPattern<EventHandler<MKMapViewChangeEventArgs>, MKMapViewChangeEventArgs>(
 					action => this.mapView.RegionChanged += action,
@@ -42,9 +60,6 @@ namespace SoundCharts.Explorer.MacOS
 				.Subscribe(
 					region =>
 					{
-						// TODO: Push changes to application state.
-						var applicationStateManager = AppDelegate.Services?.GetService<IApplicationStateManager>();
-
 						applicationStateManager?.UpdateState(
 							state =>
 							{
@@ -54,7 +69,8 @@ namespace SoundCharts.Explorer.MacOS
 										new MapCoordinate(region.Center.Latitude, region.Center.Latitude),
 										new MapSpan(region.Span.LatitudeDelta, region.Span.LongitudeDelta))
 								};
-							});
+							},
+							this);
 					});
 
 			string cacheDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".soundcharts", "explorer", "caches");
@@ -86,6 +102,7 @@ namespace SoundCharts.Explorer.MacOS
 					this.mapView.RemoveOverlay(this.overlay);
 				}
 
+				this.applicationStateListener?.Dispose();
 				this.regionChangeListener?.Dispose();
             }
 			finally
