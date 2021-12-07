@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Reactive.Linq;
 using System.Threading;
 using AppKit;
+using CoreLocation;
 using Foundation;
 using MapKit;
 using Microsoft.Extensions.DependencyInjection;
@@ -40,16 +41,15 @@ namespace SoundCharts.Explorer.MacOS
 
 			this.applicationStateListener = applicationStateManager?.CurrentState
 				.Where(update => update.State?.MapRegion is not null && update.Context != this)
+				.Select(update => update.State!.MapRegion!)
 				.ObserveOn(SynchronizationContext.Current)
 				.Subscribe(
-					update =>
+					region =>
 					{
-						var mapRegion = update.State!.MapRegion!;
-
 						this.mapView.Region =
 							new MKCoordinateRegion(
-								new CoreLocation.CLLocationCoordinate2D(mapRegion.Center.Latitude, mapRegion.Center.Longitude),
-								new MKCoordinateSpan(mapRegion.Span.LatitudeDegrees, mapRegion.Span.LongitudeDegrees));
+								new CLLocationCoordinate2D(region.Center.Latitude, region.Center.Longitude),
+								new MKCoordinateSpan(region.Span.LatitudeDegrees, region.Span.LongitudeDegrees));
 					});
 
 			this.regionChangeListener = Observable
@@ -66,7 +66,7 @@ namespace SoundCharts.Explorer.MacOS
 								return (state ?? new ApplicationState()) with
 								{
 									MapRegion = new MapRegion(
-										new MapCoordinate(region.Center.Latitude, region.Center.Latitude),
+										new MapCoordinate(region.Center.Latitude, region.Center.Longitude),
 										new MapSpan(region.Span.LatitudeDelta, region.Span.LongitudeDelta))
 								};
 							},
