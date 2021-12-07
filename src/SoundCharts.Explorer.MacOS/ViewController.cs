@@ -1,9 +1,12 @@
 ﻿using System;
 using System.IO;
 using System.Net.Http;
+using System.Reactive.Linq;
 using AppKit;
 using Foundation;
 using MapKit;
+using Microsoft.Extensions.DependencyInjection;
+using SoundCharts.Explorer.MacOS.Services.State;
 using SoundCharts.Explorer.Tiles.Caches;
 using SoundCharts.Explorer.Tiles.Sources;
 
@@ -12,6 +15,7 @@ namespace SoundCharts.Explorer.MacOS
 	public partial class ViewController : NSViewController
 	{
 		private TileSourceOverlay? overlay;
+		private IDisposable? regionChangeListener;
 
 		public ViewController (IntPtr handle) : base (handle)
 		{
@@ -29,6 +33,29 @@ namespace SoundCharts.Explorer.MacOS
 					MKTileOverlay tileOverlay => new MKTileOverlayRenderer(tileOverlay),
 					_ => null! // TODO: Throw instead?
 				};
+
+			this.regionChangeListener = Observable
+				.FromEventPattern<EventHandler<MKMapViewChangeEventArgs>, MKMapViewChangeEventArgs>(
+					action => this.mapView.RegionChanged += action,
+					action => this.mapView.RegionChanged -= action)
+				.Select(_ => this.mapView.Region)
+				.Subscribe(
+					region =>
+					{
+						// TODO: Push changes to application state.
+						var applicationStateManager = AppDelegate.Services?.GetService<IApplicationStateManager>();
+
+						applicationStateManager?.UpdateState(
+							state =>
+							{
+								return (state ?? new ApplicationState()) with
+								{
+									MapRegion = new MapRegion(
+										new MapCoordinate(region.Center.Latitude, region.Center.Latitude),
+										new MapSpan(region.Span.LatitudeDelta, region.Span.LongitudeDelta))
+								};
+							});
+					});
 
 			string cacheDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".soundcharts", "explorer", "caches");
 			string displayCacheDirectory = Path.Combine(cacheDirectory, "display");
@@ -58,6 +85,8 @@ namespace SoundCharts.Explorer.MacOS
 				{
 					this.mapView.RemoveOverlay(this.overlay);
 				}
+
+				this.regionChangeListener?.Dispose();
             }
 			finally
             {

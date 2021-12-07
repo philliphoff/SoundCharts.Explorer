@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoundCharts.Explorer.MacOS"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoundCharts.Explorer.Common", "SoundCharts.Explorer.Common\SoundCharts.Explorer.Common.csproj", "{0180F69C-D4F3-451B-9B42-53B6362255A5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoundCharts.Explorer.Cli", "SoundCharts.Explorer.Cli\SoundCharts.Explorer.Cli.csproj", "{38B92789-96DF-4433-B543-D270BB8A597B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{0180F69C-D4F3-451B-9B42-53B6362255A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0180F69C-D4F3-451B-9B42-53B6362255A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0180F69C-D4F3-451B-9B42-53B6362255A5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{38B92789-96DF-4433-B543-D270BB8A597B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38B92789-96DF-4433-B543-D270BB8A597B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38B92789-96DF-4433-B543-D270BB8A597B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38B92789-96DF-4433-B543-D270BB8A597B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
