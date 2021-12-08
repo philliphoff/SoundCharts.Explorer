@@ -43,8 +43,8 @@ jobs:
     
     - name: Install Dependencies
       run: |
-        nuget restore src/SoundCharts.Explorer.Common/SoundCharts.Explorer.Common.csproj
-        nuget restore src/SoundCharts.Explorer.MacOS/SoundCharts.Explorer.MacOS.csproj
+        nuget restore src/SoundCharts.Explorer.Common/SoundCharts.Explorer.Common.csproj -SolutionDirectory src
+        nuget restore src/SoundCharts.Explorer.MacOS/SoundCharts.Explorer.MacOS.csproj -SolutionDirectory src
 
     - name: Build
       run: msbuild src/SoundCharts.Explorer.MacOS/SoundCharts.Explorer.MacOS.csproj /p:Configuration=Release /t:Rebuild
