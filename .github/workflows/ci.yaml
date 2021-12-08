@@ -3,23 +3,47 @@ name: Build Xamarin.MacOS app
 on: [push]
 
 jobs:
-  build:
+  cli-build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repo
+      uses: actions/checkout@v2   
+
+    - name: Setup .NET SDK 6.0.x
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '6.0.x'
+   
+    - name: Install Dependencies
+      run: |
+        dotnet restore src/SoundCharts.Explorer.Cli/SoundCharts.Explorer.Cli.csproj
+
+    - name: Build
+        dotnet build src/SoundCharts.Explorer.Cli/SoundCharts.Explorer.Cli.csproj --configuration Release
+
+  mac-build:
 
     runs-on: macos-11
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Set default Xamarin SDK versions
-      run: |
-        $VM_ASSETS/select-xamarin-sdk-v2.sh --mono=6.12 --mac=8.2
-    
+    - name: Checkout Repo
+      uses: actions/checkout@v2   
+
     - name: Setup .NET SDK 6.0.x
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: '6.0.x'
 
-    - name: Install dependencies
-      run: nuget restore src/SoundCharts.Explorer.sln
+    - name: Set default Xamarin SDK versions
+      run: |
+        $VM_ASSETS/select-xamarin-sdk-v2.sh --mono=6.12 --mac=8.2
+    
+    - name: Install Dependencies
+      run: |
+        nuget restore src/SoundCharts.Explorer.Common/SoundCharts.Explorer.Common.csproj
+        nuget restore src/SoundCharts.Explorer.MacOS/SoundCharts.Explorer.MacOS.csproj
 
     - name: Build
       run: msbuild src/SoundCharts.Explorer.MacOS/SoundCharts.Explorer.MacOS.csproj /p:Configuration=Release /t:Rebuild
