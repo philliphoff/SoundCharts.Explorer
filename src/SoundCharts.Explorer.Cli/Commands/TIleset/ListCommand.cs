@@ -31,9 +31,9 @@ internal sealed class ListCommand : Command
 
                 var tiles = litedb.GetCollection<TilesTable>("tiles")
                     .FindAll()
-                    .OrderBy(x => x.ZoomLevel)
+                    .OrderBy(x => x.TileRow)
                     .OrderBy(x => x.TileColumn)
-                    .OrderBy(x => x.TileRow);
+                    .OrderBy(x => x.ZoomLevel);
 
                 foreach (var item in tiles)
                 {

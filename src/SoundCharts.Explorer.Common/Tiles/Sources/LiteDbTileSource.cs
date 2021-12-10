@@ -5,33 +5,44 @@ using LiteDB;
 
 namespace SoundCharts.Explorer.Tiles.Sources;
 
-public class LiteDbTileSource : ITileSource
+public class LiteDbTileSource : ITileSource, IDisposable
 {
-    private readonly string path;
+    private readonly LiteDatabase db;
+    private readonly ILiteCollection<TilesTable> tiles;
 
     public LiteDbTileSource(string path)
     {
-        this.path = path ?? throw new ArgumentNullException(nameof(path));
+        if (path is null)
+        {
+            throw new ArgumentNullException(nameof(path));
+        }
+
+        this.db = new LiteDatabase($"Filename={path};ReadOnly=true;Connection=direct");
+        this.tiles = this.db.GetCollection<TilesTable>("tiles");
     }
 
     #region ITileSource Members
 
     public Task<TileData?> GetTileAsync(TileIndex index, CancellationToken cancellationToken = default)
     {
-        // TODO: Keep connection open and reuse it.
-        using var litedb = new LiteDatabase(this.path);
-        
-        var tilesLiteDb = litedb.GetCollection<TilesTable>("tiles");
+        return Task.Run(
+            () =>
+            {
+                var result = tiles.FindOne(tile => tile.TileColumn == index.Column && tile.TileRow == index.Row && tile.ZoomLevel == index.Zoom);
 
-        var result = tilesLiteDb
-            .Query()
-            .Where(tile => tile.TileColumn == index.Column && tile.TileRow == index.Row && tile.ZoomLevel == index.Zoom)
-            .Select(tile => tile.TileData)
-            .FirstOrDefault();
+                return result?.TileData is not null
+                    ? new TileData(TileFormat.Png, result.TileData)
+                    : null;
+            });
+    }
 
-        return result is not null
-            ? Task.FromResult<TileData?>(new TileData(TileFormat.Png, result))
-            : Task.FromResult<TileData?>(null);
+    #endregion
+
+    #region IDisposable Members
+
+    public void Dispose()
+    {
+        this.db.Dispose();
     }
 
     #endregion
