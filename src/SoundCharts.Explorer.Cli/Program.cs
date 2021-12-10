@@ -6,7 +6,8 @@ var rootCommand = new RootCommand
 {
     new Command("tileset")
     {
-        new ConvertCommand()
+        new ConvertCommand(),
+        new ListCommand()
     }
 };
 
