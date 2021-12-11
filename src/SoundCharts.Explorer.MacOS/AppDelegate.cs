@@ -1,6 +1,7 @@
 ﻿using AppKit;
 using Foundation;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using SoundCharts.Explorer.MacOS.Components;
 using SoundCharts.Explorer.MacOS.Services.State;
 
@@ -13,6 +14,20 @@ namespace SoundCharts.Explorer.MacOS
 				new ServiceCollection()
 					.AddSingleton<IApplicationStateManager, ApplicationStateManager>()
 					.AddSingleton<IApplicationComponent, ApplicationStateMonitor>()
+					.AddSingleton<ILoggerFactory>(
+						_ =>
+                        {
+							return LoggerFactory.Create(
+								builder =>
+								{
+									builder.AddSystemdConsole(
+										options =>
+                                        {
+											options.IncludeScopes = true;
+											options.TimestampFormat = "hh:mm:ss ";
+                                        });
+								});
+                        })
 					.BuildServiceProvider();
 
 		public AppDelegate ()

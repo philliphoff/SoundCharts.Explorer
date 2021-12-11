@@ -2,15 +2,17 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using LiteDB;
+using Microsoft.Extensions.Logging;
 
 namespace SoundCharts.Explorer.Tiles.Sources;
 
 public class LiteDbTileSource : ITileSource, IDisposable
 {
     private readonly LiteDatabase db;
+    private readonly ILogger<LiteDbTileSource>? logger;
     private readonly ILiteCollection<TilesTable> tiles;
 
-    public LiteDbTileSource(string path)
+    public LiteDbTileSource(string path, ILoggerFactory? loggerFactory = null)
     {
         if (path is null)
         {
@@ -19,6 +21,8 @@ public class LiteDbTileSource : ITileSource, IDisposable
 
         this.db = new LiteDatabase($"Filename={path};ReadOnly=true;Connection=direct");
         this.tiles = this.db.GetCollection<TilesTable>("tiles");
+
+        this.logger = loggerFactory?.CreateLogger<LiteDbTileSource>();
     }
 
     #region ITileSource Members
@@ -28,11 +32,22 @@ public class LiteDbTileSource : ITileSource, IDisposable
         return Task.Run(
             () =>
             {
+                using var scope = this.logger?.BeginScope("Getting tile at index {Index}...", index);
+
                 var result = tiles.FindOne(tile => tile.TileColumn == index.Column && tile.TileRow == index.Row && tile.ZoomLevel == index.Zoom);
 
-                return result?.TileData is not null
-                    ? new TileData(TileFormat.Png, result.TileData)
-                    : null;
+                if (result?.TileData is not null)
+                {
+                    this.logger?.LogInformation("Found tile.");
+
+                    return new TileData(TileFormat.Png, result.TileData);
+                }
+                else
+                {
+                    this.logger?.LogInformation("Tile not found.");
+
+                    return null;
+                }
             });
     }
 
