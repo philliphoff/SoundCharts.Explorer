@@ -17,27 +17,38 @@ internal sealed class ListCommand : Command
                 IsRequired = true
             });
 
-        this.Handler = CommandHandler.Create<FileInfo>(
-            input =>
+        this.Add(new Option<bool>("--metadata", "List metadata"));
+        this.Add(new Option<bool>("--tiles", "List tiles"));
+
+        this.Handler = CommandHandler.Create<FileInfo, bool, bool>(
+            (input, metadata, tiles) =>
             {
                 using var litedb = new LiteDatabase(input.FullName);
 
-                var metadata = litedb.GetCollection<MetadataTable>("metadata");
+                bool listAll = !metadata && !tiles;
 
-                foreach (var item in metadata.FindAll())
+                if (listAll || metadata)
                 {
-                    Console.WriteLine("Metadata {0}: {1}", item.Name, item.Value);
+                    var metadataTable = litedb.GetCollection<MetadataTable>("metadata");
+
+                    foreach (var item in metadataTable.FindAll())
+                    {
+                        Console.WriteLine("Metadata {0}: {1}", item.Name, item.Value);
+                    }
                 }
 
-                var tiles = litedb.GetCollection<TilesTable>("tiles")
-                    .FindAll()
-                    .OrderBy(x => x.TileRow)
-                    .OrderBy(x => x.TileColumn)
-                    .OrderBy(x => x.ZoomLevel);
-
-                foreach (var item in tiles)
+                if (listAll || tiles)
                 {
-                    Console.WriteLine("Tile z{0} - x{1} y{2}", item.ZoomLevel, item.TileColumn, item.TileRow);
+                    var tilesTable = litedb.GetCollection<TilesTable>("tiles")
+                        .FindAll()
+                        .OrderBy(x => x.TileRow)
+                        .OrderBy(x => x.TileColumn)
+                        .OrderBy(x => x.ZoomLevel);
+
+                    foreach (var item in tilesTable)
+                    {
+                        Console.WriteLine("Tile z{0} - x{1} y{2}", item.ZoomLevel, item.TileColumn, item.TileRow);
+                    }
                 }
             });
     }
