@@ -8,6 +8,7 @@ namespace SoundCharts.Explorer.Tiles.Sources;
 
 public class LiteDbTileSource : ITileSource, IDisposable
 {
+    private readonly Lazy<TileBounds?> bounds;
     private readonly LiteDatabase db;
     private readonly ILogger<LiteDbTileSource>? logger;
     private readonly ILiteCollection<TilesTable> tiles;
@@ -23,18 +24,62 @@ public class LiteDbTileSource : ITileSource, IDisposable
         this.tiles = this.db.GetCollection<TilesTable>("tiles");
 
         this.logger = loggerFactory?.CreateLogger<LiteDbTileSource>();
+
+        this.bounds = new(
+            () =>
+            {
+                var metadata = this.db.GetCollection<MetadataTable>("metadata");
+                var boundsMetadata = metadata.FindOne(m => m.Name == "bounds");
+
+                if (boundsMetadata?.Value is not null)
+                {
+                    string[] boundsParts = boundsMetadata.Value.Split(",");
+
+                    if (boundsParts.Length == 4
+                        && Double.TryParse(boundsParts[0], out double left)
+                        && Double.TryParse(boundsParts[1], out double bottom)
+                        && Double.TryParse(boundsParts[2], out double right)
+                        && Double.TryParse(boundsParts[3], out double top))
+                    {
+                        return new TileBounds(
+                            new TileCoordinate(bottom, left),
+                            new TileCoordinate(top, right));
+                    }
+                }
+
+                return null;
+            });
     }
 
     #region ITileSource Members
 
-    public Task<TileData?> GetTileAsync(TileIndex index, CancellationToken cancellationToken = default)
+    public async Task<TileData?> GetTileAsync(TileIndex index, CancellationToken cancellationToken = default)
     {
-        return Task.Run(
+        this.logger?.LogInformation("Getting tile at {Index}...", index);
+
+        var bounds = this.bounds.Value;
+
+        if (bounds is not null)
+        {
+            var tileBounds = index.GetBounds();
+
+            if (!tileBounds.Overlaps(bounds))
+            {
+                this.logger?.LogInformation("Tile outside of tileset bounds.");
+
+                return null;
+            }
+        }
+
+        this.logger?.LogInformation("Tile within tileset bounds; getting tile...");
+
+        return await Task.Run(
             () =>
             {
-                using var scope = this.logger?.BeginScope("Getting tile at index {Index}...", index);
+                // In TMS schema (used by MBTiles), the Y-axis is reversed from the standard Google tiling scheme.
+                int row = (1 << index.Zoom) - 1 - index.Row;
 
-                var result = tiles.FindOne(tile => tile.TileColumn == index.Column && tile.TileRow == index.Row && tile.ZoomLevel == index.Zoom);
+                var result = tiles.FindOne(tile => tile.TileColumn == index.Column && tile.TileRow == row && tile.ZoomLevel == index.Zoom);
 
                 if (result?.TileData is not null)
                 {
@@ -48,7 +93,7 @@ public class LiteDbTileSource : ITileSource, IDisposable
 
                     return null;
                 }
-            });
+            }).ConfigureAwait(false);
     }
 
     #endregion
@@ -62,7 +107,16 @@ public class LiteDbTileSource : ITileSource, IDisposable
 
     #endregion
 
-    public sealed class TilesTable
+    private sealed class MetadataTable
+    {
+        [BsonField("name")]
+        public string? Name { get; set; }
+
+        [BsonField("value")]
+        public string? Value { get; set; }
+    }
+
+    private sealed class TilesTable
     {
         [BsonField("zoom_level")]
         public int ZoomLevel { get; set; }

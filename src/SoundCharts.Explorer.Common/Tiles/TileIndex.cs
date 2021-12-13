@@ -2,6 +2,35 @@
 
 namespace SoundCharts.Explorer.Tiles
 {
-	public sealed record TileIndex(int Column, int Row, int Zoom);
+	public sealed record TileCoordinate(double Latitude, double Longitude);
+
+	public sealed record TileIndex(int Column, int Row, int Zoom)
+	{
+		/// <remarks>
+		/// Adapted from https://wiki.openstreetmap.org/wiki/Slippy_map_tilenames#C.23
+		/// </remarks>
+		public TileBounds GetBounds()
+		{
+			double left = tilex2long(this.Column, this.Zoom);
+			double top = tiley2lat(this.Row, this.Zoom);
+			double right = tilex2long(this.Column + 1, this.Zoom);
+			double bottom = tiley2lat(this.Row + 1, this.Zoom);
+
+			return new TileBounds(
+				new TileCoordinate(bottom, left),
+				new TileCoordinate(top, right));
+		}
+
+		private static double tilex2long(int x, int z)
+		{
+			return x / (double)(1 << z) * 360.0 - 180;
+		}
+
+		private static double tiley2lat(int y, int z)
+		{
+			double n = Math.PI - 2.0 * Math.PI * y / (double)(1 << z);
+			return 180.0 / Math.PI * Math.Atan(0.5 * (Math.Exp(n) - Math.Exp(-n)));
+		}
+	}
 }
 
