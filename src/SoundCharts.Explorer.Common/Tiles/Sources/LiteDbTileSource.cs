@@ -4,134 +4,135 @@ using System.Threading.Tasks;
 using LiteDB;
 using Microsoft.Extensions.Logging;
 
-namespace SoundCharts.Explorer.Tiles.Sources;
-
-public class LiteDbTileSource : ITileSource, IDisposable
+namespace SoundCharts.Explorer.Tiles.Sources
 {
-    private readonly Lazy<TileBounds?> bounds;
-    private readonly LiteDatabase db;
-    private readonly ILogger<LiteDbTileSource>? logger;
-    private readonly ILiteCollection<TilesTable> tiles;
-
-    public LiteDbTileSource(string path, ILoggerFactory? loggerFactory = null)
+    public class LiteDbTileSource : ITileSource, IDisposable
     {
-        if (path is null)
+        private readonly Lazy<TileBounds?> bounds;
+        private readonly LiteDatabase db;
+        private readonly ILogger<LiteDbTileSource>? logger;
+        private readonly ILiteCollection<TilesTable> tiles;
+
+        public LiteDbTileSource(string path, ILoggerFactory? loggerFactory = null)
         {
-            throw new ArgumentNullException(nameof(path));
-        }
-
-        this.db = new LiteDatabase($"Filename={path};ReadOnly=true;Connection=direct");
-        this.tiles = this.db.GetCollection<TilesTable>("tiles");
-
-        this.logger = loggerFactory?.CreateLogger<LiteDbTileSource>();
-
-        this.bounds = new(
-            () =>
+            if (path is null)
             {
-                var metadata = this.db.GetCollection<MetadataTable>("metadata");
-                var boundsMetadata = metadata.FindOne(m => m.Name == "bounds");
-
-                if (boundsMetadata?.Value is not null)
-                {
-                    string[] boundsParts = boundsMetadata.Value.Split(",");
-
-                    if (boundsParts.Length == 4
-                        && Double.TryParse(boundsParts[0], out double left)
-                        && Double.TryParse(boundsParts[1], out double bottom)
-                        && Double.TryParse(boundsParts[2], out double right)
-                        && Double.TryParse(boundsParts[3], out double top))
-                    {
-                        return new TileBounds(
-                            new TileCoordinate(bottom, left),
-                            new TileCoordinate(top, right));
-                    }
-                }
-
-                return null;
-            });
-    }
-
-    #region ITileSource Members
-
-    public async Task<TileData?> GetTileAsync(TileIndex index, CancellationToken cancellationToken = default)
-    {
-        this.logger?.LogInformation("Getting tile at {Index}...", index);
-
-        var bounds = this.bounds.Value;
-
-        if (bounds is not null)
-        {
-            var tileBounds = index.GetBounds();
-
-            if (!tileBounds.Overlaps(bounds))
-            {
-                this.logger?.LogInformation("Tile outside of tileset bounds.");
-
-                return null;
+                throw new ArgumentNullException(nameof(path));
             }
+
+            this.db = new LiteDatabase($"Filename={path};ReadOnly=true;Connection=direct");
+            this.tiles = this.db.GetCollection<TilesTable>("tiles");
+
+            this.logger = loggerFactory?.CreateLogger<LiteDbTileSource>();
+
+            this.bounds = new(
+                () =>
+                {
+                    var metadata = this.db.GetCollection<MetadataTable>("metadata");
+                    var boundsMetadata = metadata.FindOne(m => m.Name == "bounds");
+
+                    if (boundsMetadata?.Value is not null)
+                    {
+                        string[] boundsParts = boundsMetadata.Value.Split(",");
+
+                        if (boundsParts.Length == 4
+                            && Double.TryParse(boundsParts[0], out double left)
+                            && Double.TryParse(boundsParts[1], out double bottom)
+                            && Double.TryParse(boundsParts[2], out double right)
+                            && Double.TryParse(boundsParts[3], out double top))
+                        {
+                            return new TileBounds(
+                                new TileCoordinate(bottom, left),
+                                new TileCoordinate(top, right));
+                        }
+                    }
+
+                    return null;
+                });
         }
 
-        this.logger?.LogInformation("Tile within tileset bounds; getting tile...");
+        #region ITileSource Members
 
-        return await Task.Run(
-            () =>
+        public async Task<TileData?> GetTileAsync(TileIndex index, CancellationToken cancellationToken = default)
+        {
+            this.logger?.LogInformation("Getting tile at {Index}...", index);
+
+            var bounds = this.bounds.Value;
+
+            if (bounds is not null)
             {
-                // In TMS schema (used by MBTiles), the Y-axis is reversed from the standard Google tiling scheme.
-                int row = (1 << index.Zoom) - 1 - index.Row;
+                var tileBounds = index.GetBounds();
 
-                string tileIndexString = $"z{index.Zoom}x{index.Column}y{row}";
-                var result = tiles.FindOne(tile => tile.TileIndex == tileIndexString);
-
-                if (result?.TileData is not null)
+                if (!tileBounds.Overlaps(bounds))
                 {
-                    this.logger?.LogInformation("Found tile.");
-
-                    return new TileData(TileFormat.Png, result.TileData);
-                }
-                else
-                {
-                    this.logger?.LogInformation("Tile not found.");
+                    this.logger?.LogInformation("Tile outside of tileset bounds.");
 
                     return null;
                 }
-            }).ConfigureAwait(false);
-    }
+            }
 
-    #endregion
+            this.logger?.LogInformation("Tile within tileset bounds; getting tile...");
 
-    #region IDisposable Members
+            return await Task.Run(
+                () =>
+                {
+                    // In TMS schema (used by MBTiles), the Y-axis is reversed from the standard Google tiling scheme.
+                    int row = (1 << index.Zoom) - 1 - index.Row;
 
-    public void Dispose()
-    {
-        this.db.Dispose();
-    }
+                    string tileIndexString = $"z{index.Zoom}x{index.Column}y{row}";
+                    var result = tiles.FindOne(tile => tile.TileIndex == tileIndexString);
 
-    #endregion
+                    if (result?.TileData is not null)
+                    {
+                        this.logger?.LogInformation("Found tile.");
 
-    private sealed class MetadataTable
-    {
-        [BsonField("name")]
-        public string? Name { get; set; }
+                        return new TileData(TileFormat.Png, result.TileData);
+                    }
+                    else
+                    {
+                        this.logger?.LogInformation("Tile not found.");
 
-        [BsonField("value")]
-        public string? Value { get; set; }
-    }
+                        return null;
+                    }
+                }).ConfigureAwait(false);
+        }
 
-    private sealed class TilesTable
-    {
-        [BsonField("zoom_level")]
-        public int ZoomLevel { get; set; }
+        #endregion
 
-        [BsonField("tile_column")]
-        public int TileColumn { get; set; }
+        #region IDisposable Members
 
-        [BsonField("tile_row")]
-        public int TileRow { get; set; }
+        public void Dispose()
+        {
+            this.db.Dispose();
+        }
 
-        [BsonField("tile_data")]
-        public byte[]? TileData { get; set; }
+        #endregion
 
-        [BsonField("tile_index")]
-        public string? TileIndex { get; set; }
+        private sealed class MetadataTable
+        {
+            [BsonField("name")]
+            public string? Name { get; set; }
+
+            [BsonField("value")]
+            public string? Value { get; set; }
+        }
+
+        private sealed class TilesTable
+        {
+            [BsonField("zoom_level")]
+            public int ZoomLevel { get; set; }
+
+            [BsonField("tile_column")]
+            public int TileColumn { get; set; }
+
+            [BsonField("tile_row")]
+            public int TileRow { get; set; }
+
+            [BsonField("tile_data")]
+            public byte[]? TileData { get; set; }
+
+            [BsonField("tile_index")]
+            public string? TileIndex { get; set; }
+        }
     }
 }
