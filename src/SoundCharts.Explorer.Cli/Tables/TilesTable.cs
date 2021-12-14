@@ -21,4 +21,8 @@ public class TilesTable
     [BsonField("tile_data")]
     [Column("tile_data")]
     public byte[]? TileData { get; set; }
+
+    [BsonField("tile_index")]
+    [Ignore]
+    public string? TileIndex { get; set; }
 }

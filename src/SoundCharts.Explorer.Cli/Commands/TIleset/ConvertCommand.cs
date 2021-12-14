@@ -31,6 +31,12 @@ internal sealed class ConvertCommand : Command
                 var metadata = db.Query<MetadataTable>("SELECT * FROM metadata");
                 var tiles = db.Query<TilesTable>("SELECT * FROM tiles");
 
+                if (File.Exists(output.FullName))
+                {
+                    // TODO: Require "--force" to delete an existing DB.
+                    File.Delete(output.FullName);
+                }
+
                 using (var litedb = new LiteDatabase(output.FullName))
                 {
                     var collection = litedb.GetCollection<MetadataTable>("metadata");
@@ -42,8 +48,12 @@ internal sealed class ConvertCommand : Command
 
                     var tilesLiteDb = litedb.GetCollection<TilesTable>("tiles");
 
+                    tilesLiteDb.EnsureIndex(tile => tile.TileIndex, unique: true);
+
                     foreach (var item in tiles)
                     {
+                        item.TileIndex = $"z{item.ZoomLevel}x{item.TileColumn}y{item.TileRow}";
+
                         tilesLiteDb.Insert(item);
                     }
                 }

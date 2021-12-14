@@ -79,7 +79,8 @@ public class LiteDbTileSource : ITileSource, IDisposable
                 // In TMS schema (used by MBTiles), the Y-axis is reversed from the standard Google tiling scheme.
                 int row = (1 << index.Zoom) - 1 - index.Row;
 
-                var result = tiles.FindOne(tile => tile.TileColumn == index.Column && tile.TileRow == row && tile.ZoomLevel == index.Zoom);
+                string tileIndexString = $"z{index.Zoom}x{index.Column}y{row}";
+                var result = tiles.FindOne(tile => tile.TileIndex == tileIndexString);
 
                 if (result?.TileData is not null)
                 {
@@ -129,5 +130,8 @@ public class LiteDbTileSource : ITileSource, IDisposable
 
         [BsonField("tile_data")]
         public byte[]? TileData { get; set; }
+
+        [BsonField("tile_index")]
+        public string? TileIndex { get; set; }
     }
 }
