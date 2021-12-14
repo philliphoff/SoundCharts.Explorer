@@ -77,9 +77,9 @@ namespace SoundCharts.Explorer.Tiles.Sources
                 () =>
                 {
                     // In TMS schema (used by MBTiles), the Y-axis is reversed from the standard Google tiling scheme.
-                    int row = (1 << index.Zoom) - 1 - index.Row;
+                    var tmsIndex = index.ToTms();
 
-                    string tileIndexString = $"z{index.Zoom}x{index.Column}y{row}";
+                    string tileIndexString = $"z{tmsIndex.Zoom}x{tmsIndex.Column}y{tmsIndex.Row}";
                     var result = tiles.FindOne(tile => tile.TileIndex == tileIndexString);
 
                     if (result?.TileData is not null)

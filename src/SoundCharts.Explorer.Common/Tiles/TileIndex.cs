@@ -4,8 +4,25 @@ namespace SoundCharts.Explorer.Tiles
 {
 	public sealed record TileCoordinate(double Latitude, double Longitude);
 
-	public sealed record TileIndex(int Column, int Row, int Zoom)
+	public enum TileIndexFormat
+    {
+		Unknown = 0,
+		Tms,
+		Xyz
+    }
+
+	public sealed record TileIndex(int Column, int Row, int Zoom, TileIndexFormat Format = TileIndexFormat.Xyz)
 	{
+		public TileIndex ToTms()
+        {
+			return this.Format switch
+			{
+				TileIndexFormat.Tms => this,
+				TileIndexFormat.Xyz => this with { Row = (1 << this.Zoom) - 1 - this.Row },
+				_ => throw new InvalidOperationException("Format conversion not supported.")
+			};
+        }
+
 		/// <remarks>
 		/// Adapted from https://wiki.openstreetmap.org/wiki/Slippy_map_tilenames#C.23
 		/// </remarks>

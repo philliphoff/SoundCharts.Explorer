@@ -39,11 +39,13 @@ internal sealed class ConvertCommand : Command
 
                 using (var litedb = new LiteDatabase(output.FullName))
                 {
-                    var collection = litedb.GetCollection<MetadataTable>("metadata");
+                    var metadataLiteDb = litedb.GetCollection<MetadataTable>("metadata");
+
+                    metadataLiteDb.EnsureIndex(keyValuePair => keyValuePair.Name, unique: true);
 
                     foreach (var item in metadata)
                     {
-                        collection.Insert(item);
+                        metadataLiteDb.Insert(item);
                     }
 
                     var tilesLiteDb = litedb.GetCollection<TilesTable>("tiles");
