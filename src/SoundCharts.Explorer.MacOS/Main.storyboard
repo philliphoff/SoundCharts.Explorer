@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="19455" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="19529" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="VdR-yd-tC9">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="19455"/>
-        <plugIn identifier="com.apple.MapKitIBPlugin" version="19455"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="19529"/>
+        <plugIn identifier="com.apple.MapKitIBPlugin" version="19529"/>
+        <capability name="NSView safe area layout guides" minToolsVersion="12.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -683,46 +684,104 @@
             <point key="canvasLocation" x="75" y="0.0"/>
         </scene>
         <!--Window Controller-->
-        <scene sceneID="R2V-B0-nI4">
+        <scene sceneID="EGh-89-xvh">
             <objects>
-                <windowController id="B8D-0N-5wS" sceneMemberID="viewController">
-                    <window key="window" title="SoundCharts Explorer" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="IQv-IB-iLA">
-                        <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
-                        <rect key="contentRect" x="348" y="121" width="1024" height="768"/>
-                        <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1027"/>
+                <windowController id="VdR-yd-tC9" sceneMemberID="viewController">
+                    <window key="window" title="SoundCharts Explorer" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="o2q-Kb-Lmc">
+                        <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" fullSizeContentView="YES"/>
+                        <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
+                        <rect key="contentRect" x="196" y="239" width="480" height="270"/>
+                        <rect key="screenRect" x="0.0" y="0.0" width="1440" height="875"/>
+                        <view key="contentView" id="0V5-Xw-Be0">
+                            <rect key="frame" x="0.0" y="0.0" width="480" height="270"/>
+                            <autoresizingMask key="autoresizingMask"/>
+                        </view>
+                        <toolbar key="toolbar" implicitIdentifier="09D11707-F4A3-4FD5-970E-AC5832E91C2B" autosavesConfiguration="NO" displayMode="iconAndLabel" sizeMode="regular" id="fY3-fY-y0h">
+                            <allowedToolbarItems>
+                                <toolbarItem implicitItemIdentifier="NSToolbarShowColorsItem" id="RFH-AV-Jyp"/>
+                                <toolbarItem implicitItemIdentifier="NSToolbarShowFontsItem" id="tXC-CE-KDU"/>
+                                <toolbarItem implicitItemIdentifier="NSToolbarPrintItem" id="Mf3-yt-2Bd"/>
+                                <toolbarItem implicitItemIdentifier="NSToolbarSpaceItem" id="Z4O-V9-aPs"/>
+                                <toolbarItem implicitItemIdentifier="NSToolbarFlexibleSpaceItem" id="Dls-7W-HLD"/>
+                            </allowedToolbarItems>
+                            <defaultToolbarItems>
+                                <toolbarItem reference="RFH-AV-Jyp"/>
+                                <toolbarItem reference="tXC-CE-KDU"/>
+                                <toolbarItem reference="Dls-7W-HLD"/>
+                                <toolbarItem reference="Mf3-yt-2Bd"/>
+                            </defaultToolbarItems>
+                        </toolbar>
                         <connections>
-                            <outlet property="delegate" destination="B8D-0N-5wS" id="98r-iN-zZc"/>
+                            <outlet property="delegate" destination="VdR-yd-tC9" id="tnI-wr-pvZ"/>
                         </connections>
                     </window>
                     <connections>
-                        <segue destination="XfG-lQ-9wD" kind="relationship" relationship="window.shadowedContentViewController" id="cq2-FE-JQM"/>
+                        <segue destination="JbG-AR-Y87" kind="relationship" relationship="window.shadowedContentViewController" id="1UI-eE-jK8"/>
                     </connections>
                 </windowController>
-                <customObject id="Oky-zY-oP4" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+                <customObject id="rES-76-Hch" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="75" y="250"/>
+            <point key="canvasLocation" x="71" y="853"/>
+        </scene>
+        <!--Split View Controller-->
+        <scene sceneID="Y8k-eO-0wc">
+            <objects>
+                <splitViewController id="JbG-AR-Y87" sceneMemberID="viewController">
+                    <splitViewItems>
+                        <splitViewItem canCollapse="YES" holdingPriority="260" behavior="sidebar" id="aAT-ba-sbo"/>
+                        <splitViewItem id="n0u-Ry-av1"/>
+                    </splitViewItems>
+                    <splitView key="splitView" dividerStyle="thin" vertical="YES" id="vQg-kF-WvI">
+                        <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </splitView>
+                    <connections>
+                        <segue destination="wcZ-aa-Q5z" kind="relationship" relationship="splitItems" id="WiD-41-JNR"/>
+                        <segue destination="JWW-9q-P4g" kind="relationship" relationship="splitItems" id="Mvx-D4-YRN"/>
+                    </connections>
+                </splitViewController>
+                <customObject id="QKm-Ka-mav" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="71" y="861"/>
         </scene>
         <!--View Controller-->
-        <scene sceneID="hIz-AP-VOD">
+        <scene sceneID="1sC-ke-izt">
             <objects>
-                <viewController id="XfG-lQ-9wD" customClass="ViewController" sceneMemberID="viewController">
-                    <view key="view" wantsLayer="YES" id="m2S-Jp-Qdl">
-                        <rect key="frame" x="0.0" y="0.0" width="1024" height="768"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                <viewController id="wcZ-aa-Q5z" sceneMemberID="viewController">
+                    <view key="view" id="C6z-mm-DnB">
+                        <rect key="frame" x="0.0" y="0.0" width="149" height="300"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <viewLayoutGuide key="safeArea" id="XYo-uM-UA0"/>
+                        <viewLayoutGuide key="layoutMargins" id="1tz-2U-3Dr"/>
+                    </view>
+                </viewController>
+                <customObject id="yq8-ko-A0e" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="71" y="861"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="aRt-IX-cZB">
+            <objects>
+                <viewController id="JWW-9q-P4g" customClass="ViewController" sceneMemberID="viewController">
+                    <view key="view" id="jME-xs-4G9">
+                        <rect key="frame" x="0.0" y="0.0" width="302" height="300"/>
+                        <autoresizingMask key="autoresizingMask"/>
                         <subviews>
-                            <mapView fixedFrame="YES" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="Hji-kR-exH">
-                                <rect key="frame" x="0.0" y="0.0" width="1024" height="768"/>
+                            <mapView fixedFrame="YES" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="DI0-uv-YPL">
+                                <rect key="frame" x="0.0" y="0.0" width="302" height="300"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             </mapView>
                         </subviews>
+                        <viewLayoutGuide key="safeArea" id="gak-ap-JNc"/>
+                        <viewLayoutGuide key="layoutMargins" id="aFa-oQ-u1t"/>
                     </view>
                     <connections>
-                        <outlet property="mapView" destination="Hji-kR-exH" id="2aF-NO-l6o"/>
+                        <outlet property="mapView" destination="DI0-uv-YPL" id="I6D-lB-vOt"/>
                     </connections>
                 </viewController>
-                <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+                <customObject id="tgn-w7-zVz" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="75" y="655"/>
+            <point key="canvasLocation" x="71" y="861"/>
         </scene>
     </scenes>
 </document>

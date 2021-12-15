@@ -147,6 +147,7 @@
     <Folder Include="Services\" />
     <Folder Include="Services\State\" />
     <Folder Include="Components\" />
+    <Folder Include="Views\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -167,6 +168,9 @@
     <Compile Include="IsExternalInit.cs" />
     <Compile Include="Components\IApplicationComponent.cs" />
     <Compile Include="Components\ApplicationStateMonitor.cs" />
+    <Compile Include="Views\SourceListView.cs" />
+    <Compile Include="Views\SourceListDelegate.cs" />
+    <Compile Include="Views\SourceListDataSource.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Main.storyboard" />
@@ -175,6 +179,7 @@
     <ProjectReference Include="..\SoundCharts.Explorer.Common\SoundCharts.Explorer.Common.csproj">
       <Project>{0180F69C-D4F3-451B-9B42-53B6362255A5}</Project>
       <Name>SoundCharts.Explorer.Common</Name>
+      <ReferenceSourceTarget></ReferenceSourceTarget>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Mac\Xamarin.Mac.CSharp.targets" />
