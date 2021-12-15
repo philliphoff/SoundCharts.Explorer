@@ -687,7 +687,7 @@
         <scene sceneID="EGh-89-xvh">
             <objects>
                 <windowController id="VdR-yd-tC9" sceneMemberID="viewController">
-                    <window key="window" title="SoundCharts Explorer" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="o2q-Kb-Lmc">
+                    <window key="window" title="SoundCharts Explorer" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" toolbarStyle="compact" id="o2q-Kb-Lmc">
                         <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" fullSizeContentView="YES"/>
                         <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
                         <rect key="contentRect" x="196" y="239" width="480" height="270"/>
