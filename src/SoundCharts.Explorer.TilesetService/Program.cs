@@ -1,4 +1,5 @@
 using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
 using Dapr.Client;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -30,9 +31,14 @@ app.MapGet("/tilesets",
 
         var tilesets = new List<Tileset>();
 
-        await foreach (var blob in containerClient.GetBlobsByHierarchyAsync(prefix: "litedb/", delimiter: "/"))
+        await foreach (var hierarchyItem in containerClient.GetBlobsByHierarchyAsync(
+            traits: BlobTraits.Metadata | BlobTraits.Tags,
+            prefix: "litedb/",
+            delimiter: "/"))
         {
-            tilesets.Add(new Tileset(blob.Blob.Name, "TODO: Get SAS-based URL"));
+            string id = hierarchyItem.Blob.Tags["sc-tileset-id"];
+
+            tilesets.Add(new Tileset(id, hierarchyItem.Blob.Name, "TODO: Get SAS-based URL"));
         }
 
         return tilesets;
@@ -41,4 +47,4 @@ app.MapGet("/tilesets",
 
 app.Run();
 
-record Tileset(string Name, string Url);
+record Tileset(string Id, string Name, string Url);
