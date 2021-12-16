@@ -45,6 +45,28 @@ app.MapGet("/tilesets",
     })
     .WithName("GetTilesets");
 
+app.MapGet("/tilesets/{id}", 
+    async (string id) =>
+    {
+        var blobServiceClient = new BlobServiceClient(connectionString);
+        var containerClient = blobServiceClient.GetBlobContainerClient("tilesets");
+
+        var taggedBlob = await blobServiceClient.FindBlobsByTagsAsync($"\"sc-tileset-id\" = '{id}'").FirstOrDefaultAsync();
+
+        if (taggedBlob == null)
+        {
+            return Results.NotFound();
+        }
+
+        var blobContainerClient = blobServiceClient.GetBlobContainerClient(taggedBlob.BlobContainerName);
+        var blobClient = blobContainerClient.GetBlobClient(taggedBlob.BlobName);
+
+        var properties = await blobClient.GetPropertiesAsync();
+
+        return Results.Ok(new Tileset(id, taggedBlob.BlobName, "TODO: Get SAS-based URL"));
+    })
+    .WithName("GetTileset");
+
 app.Run();
 
 record Tileset(string Id, string Name, string Url);
