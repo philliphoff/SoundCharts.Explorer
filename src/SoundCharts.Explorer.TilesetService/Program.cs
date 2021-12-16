@@ -1,3 +1,5 @@
+using Azure.Storage.Blobs;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -14,13 +16,20 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+string connectionString = Environment.GetEnvironmentVariable("AZURE_STORAGE_CONNECTION_STRING");
+
 app.MapGet("/tilesets", 
-    () =>
+    async () =>
     {
-        var tilesets = new[]
+        var blobServiceClient = new BlobServiceClient(connectionString);
+        var containerClient = blobServiceClient.GetBlobContainerClient("tilesets");
+
+        var tilesets = new List<Tileset>();
+
+        await foreach (var blob in containerClient.GetBlobsByHierarchyAsync(prefix: "litedb/", delimiter: "/"))
         {
-            new Tileset("MBTILES_01", "https://foo.bar/mbtiles/01.mbtiles")
-        };
+            tilesets.Add(new Tileset(blob.Blob.Name, "TODO: Get SAS-based URL"));
+        }
 
         return tilesets;
     })

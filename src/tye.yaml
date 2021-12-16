@@ -1,0 +1,11 @@
+name: sound-charts
+
+extensions:
+- name: dapr
+
+services:
+- name: tileset-service
+  project: ./SoundCharts.Explorer.TilesetService/SoundCharts.Explorer.TilesetService.csproj
+  env_file:
+  - ../secrets.env
+
