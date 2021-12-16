@@ -1,4 +1,5 @@
 using Azure.Storage.Blobs;
+using Dapr.Client;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,7 +17,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-string connectionString = Environment.GetEnvironmentVariable("AZURE_STORAGE_CONNECTION_STRING");
+using var daprClient = new DaprClientBuilder().Build();
+
+var secrets = await daprClient.GetSecretAsync("service-secrets", "tileset-service");
+string connectionString = secrets["connection-string"];
 
 app.MapGet("/tilesets", 
     async () =>

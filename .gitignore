@@ -404,5 +404,6 @@ ASALocalRun/
 # Local History for Visual Studio
 .localhistory/
 
-# Local secrets store
+# Local secrets stores
 secrets.env
+secrets.json
