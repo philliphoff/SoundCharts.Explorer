@@ -1,5 +1,7 @@
+using Azure.Storage;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
+using Azure.Storage.Sas;
 using Dapr.Client;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,12 +25,12 @@ using var daprClient = new DaprClientBuilder().Build();
 var secrets = await daprClient.GetSecretAsync("service-secrets", "tileset-service");
 string connectionString = secrets["connection-string"];
 
+var blobServiceClient = new BlobServiceClient(connectionString);
+var containerClient = blobServiceClient.GetBlobContainerClient("tilesets");
+
 app.MapGet("/tilesets", 
     async () =>
     {
-        var blobServiceClient = new BlobServiceClient(connectionString);
-        var containerClient = blobServiceClient.GetBlobContainerClient("tilesets");
-
         var tilesets = new List<Tileset>();
 
         await foreach (var hierarchyItem in containerClient.GetBlobsByHierarchyAsync(
@@ -48,9 +50,6 @@ app.MapGet("/tilesets",
 app.MapGet("/tilesets/{id}", 
     async (string id) =>
     {
-        var blobServiceClient = new BlobServiceClient(connectionString);
-        var containerClient = blobServiceClient.GetBlobContainerClient("tilesets");
-
         var taggedBlob = await blobServiceClient.FindBlobsByTagsAsync($"\"sc-tileset-id\" = '{id}'").FirstOrDefaultAsync();
 
         if (taggedBlob == null)
@@ -66,6 +65,41 @@ app.MapGet("/tilesets/{id}",
         return Results.Ok(new Tileset(id, taggedBlob.BlobName, "TODO: Get SAS-based URL"));
     })
     .WithName("GetTileset");
+
+app.MapGet("/tilesets/{id}/download", 
+    async (string id) =>
+    {
+        var taggedBlob = await blobServiceClient.FindBlobsByTagsAsync($"\"sc-tileset-id\" = '{id}'").FirstOrDefaultAsync();
+
+        if (taggedBlob == null)
+        {
+            return Results.NotFound();
+        }
+
+        var blobContainerClient = blobServiceClient.GetBlobContainerClient(taggedBlob.BlobContainerName);
+        var blobClient = blobContainerClient.GetBlobClient(taggedBlob.BlobName);
+
+        var sasBuilder = new BlobSasBuilder(
+            BlobSasPermissions.Read,
+            DateTimeOffset.UtcNow.AddMinutes(5))
+        {
+            BlobContainerName = taggedBlob.BlobContainerName,
+            BlobName = taggedBlob.BlobName,
+            Resource = "b",
+            StartsOn = DateTimeOffset.UtcNow.AddMinutes(-5)
+        };
+
+        var blobUriBuilder = new BlobUriBuilder(blobClient.Uri)
+        {
+            Sas = sasBuilder.ToSasQueryParameters(
+                new StorageSharedKeyCredential(
+                    secrets["account-name"],
+                    secrets["account-key"]))
+        };
+
+        return Results.Redirect(blobUriBuilder.ToString());
+    })
+    .WithName("DownloadTileset");
 
 app.Run();
 
