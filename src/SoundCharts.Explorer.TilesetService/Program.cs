@@ -22,8 +22,8 @@ if (app.Environment.IsDevelopment())
 
 using var daprClient = new DaprClientBuilder().Build();
 
-var secrets = await daprClient.GetSecretAsync("service-secrets", "tileset-service");
-string connectionString = secrets["connection-string"];
+var secrets = await daprClient.GetBulkSecretAsync("service-secrets");
+string connectionString = secrets["tileset-service-connection-string"].Values.First();
 
 var blobServiceClient = new BlobServiceClient(connectionString);
 var containerClient = blobServiceClient.GetBlobContainerClient("tilesets");
@@ -93,8 +93,8 @@ app.MapGet("/tilesets/{id}/download",
         {
             Sas = sasBuilder.ToSasQueryParameters(
                 new StorageSharedKeyCredential(
-                    secrets["account-name"],
-                    secrets["account-key"]))
+                    secrets["tileset-service-account-name"].Values.First(),
+                    secrets["tileset-service-account-key"].Values.First()))
         };
 
         return Results.Redirect(blobUriBuilder.ToString());
