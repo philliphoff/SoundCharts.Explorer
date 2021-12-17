@@ -37,8 +37,8 @@ jobs:
       run: |
         branch=${GITHUB_REF##*/}
         sha=${GITHUB_SHA::8}
-        ts=$(date +%s)
-        echo "::set-output name=BUILD_ID::${branch}-${sha}-${ts}"
+        ts=$(date +"%Y-%m-%dT%H-%M-%SZ")
+        echo "::set-output name=BUILD_ID::${branch}-SHA${sha}-${ts}"
 
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v1
