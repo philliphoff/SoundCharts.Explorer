@@ -7,20 +7,36 @@ using Dapr.Extensions.Configuration;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 
+const string UseEnvironmentVariablesName = "tileset-service-use-environment-variables";
+const string ConnectionStringSecretName = "tileset-service-connection-string";
+const string AccountNameSecretName = "tileset-service-account-name";
+const string AccountKeySecretName = "tileset-service-account-key";
+
+var secretNames = new[]
+{
+    ConnectionStringSecretName,
+    AccountNameSecretName,
+    AccountKeySecretName
+};
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.ConfigureAppConfiguration(
     (context, config) =>
     {
-        var daprClient = new DaprClientBuilder().Build();
-        var secretDescriptors = new List<DaprSecretDescriptor>
-        {
-            new DaprSecretDescriptor("tileset-service-connection-string"),
-            new DaprSecretDescriptor("tileset-service-account-name"),
-            new DaprSecretDescriptor("tileset-service-account-key")
-        };
+        var useEnvironmentVariables = Environment.GetEnvironmentVariable(UseEnvironmentVariablesName);
 
-        config.AddDaprSecretStore("service-secrets", secretDescriptors, daprClient);
+        if (!String.IsNullOrEmpty(useEnvironmentVariables))
+        {
+            config.AddInMemoryCollection(secretNames.Select(secretname => new KeyValuePair<string, string>(secretname, Environment.GetEnvironmentVariable(secretname))));
+        }
+        else
+        {
+            var daprClient = new DaprClientBuilder().Build();
+            var secretDescriptors = secretNames.Select(secretName => new DaprSecretDescriptor(secretName)).ToList();
+
+            config.AddDaprSecretStore("service-secrets", secretDescriptors, daprClient);
+        }
     });
 
 // Add services to the container.
@@ -37,7 +53,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-string connectionString = app.Configuration["tileset-service-connection-string"];
+string connectionString = app.Configuration[ConnectionStringSecretName];
 
 var blobServiceClient = new BlobServiceClient(connectionString);
 var containerClient = blobServiceClient.GetBlobContainerClient("tilesets");
@@ -107,8 +123,8 @@ app.MapGet("/tilesets/{id}/download",
         {
             Sas = sasBuilder.ToSasQueryParameters(
                 new StorageSharedKeyCredential(
-                    app.Configuration["tileset-service-account-name"],
-                    app.Configuration["tileset-service-account-key"]))
+                    app.Configuration[AccountNameSecretName],
+                    app.Configuration[AccountKeySecretName]))
         };
 
         return Results.Redirect(blobUriBuilder.ToString());
