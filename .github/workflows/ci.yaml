@@ -49,7 +49,7 @@ jobs:
     - name: Login to ACR
       uses: azure/docker-login@v1
       with:
-        login-server: ${{ REGISTRY }}
+        login-server: ${{ env.REGISTRY }}
         username: ${{ secrets.ACR_USERNAME }}
         password: ${{ secrets.ACR_PASSWORD }}
 
@@ -59,7 +59,7 @@ jobs:
       with:
         file: src/SoundCharts.Explorer.TilesetService/Dockerfile
         push: true
-        tags: ${{ REGISTRY }}/tileset-service:${{ steps.prep.outputs.BUILD_ID }}
+        tags: ${{ env.REGISTRY }}/tileset-service:${{ steps.prep.outputs.BUILD_ID }}
 
   mac-build:
 
