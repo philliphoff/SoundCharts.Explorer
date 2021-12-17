@@ -1,4 +1,4 @@
-name: Build Xamarin.MacOS app
+name: Build SoundCharts Explorer
 
 on: [push]
 
@@ -26,10 +26,10 @@ jobs:
 
   services-build:
 
-    runs-on: ubuntu-latest
-
     env:
       REGISTRY: soundcharts.azurecr.io
+
+    runs-on: ubuntu-latest
 
     steps:
     - name: Generate build ID
@@ -38,7 +38,7 @@ jobs:
         branch=${GITHUB_REF##*/}
         sha=${GITHUB_SHA::8}
         ts=$(date +%s)
-        echo "::set-output name=BUILD_ID::${branch}-${sha}-${ts}"          
+        echo "::set-output name=BUILD_ID::${branch}-${sha}-${ts}"
 
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v1
