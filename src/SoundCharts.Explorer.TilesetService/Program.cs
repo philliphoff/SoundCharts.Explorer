@@ -3,8 +3,25 @@ using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Azure.Storage.Sas;
 using Dapr.Client;
+using Dapr.Extensions.Configuration;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.ConfigureAppConfiguration(
+    (context, config) =>
+    {
+        var daprClient = new DaprClientBuilder().Build();
+        var secretDescriptors = new List<DaprSecretDescriptor>
+        {
+            new DaprSecretDescriptor("tileset-service-connection-string"),
+            new DaprSecretDescriptor("tileset-service-account-name"),
+            new DaprSecretDescriptor("tileset-service-account-key")
+        };
+
+        config.AddDaprSecretStore("service-secrets", secretDescriptors, daprClient);
+    });
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -20,10 +37,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-using var daprClient = new DaprClientBuilder().Build();
-
-var secrets = await daprClient.GetBulkSecretAsync("service-secrets");
-string connectionString = secrets["tileset-service-connection-string"].Values.First();
+string connectionString = app.Configuration["tileset-service-connection-string"];
 
 var blobServiceClient = new BlobServiceClient(connectionString);
 var containerClient = blobServiceClient.GetBlobContainerClient("tilesets");
@@ -93,8 +107,8 @@ app.MapGet("/tilesets/{id}/download",
         {
             Sas = sasBuilder.ToSasQueryParameters(
                 new StorageSharedKeyCredential(
-                    secrets["tileset-service-account-name"].Values.First(),
-                    secrets["tileset-service-account-key"].Values.First()))
+                    app.Configuration["tileset-service-account-name"],
+                    app.Configuration["tileset-service-account-key"]))
         };
 
         return Results.Redirect(blobUriBuilder.ToString());
