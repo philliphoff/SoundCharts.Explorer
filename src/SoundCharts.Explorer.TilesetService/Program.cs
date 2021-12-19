@@ -3,17 +3,13 @@ using Dapr.Extensions.Configuration;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using SoundCharts.Explorer.TilesetService;
-
-const string UseEnvironmentVariablesName = "tileset-service-use-environment-variables";
-const string ConnectionStringSecretName = "tileset-service-connection-string";
-const string AccountNameSecretName = "tileset-service-account-name";
-const string AccountKeySecretName = "tileset-service-account-key";
+using SoundCharts.Explorer.TilesetService.Services;
 
 var secretNames = new[]
 {
-    ConnectionStringSecretName,
-    AccountNameSecretName,
-    AccountKeySecretName
+    Constants.Secrets.ConnectionStringSecretName,
+    Constants.Secrets.AccountNameSecretName,
+    Constants.Secrets.AccountKeySecretName
 };
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,7 +17,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Host.ConfigureAppConfiguration(
     (context, config) =>
     {
-        var useEnvironmentVariables = Environment.GetEnvironmentVariable(UseEnvironmentVariablesName);
+        var useEnvironmentVariables = Environment.GetEnvironmentVariable(Constants.Secrets.UseEnvironmentVariablesName);
 
         if (!String.IsNullOrEmpty(useEnvironmentVariables))
         {
@@ -34,6 +30,12 @@ builder.Host.ConfigureAppConfiguration(
 
             config.AddDaprSecretStore("service-secrets", secretDescriptors, daprClient);
         }
+    });
+
+builder.Host.ConfigureServices(
+    (context, services) =>
+    {
+        services.AddSingleton<ITilesetProvider, TilesetProvider>();
     });
 
 // Add services to the container.
@@ -50,19 +52,19 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-string connectionString = app.Configuration[ConnectionStringSecretName];
+var tilesetProvider = app.Services.GetRequiredService<ITilesetProvider>();
 
 app.MapGet("/tilesets", 
     () =>
     {
-        return Tilesets.GetTilesets(connectionString);
+        return tilesetProvider.GetTilesets();
     })
     .WithName("GetTilesets");
 
 app.MapGet("/tilesets/{id}", 
     async (string id) =>
     {
-        var tileset = await Tilesets.GetTilesetById(id, connectionString);
+        var tileset = await tilesetProvider.GetTilesetById(id);
 
         return tileset is not null
             ? Results.Ok(tileset)
@@ -73,7 +75,7 @@ app.MapGet("/tilesets/{id}",
 app.MapGet("/tilesets/{id}/download", 
     async (string id) =>
     {
-        var uri = await Tilesets.GetTilesetDownloadUriById(id, connectionString, app.Configuration[AccountNameSecretName], app.Configuration[AccountKeySecretName]);
+        var uri = await tilesetProvider.GetTilesetDownloadUriById(id);
 
         return uri is not null
             ? Results.Redirect(uri.ToString())

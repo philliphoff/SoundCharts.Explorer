@@ -3,15 +3,24 @@ using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Azure.Storage.Sas;
 
-namespace SoundCharts.Explorer.TilesetService;
+namespace SoundCharts.Explorer.TilesetService.Services;
 
-internal record Tileset(string Id, string Name, string Url);
-
-internal static class Tilesets
+internal sealed class TilesetProvider : ITilesetProvider
 {
-    public static async Task<IEnumerable<Tileset>> GetTilesets(string connectionString)
+    private readonly string connectionString;
+    private readonly string accountName;
+    private readonly string accountKey;
+
+    public TilesetProvider(IConfiguration configuration)
     {
-        var blobServiceClient = new BlobServiceClient(connectionString);
+        this.connectionString = configuration[Constants.Secrets.ConnectionStringSecretName];
+        this.accountName = configuration[Constants.Secrets.AccountNameSecretName];
+        this.accountKey = configuration[Constants.Secrets.AccountKeySecretName];
+    }
+
+    public async Task<IEnumerable<Tileset>> GetTilesets()
+    {
+        var blobServiceClient = new BlobServiceClient(this.connectionString);
         var containerClient = blobServiceClient.GetBlobContainerClient("tilesets");
 
         var tilesets = new List<Tileset>();
@@ -29,9 +38,9 @@ internal static class Tilesets
         return tilesets;
     }
 
-    public static async Task<Tileset?> GetTilesetById(string id, string connectionString)
+    public async Task<Tileset?> GetTilesetById(string id)
     {
-        var blobServiceClient = new BlobServiceClient(connectionString);
+        var blobServiceClient = new BlobServiceClient(this.connectionString);
         var taggedBlob = await blobServiceClient.FindBlobsByTagsAsync($"\"sc-tileset-id\" = '{id}'").FirstOrDefaultAsync();
 
         if (taggedBlob is null)
@@ -47,9 +56,9 @@ internal static class Tilesets
         return new Tileset(id, taggedBlob.BlobName, "TODO: Get SAS-based URL");
     }
 
-    public static async Task<Uri?> GetTilesetDownloadUriById(string id, string connectionString, string accountName, string accountKey)
+    public async Task<Uri?> GetTilesetDownloadUriById(string id)
     {
-        var blobServiceClient = new BlobServiceClient(connectionString);
+        var blobServiceClient = new BlobServiceClient(this.connectionString);
         var taggedBlob = await blobServiceClient.FindBlobsByTagsAsync($"\"sc-tileset-id\" = '{id}'").FirstOrDefaultAsync();
 
         if (taggedBlob is null)
@@ -74,8 +83,8 @@ internal static class Tilesets
         {
             Sas = sasBuilder.ToSasQueryParameters(
                 new StorageSharedKeyCredential(
-                    accountName,
-                    accountKey))
+                    this.accountName,
+                    this.accountKey))
         };
 
         return blobUriBuilder.ToUri();
