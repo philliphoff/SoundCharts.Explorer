@@ -19,16 +19,20 @@
     <None Remove="Utilities\" />
     <None Remove="SixLabors.ImageSharp" />
     <None Remove="Microsoft.Extensions.Logging" />
+    <None Remove="Tiles\Tilesets\" />
+    <None Remove="System.Text.Json" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Tiles\" />
     <Folder Include="Tiles\Sources\" />
     <Folder Include="Tiles\Caches\" />
     <Folder Include="Utilities\" />
+    <Folder Include="Tiles\Tilesets\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="LiteDB" Version="5.0.11" />
     <PackageReference Include="SixLabors.ImageSharp" Version="1.0.4" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
+    <PackageReference Include="System.Text.Json" Version="6.0.1" />
   </ItemGroup>
 </Project>

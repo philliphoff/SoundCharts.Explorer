@@ -1,19 +1,26 @@
-﻿using AppKit;
+﻿using System;
+using System.Net.Http;
+using AppKit;
 using Foundation;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SoundCharts.Explorer.MacOS.Components;
 using SoundCharts.Explorer.MacOS.Services.State;
+using SoundCharts.Explorer.MacOS.Services.Tilesets;
+using SoundCharts.Explorer.Tiles.Tilesets;
 
 namespace SoundCharts.Explorer.MacOS
 {
 	[Register ("AppDelegate")]
 	public class AppDelegate : NSApplicationDelegate
 	{
+		private static readonly HttpClient HttpClient = new HttpClient();
+
 		public static readonly ServiceProvider Services =
 				new ServiceCollection()
 					.AddSingleton<IApplicationStateManager, ApplicationStateManager>()
 					.AddSingleton<IApplicationComponent, ApplicationStateMonitor>()
+					.AddSingleton<IApplicationComponent, TilesetMonitor>()
 					.AddSingleton<ILoggerFactory>(
 						_ =>
                         {
@@ -28,6 +35,8 @@ namespace SoundCharts.Explorer.MacOS
                                         });
 								});
                         })
+					.AddSingleton<ITilesetServiceClient>(_ => new HttpTilesetServiceClient(HttpClient, new Uri("http://localhost:8080/tilesets")))
+					.AddSingleton<ITilesetManager, TilesetManager>()
 					.BuildServiceProvider();
 
 		public AppDelegate ()

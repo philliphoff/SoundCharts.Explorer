@@ -148,6 +148,8 @@
     <Folder Include="Services\State\" />
     <Folder Include="Components\" />
     <Folder Include="Views\" />
+    <Folder Include="Services\Tilesets\" />
+    <Folder Include="Services\Logging\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -171,6 +173,19 @@
     <Compile Include="Views\SourceListView.cs" />
     <Compile Include="Views\SourceListDelegate.cs" />
     <Compile Include="Views\SourceListDataSource.cs" />
+    <Compile Include="Services\Tilesets\ITilesetManager.cs" />
+    <Compile Include="Services\Tilesets\TilesetManager.cs" />
+    <Compile Include="Components\TilesetMonitor.cs" />
+    <Compile Include="Views\SourceListItem.cs" />
+    <Compile Include="Views\SourceListView.designer.cs">
+      <DependentUpon>Views\SourceListView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SourceListViewController.cs" />
+    <Compile Include="SourceListViewController.designer.cs">
+      <DependentUpon>SourceListViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Services\Logging\OSLoggerProvider.cs" />
+    <Compile Include="Services\Logging\OSLogger.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Main.storyboard" />
