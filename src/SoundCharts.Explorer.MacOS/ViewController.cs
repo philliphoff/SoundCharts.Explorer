@@ -8,6 +8,7 @@ using CoreLocation;
 using Foundation;
 using MapKit;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using SoundCharts.Explorer.MacOS.Services.State;
 using SoundCharts.Explorer.Tiles.Caches;
 using SoundCharts.Explorer.Tiles.Sources;
@@ -38,6 +39,7 @@ namespace SoundCharts.Explorer.MacOS
 				};
 
 			var applicationStateManager = AppDelegate.Services?.GetService<IApplicationStateManager>();
+			var loggerFactory = AppDelegate.Services?.GetService<ILoggerFactory>();
 
 			this.applicationStateListener = applicationStateManager?.CurrentState
 				.Where(update => update.State?.MapRegion is not null && update.Context != this)
@@ -80,15 +82,16 @@ namespace SoundCharts.Explorer.MacOS
 			this.overlay = new TileSourceOverlay(
 				new CachedTileSource(
 					new InMemoryTileCache(), // TODO: Dispose of cache.
-					new CachedTileSource(
-						new FileTileCache(displayCacheDirectory), // TODO: Dispose of cache.
-						new TransformedTileSource(
-							TileSourceTransforms.OverzoomedTransform,
-							new TransformedTileSource(
-								TileSourceTransforms.EmptyTileTransformAsync,
-								new CachedTileSource(
-									new FileTileCache(noaaCacheDirectory), // TODO: Dispose of cache.
-									new HttpTileSource(new HttpClient(), HttpTileSets.NoaaQuiltedTileSet)))))));
+//					new CachedTileSource(
+//						new FileTileCache(displayCacheDirectory), // TODO: Dispose of cache.
+//						new TransformedTileSource(
+//							TileSourceTransforms.OverzoomedTransform,
+//							new TransformedTileSource(
+//								TileSourceTransforms.EmptyTileTransformAsync,
+								new LiteDbTileSource("/Users/phoff/Downloads/litedb/MBTILES_06.litedb", loggerFactory)));
+								//new CachedTileSource(
+								//	new FileTileCache(noaaCacheDirectory), // TODO: Dispose of cache.
+								//	new HttpTileSource(new HttpClient(), HttpTileSets.NoaaQuiltedTileSet)))))));
 
 			this.mapView.AddOverlay(this.overlay, MKOverlayLevel.AboveLabels);
 		}

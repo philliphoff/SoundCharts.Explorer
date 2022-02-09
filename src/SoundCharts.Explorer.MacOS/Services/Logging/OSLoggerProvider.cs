@@ -1,11 +1,21 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+
 namespace SoundCharts.Explorer.MacOS.Services.Logging
 {
-	public class OSLogProvider
+	public class OSLoggerProvider : ILoggerProvider
 	{
-		public OSLogProvider()
+		public OSLoggerProvider()
 		{
 		}
-	}
+
+        public ILogger CreateLogger(string categoryName)
+        {
+            return new OSLogger(categoryName);
+        }
+
+        public void Dispose()
+        {
+        }
+    }
 }
 

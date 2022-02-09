@@ -5,6 +5,7 @@ using Foundation;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SoundCharts.Explorer.MacOS.Components;
+using SoundCharts.Explorer.MacOS.Services.Logging;
 using SoundCharts.Explorer.MacOS.Services.State;
 using SoundCharts.Explorer.MacOS.Services.Tilesets;
 using SoundCharts.Explorer.Tiles.Tilesets;
@@ -27,12 +28,14 @@ namespace SoundCharts.Explorer.MacOS
 							return LoggerFactory.Create(
 								builder =>
 								{
-									builder.AddSystemdConsole(
-										options =>
-                                        {
-											options.IncludeScopes = true;
-											options.TimestampFormat = "hh:mm:ss ";
-                                        });
+									//builder.AddSystemdConsole(
+									//	options =>
+         //                               {
+									//		options.IncludeScopes = true;
+									//		options.TimestampFormat = "hh:mm:ss ";
+         //                               });
+
+									builder.AddProvider(new OSLoggerProvider());
 								});
                         })
 					.AddSingleton<ITilesetServiceClient>(_ => new HttpTilesetServiceClient(HttpClient, new Uri("http://localhost:8080/tilesets")))
