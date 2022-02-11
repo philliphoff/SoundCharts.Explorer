@@ -190,7 +190,11 @@
     </Compile>
     <Compile Include="Views\SourceList\HeaderItem.cs" />
     <Compile Include="Views\SourceList\TilesetItem.cs" />
-    <Compile Include="Views\SourceList\OfflineItem.cs" />
+    <Compile Include="Views\SourceList\OfflineTilesetsSwitchItem.cs" />
+    <Compile Include="Views\SourceList\OfflineTilesetsSwitchView.cs" />
+    <Compile Include="Views\SourceList\OfflineTilesetsSwitchView.designer.cs">
+      <DependentUpon>Views\SourceList\OfflineTilesetsSwitchView.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Main.storyboard" />
