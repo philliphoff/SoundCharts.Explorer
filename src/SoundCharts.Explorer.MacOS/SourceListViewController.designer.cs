@@ -13,7 +13,7 @@ namespace SoundCharts.Explorer.MacOS
 	partial class SourceListViewController
 	{
 		[Outlet]
-		SoundCharts.Explorer.MacOS.Views.SourceListView sourceListView { get; set; }
+		SoundCharts.Explorer.MacOS.Views.SourceList.SourceListView sourceListView { get; set; }
 		
 		void ReleaseDesignerOutlets ()
 		{

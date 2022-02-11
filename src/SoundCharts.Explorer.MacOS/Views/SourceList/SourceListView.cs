@@ -2,7 +2,7 @@ using System;
 using AppKit;
 using Foundation;
 
-namespace SoundCharts.Explorer.MacOS.Views
+namespace SoundCharts.Explorer.MacOS.Views.SourceList
 {
     [Register("SourceListView")]
     internal sealed partial class SourceListView : NSOutlineView
@@ -34,7 +34,7 @@ namespace SoundCharts.Explorer.MacOS.Views
             {
                 if (disposing && this.dataSource is not null)
                 {
-                    this.dataSource.TilesetsChanged -= OnTilesetsChanged;
+                    this.dataSource.ItemsChanged -= OnTilesetsChanged;
 
                     this.dataSource = null;
                 }
@@ -48,7 +48,7 @@ namespace SoundCharts.Explorer.MacOS.Views
         public void Initialize(SourceListDataSource dataSource, SourceListDelegate @delegate)
         {
             this.dataSource = dataSource;
-            this.dataSource.TilesetsChanged += OnTilesetsChanged;
+            this.dataSource.ItemsChanged += OnTilesetsChanged;
 
             this.DataSource = dataSource;
             this.Delegate = @delegate;
@@ -57,11 +57,6 @@ namespace SoundCharts.Explorer.MacOS.Views
         private void OnTilesetsChanged(object sender, EventArgs e)
         {
             this.ReloadData();
-        }
-
-        public override void ReloadData()
-        {
-            base.ReloadData();
         }
     }
 }

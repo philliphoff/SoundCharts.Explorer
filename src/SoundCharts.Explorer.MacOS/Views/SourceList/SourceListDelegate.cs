@@ -2,7 +2,7 @@
 using AppKit;
 using Foundation;
 
-namespace SoundCharts.Explorer.MacOS.Views
+namespace SoundCharts.Explorer.MacOS.Views.SourceList
 {
 	internal sealed class SourceListDelegate : NSOutlineViewDelegate
 	{
@@ -16,7 +16,7 @@ namespace SoundCharts.Explorer.MacOS.Views
         {
 			if (item is SourceListItem sourceListItem)
             {
-				var view = (NSTableCellView)outlineView.MakeView("HeaderCell", this);
+				var view = (NSTableCellView)outlineView.MakeView(item is HeaderItem ? "HeaderCell" : "DataCell", this);
 
 				view.TextField.StringValue = sourceListItem.Title;
 
@@ -30,7 +30,7 @@ namespace SoundCharts.Explorer.MacOS.Views
 
         public override bool IsGroupItem(NSOutlineView outlineView, NSObject item)
         {
-            return true;
+            return item is HeaderItem;
         }
 
         public override bool ShouldEditTableColumn(NSOutlineView outlineView, NSTableColumn? tableColumn, NSObject item)
