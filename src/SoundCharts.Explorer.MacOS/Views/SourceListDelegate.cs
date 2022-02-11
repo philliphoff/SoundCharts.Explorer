@@ -6,12 +6,11 @@ namespace SoundCharts.Explorer.MacOS.Views
 {
 	internal sealed class SourceListDelegate : NSOutlineViewDelegate
 	{
-		private readonly SourceListView view;
-
-		public SourceListDelegate(SourceListView view)
-		{
-			this.view = view ?? throw new ArgumentNullException(nameof(view));
-		}
+        public override NSCell GetCell(NSOutlineView outlineView, NSTableColumn tableColumn, NSObject item)
+        {
+            nint row = outlineView.RowForItem(item);
+            return tableColumn.DataCellForRow(row);
+        }
 
         public override NSView GetView(NSOutlineView outlineView, NSTableColumn? tableColumn, NSObject item)
         {
@@ -27,6 +26,16 @@ namespace SoundCharts.Explorer.MacOS.Views
             {
 				return base.GetView(outlineView, tableColumn, item);
             }
+        }
+
+        public override bool IsGroupItem(NSOutlineView outlineView, NSObject item)
+        {
+            return true;
+        }
+
+        public override bool ShouldEditTableColumn(NSOutlineView outlineView, NSTableColumn? tableColumn, NSObject item)
+        {
+            return false;
         }
     }
 }

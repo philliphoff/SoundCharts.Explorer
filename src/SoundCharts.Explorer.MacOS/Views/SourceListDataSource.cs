@@ -49,6 +49,18 @@ namespace SoundCharts.Explorer.MacOS.Views
                 : base.GetChildrenCount(outlineView, item);
         }
 
+        public override NSObject GetObjectValue(NSOutlineView outlineView, NSTableColumn? tableColumn, NSObject? item)
+        {
+            return item is SourceListItem sourceListItem
+                ? new NSString(sourceListItem.Title)
+                : base.GetObjectValue(outlineView, tableColumn, item);
+        }
+
+        public override bool ItemExpandable(NSOutlineView outlineView, NSObject item)
+        {
+            return false;
+        }
+
         protected override void Dispose(bool disposing)
         {
             try

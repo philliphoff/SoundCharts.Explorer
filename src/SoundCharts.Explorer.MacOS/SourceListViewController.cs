@@ -4,20 +4,46 @@ using System;
 
 using Foundation;
 using AppKit;
+using SoundCharts.Explorer.MacOS.Views;
+using Microsoft.Extensions.DependencyInjection;
+using SoundCharts.Explorer.MacOS.Services.Tilesets;
 
 namespace SoundCharts.Explorer.MacOS
 {
 	public partial class SourceListViewController : NSViewController
 	{
+        private SourceListDataSource? dataSource;
+        private SourceListDelegate? @delegate;
+
+        private bool sourceListInitialized;
+
 		public SourceListViewController (IntPtr handle) : base (handle)
 		{
 		}
 
-        public override void ViewDidLoad()
+        public override void AwakeFromNib()
         {
-            base.ViewDidLoad();
+            base.AwakeFromNib();
 
-            this.sourceListView.ReloadData();
+            if (!this.sourceListInitialized)
+            {
+                this.dataSource = new SourceListDataSource(AppDelegate.Services.GetRequiredService<ITilesetManager>());
+                this.@delegate = new SourceListDelegate();
+
+                this.sourceListView.Initialize(this.dataSource, this.@delegate);
+
+                this.sourceListInitialized = true;
+            }
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
+
+            // NOTE: Dispose after controller itself to ensure dependent views are disposed.
+
+            this.dataSource?.Dispose();
+            this.@delegate?.Dispose();
         }
     }
 }

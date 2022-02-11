@@ -1,48 +1,42 @@
 using System;
 using AppKit;
 using Foundation;
-using Microsoft.Extensions.DependencyInjection;
-using SoundCharts.Explorer.MacOS.Services.Tilesets;
 
 namespace SoundCharts.Explorer.MacOS.Views
 {
     [Register("SourceListView")]
     internal sealed partial class SourceListView : NSOutlineView
     {
-        private readonly SourceListDataSource dataSource;
+        private SourceListDataSource? dataSource;
 
         public SourceListView()
         {
-            Initialize(out this.dataSource);
         }
 
         public SourceListView(IntPtr handle)
             : base(handle)
         {
-            Initialize(out this.dataSource);
         }
 
         public SourceListView(NSCoder coder)
             : base(coder)
         {
-            Initialize(out this.dataSource);
         }
 
         public SourceListView(NSObjectFlag flag)
             : base(flag)
         {
-            Initialize(out this.dataSource);
         }
 
         protected override void Dispose(bool disposing)
         {
             try
             {
-                if (disposing)
+                if (disposing && this.dataSource is not null)
                 {
                     this.dataSource.TilesetsChanged -= OnTilesetsChanged;
 
-                    this.dataSource.Dispose();
+                    this.dataSource = null;
                 }
             }
             finally
@@ -51,20 +45,23 @@ namespace SoundCharts.Explorer.MacOS.Views
             }
         }
 
-        private void Initialize(out SourceListDataSource dataSource)
+        public void Initialize(SourceListDataSource dataSource, SourceListDelegate @delegate)
         {
-            dataSource = new SourceListDataSource(AppDelegate.Services.GetRequiredService<ITilesetManager>());
+            this.dataSource = dataSource;
+            this.dataSource.TilesetsChanged += OnTilesetsChanged;
 
             this.DataSource = dataSource;
-
-            dataSource.TilesetsChanged += OnTilesetsChanged;
-
-            this.Delegate = new SourceListDelegate(this);
+            this.Delegate = @delegate;
         }
 
         private void OnTilesetsChanged(object sender, EventArgs e)
         {
             this.ReloadData();
+        }
+
+        public override void ReloadData()
+        {
+            base.ReloadData();
         }
     }
 }
