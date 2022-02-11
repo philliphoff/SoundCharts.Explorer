@@ -13,4 +13,9 @@
     </None>
   </ItemGroup>
 
+  <Target Name="BuildNativeLogging" BeforeTargets="Build">
+    <Exec Command="xcodebuild"
+          WorkingDirectory="..\SoundCharts.Explorer.NativeLogging" />
+  </Target>
+
 </Project>
