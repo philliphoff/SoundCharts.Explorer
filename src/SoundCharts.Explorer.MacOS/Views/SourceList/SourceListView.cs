@@ -57,6 +57,7 @@ namespace SoundCharts.Explorer.MacOS.Views.SourceList
         private void OnTilesetsChanged(object sender, EventArgs e)
         {
             this.ReloadData();
+            this.ExpandItem(null, expandChildren: true);
         }
     }
 }
