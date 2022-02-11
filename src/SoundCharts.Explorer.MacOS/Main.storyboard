@@ -748,19 +748,19 @@
         <scene sceneID="1sC-ke-izt">
             <objects>
                 <viewController id="wcZ-aa-Q5z" customClass="SourceListViewController" sceneMemberID="viewController">
-                    <view key="view" id="C6z-mm-DnB">
-                        <rect key="frame" x="0.0" y="0.0" width="149" height="300"/>
+                    <view key="view" misplaced="YES" id="C6z-mm-DnB">
+                        <rect key="frame" x="0.0" y="0.0" width="149" height="363"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <scrollView fixedFrame="YES" borderType="none" autohidesScrollers="YES" horizontalLineScroll="17" horizontalPageScroll="10" verticalLineScroll="17" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ChW-aN-3Wd">
-                                <rect key="frame" x="0.0" y="0.0" width="149" height="300"/>
+                                <rect key="frame" x="0.0" y="0.0" width="149" height="363"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <clipView key="contentView" drawsBackground="NO" id="vf4-2E-B6L">
-                                    <rect key="frame" x="0.0" y="0.0" width="149" height="300"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="149" height="363"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <outlineView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" selectionHighlightStyle="sourceList" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" viewBased="YES" floatsGroupRows="NO" indentationPerLevel="13" outlineTableColumn="QcB-3m-29s" id="d28-pJ-NtN" customClass="SourceListView">
-                                            <rect key="frame" x="0.0" y="0.0" width="149" height="300"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="149" height="363"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <size key="intercellSpacing" width="3" height="0.0"/>
                                             <color key="backgroundColor" name="_sourceListBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -782,12 +782,8 @@
                                                             <rect key="frame" x="11" y="0.0" width="126" height="17"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
-                                                                <switch horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" controlSize="mini" baseWritingDirection="leftToRight" alignment="left" translatesAutoresizingMaskIntoConstraints="NO" id="NaE-hu-ug1">
-                                                                    <rect key="frame" x="97" y="0.0" width="28" height="16"/>
-                                                                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
-                                                                </switch>
                                                                 <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="qq9-06-jP0">
-                                                                    <rect key="frame" x="0.0" y="1" width="92" height="14"/>
+                                                                    <rect key="frame" x="0.0" y="1" width="125" height="14"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                                     <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Header Cell" id="S3U-RG-m46">
                                                                         <font key="font" metaFont="systemMedium" size="11"/>
@@ -800,8 +796,30 @@
                                                                 <outlet property="textField" destination="qq9-06-jP0" id="aMb-2K-ja9"/>
                                                             </connections>
                                                         </tableCellView>
-                                                        <tableCellView identifier="DataCell" id="FGt-ZW-yDR">
+                                                        <tableCellView identifier="OfflineTilesetsSwitchCell" id="TAn-JJ-D33">
                                                             <rect key="frame" x="11" y="17" width="126" height="17"/>
+                                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                            <subviews>
+                                                                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wnd-lx-1zN">
+                                                                    <rect key="frame" x="0.0" y="1" width="80" height="16"/>
+                                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
+                                                                    <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="o6K-Bk-BcV">
+                                                                        <font key="font" usesAppearanceFont="YES"/>
+                                                                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                                    </textFieldCell>
+                                                                </textField>
+                                                                <switch horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" baseWritingDirection="leftToRight" alignment="left" translatesAutoresizingMaskIntoConstraints="NO" id="H7G-3t-Knj">
+                                                                    <rect key="frame" x="84" y="-4" width="42" height="25"/>
+                                                                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                                                                </switch>
+                                                            </subviews>
+                                                            <connections>
+                                                                <outlet property="textField" destination="wnd-lx-1zN" id="tiG-J7-hhA"/>
+                                                            </connections>
+                                                        </tableCellView>
+                                                        <tableCellView identifier="DataCell" id="FGt-ZW-yDR">
+                                                            <rect key="frame" x="11" y="34" width="126" height="17"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
                                                                 <imageView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="AiO-J7-gEs">
@@ -850,7 +868,7 @@
                 </viewController>
                 <customObject id="yq8-ko-A0e" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-321.5" y="1740"/>
+            <point key="canvasLocation" x="-321.5" y="1739.5"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="aRt-IX-cZB">

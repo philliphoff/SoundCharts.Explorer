@@ -14,18 +14,13 @@ namespace SoundCharts.Explorer.MacOS.Views.SourceList
 
         public override NSView GetView(NSOutlineView outlineView, NSTableColumn? tableColumn, NSObject item)
         {
-			if (item is SourceListItem sourceListItem)
+            return item switch
             {
-				var view = (NSTableCellView)outlineView.MakeView(item is HeaderItem ? "HeaderCell" : "DataCell", this);
-
-				view.TextField.StringValue = sourceListItem.Title;
-
-				return view;
-            }
-			else
-            {
-				return base.GetView(outlineView, tableColumn, item);
-            }
+                HeaderItem header => this.MakeView(outlineView, header),
+                OfflineTilesetsSwitchItem offlineTilesetsSwitch => this.MakeView(outlineView, offlineTilesetsSwitch),
+                TilesetItem tileset => this.MakeView(outlineView, tileset),
+                _ => base.GetView(outlineView, tableColumn, item)
+            };
         }
 
         public override bool IsGroupItem(NSOutlineView outlineView, NSObject item)
@@ -36,6 +31,33 @@ namespace SoundCharts.Explorer.MacOS.Views.SourceList
         public override bool ShouldEditTableColumn(NSOutlineView outlineView, NSTableColumn? tableColumn, NSObject item)
         {
             return false;
+        }
+
+        private NSView MakeView(NSOutlineView outlineView, HeaderItem item)
+        {
+            var view = (NSTableCellView)outlineView.MakeView("HeaderCell", this);
+
+            view.TextField.StringValue = item.Title;
+
+            return view;
+        }
+
+        private NSView MakeView(NSOutlineView outlineView, OfflineTilesetsSwitchItem item)
+        {
+            var view = (NSTableCellView)outlineView.MakeView("OfflineTilesetsSwitchCell", this);
+
+            view.TextField.StringValue = item.Title;
+
+            return view;
+        }
+
+        private NSView MakeView(NSOutlineView outlineView, TilesetItem item)
+        {
+            var view = (NSTableCellView)outlineView.MakeView("DataCell", this);
+
+            view.TextField.StringValue = item.Title;
+
+            return view;
         }
     }
 }

@@ -32,7 +32,8 @@ namespace SoundCharts.Explorer.MacOS.Views.SourceList
                                 {
                                     new HeaderItem(
                                         "Tilesets",
-                                        tilesets.Select(tileset => new TilesetItem(tileset.Id)))
+                                        new SourceListItem[] { new OfflineTilesetsSwitchItem("Use Offline Tilesets") }
+                                            .Concat(tilesets.Select(tileset => new TilesetItem(tileset.Id))))
                                 };
 
                             this.ItemsChanged?.Invoke(this, EventArgs.Empty);

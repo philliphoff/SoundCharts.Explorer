@@ -190,6 +190,7 @@
     </Compile>
     <Compile Include="Views\SourceList\HeaderItem.cs" />
     <Compile Include="Views\SourceList\TilesetItem.cs" />
+    <Compile Include="Views\SourceList\OfflineItem.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Main.storyboard" />
