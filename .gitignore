@@ -404,6 +404,15 @@ ASALocalRun/
 # Local History for Visual Studio
 .localhistory/
 
+# Tye runtime folder
+.tye/
+
+# Xcode build output
+build/
+
 # Local secrets stores
 secrets.env
 secrets.json
+
+# Xcode project user settings
+xcuserdata/
