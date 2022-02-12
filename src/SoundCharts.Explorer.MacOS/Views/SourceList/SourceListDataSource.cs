@@ -4,21 +4,41 @@ using System.Reactive.Linq;
 using System.Threading;
 using AppKit;
 using Foundation;
+using SoundCharts.Explorer.MacOS.Services.State;
 using SoundCharts.Explorer.MacOS.Services.Tilesets;
 
 namespace SoundCharts.Explorer.MacOS.Views.SourceList
 {
     internal sealed class SourceListDataSource : NSOutlineViewDataSource
     {
+        private readonly IApplicationStateManager applicationStateManager;
+        private readonly IDisposable stateSubscription;
         private readonly IDisposable subscription;
         private SourceListItem[] items = Array.Empty<SourceListItem>();
+        private readonly OfflineTilesetsSwitchItem switchItem = new OfflineTilesetsSwitchItem("Use Offline Tilesets");
 
-        public SourceListDataSource(ITilesetManager tilesetManager)
-        {
+        public SourceListDataSource(IApplicationStateManager applicationStateManager, ITilesetManager tilesetManager)
+        {            
             if (tilesetManager is null)
             {
                 throw new ArgumentNullException(nameof(tilesetManager));
             }
+
+            this.applicationStateManager = applicationStateManager ?? throw new ArgumentNullException(nameof(applicationStateManager));
+
+            this.stateSubscription =
+                applicationStateManager
+                    .CurrentState
+                    .Select(state => state.State?.OfflineTilesets?.Enabled)
+                    .DistinctUntilChanged()
+                    .ObserveOn(SynchronizationContext.Current)
+                    .Subscribe(
+                        enabled =>
+                        {
+                            this.switchItem.OfflineTilesetsEnabled = enabled == true;
+                        });
+
+            this.switchItem.OfflineTilesetsEnabledChanged += OnOfflineTilesetsEnabledChanged;
 
             this.subscription =
                 tilesetManager
@@ -32,7 +52,7 @@ namespace SoundCharts.Explorer.MacOS.Views.SourceList
                                 {
                                     new HeaderItem(
                                         "Tilesets",
-                                        new SourceListItem[] { new OfflineTilesetsSwitchItem("Use Offline Tilesets") }
+                                        new SourceListItem[] { this.switchItem }
                                             .Concat(tilesets.Select(tileset => new TilesetItem(tileset.Id))))
                                 };
 
@@ -82,13 +102,28 @@ namespace SoundCharts.Explorer.MacOS.Views.SourceList
             {
                 if (disposing)
                 {
+                    this.stateSubscription.Dispose();
                     this.subscription.Dispose();
+
+                    this.switchItem.OfflineTilesetsEnabledChanged -= this.OnOfflineTilesetsEnabledChanged;
                 }
             }
             finally
             {
                 base.Dispose(disposing);
             }
+        }
+
+        private void OnOfflineTilesetsEnabledChanged(object sender, EventArgs e)
+        {
+            // NOTE: Copy current value for benefit of later callback.
+            // TODO: Consider making value part of event args.
+            bool enabled = this.switchItem.OfflineTilesetsEnabled;
+
+            this.applicationStateManager.UpdateState(
+                state => state is not null
+                    ? state with { OfflineTilesets = new OfflineTilesets(enabled) }
+                    : null);
         }
     }
 }

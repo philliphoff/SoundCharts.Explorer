@@ -2,6 +2,8 @@
 
 namespace SoundCharts.Explorer.MacOS.Services.State
 {
+	internal sealed record OfflineTilesets(bool Enabled);
+
 	internal sealed record MapCoordinate(double Latitude, double Longitude);
 
 	internal sealed record MapSpan(double LatitudeDegrees, double LongitudeDegrees);
@@ -11,5 +13,7 @@ namespace SoundCharts.Explorer.MacOS.Services.State
 	internal sealed record ApplicationState
 	{
 		public MapRegion? MapRegion { get; init; }
+
+		public OfflineTilesets? OfflineTilesets { get; init; }
 	}
 }

@@ -46,9 +46,7 @@ namespace SoundCharts.Explorer.MacOS.Views.SourceList
         {
             var view = (OfflineTilesetsSwitchView)outlineView.MakeView("OfflineTilesetsSwitchCell", this);
 
-            view.TextField.StringValue = item.Title;
-
-            view.OfflineSwitch.State = 1;
+            view.Initialize(item);
 
             return view;
         }

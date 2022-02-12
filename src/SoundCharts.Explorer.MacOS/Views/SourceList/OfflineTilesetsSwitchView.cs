@@ -5,8 +5,10 @@ using Foundation;
 namespace SoundCharts.Explorer.MacOS.Views.SourceList
 {
     [Register("OfflineTilesetsSwitchView")]
-    public partial class OfflineTilesetsSwitchView : NSTableCellView
+    internal partial class OfflineTilesetsSwitchView : NSTableCellView
     {
+        private OfflineTilesetsSwitchItem? item;
+
         public OfflineTilesetsSwitchView()
         {
         }
@@ -26,6 +28,46 @@ namespace SoundCharts.Explorer.MacOS.Views.SourceList
         {
         }
 
-        public NSSwitch OfflineSwitch => this.offlineSwitch;
+        public void Initialize(OfflineTilesetsSwitchItem item)
+        {
+            this.item = item ?? throw new ArgumentNullException(nameof(item));
+            this.item.OfflineTilesetsEnabledChanged += this.OnOfflineTilesetsEnabledChanged;
+
+            this.offlineSwitch.State = this.item.OfflineTilesetsEnabled ? 1 : 0;
+
+            this.TextField.StringValue = this.item.Title;
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            try
+            {
+                if (disposing && this.item != null)
+                {
+                    this.item.OfflineTilesetsEnabledChanged -= this.OnOfflineTilesetsEnabledChanged;
+                    this.item = null;
+                }
+            }
+            finally
+            {
+                base.Dispose(disposing);
+            }
+        }
+
+        private void OnOfflineTilesetsEnabledChanged(object sender, EventArgs e)
+        {
+            if (this.item != null)
+            {
+                this.offlineSwitch.State = this.item.OfflineTilesetsEnabled ? 1 : 0;
+            }
+        }
+
+        partial void OnOfflineSwitchAction(NSObject sender)
+        {
+            if (this.item != null)
+            {
+                this.item.OfflineTilesetsEnabled = this.offlineSwitch.State == 1;
+            }
+        }
     }
 }

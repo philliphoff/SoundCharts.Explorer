@@ -13,6 +13,9 @@ namespace SoundCharts.Explorer.MacOS.Views.SourceList
 	{
 		[Outlet]
 		AppKit.NSSwitch offlineSwitch { get; set; }
+
+		[Action ("OnOfflineSwitchAction:")]
+		partial void OnOfflineSwitchAction (Foundation.NSObject sender);
 		
 		void ReleaseDesignerOutlets ()
 		{

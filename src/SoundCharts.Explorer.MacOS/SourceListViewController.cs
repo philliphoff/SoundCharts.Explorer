@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using SoundCharts.Explorer.MacOS.Views.SourceList;
 using SoundCharts.Explorer.MacOS.Services.Tilesets;
 using System;
+using SoundCharts.Explorer.MacOS.Services.State;
 
 namespace SoundCharts.Explorer.MacOS
 {
@@ -25,7 +26,9 @@ namespace SoundCharts.Explorer.MacOS
 
             if (!this.sourceListInitialized)
             {
-                this.dataSource = new SourceListDataSource(AppDelegate.Services.GetRequiredService<ITilesetManager>());
+                this.dataSource = new SourceListDataSource(
+                    AppDelegate.Services.GetRequiredService<IApplicationStateManager>(),
+                    AppDelegate.Services.GetRequiredService<ITilesetManager>());
                 this.@delegate = new SourceListDelegate();
 
                 this.sourceListView.Initialize(this.dataSource, this.@delegate);

@@ -812,6 +812,9 @@
                                                                 <switch horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" controlSize="mini" baseWritingDirection="leftToRight" alignment="left" translatesAutoresizingMaskIntoConstraints="NO" id="H7G-3t-Knj">
                                                                     <rect key="frame" x="153" y="0.0" width="28" height="16"/>
                                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                                                                    <connections>
+                                                                        <action selector="OnOfflineSwitchAction:" target="TAn-JJ-D33" id="5Lu-WA-TZY"/>
+                                                                    </connections>
                                                                 </switch>
                                                             </subviews>
                                                             <connections>
