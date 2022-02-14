@@ -195,6 +195,10 @@
     <Compile Include="Views\SourceList\OfflineTilesetsSwitchView.designer.cs">
       <DependentUpon>Views\SourceList\OfflineTilesetsSwitchView.cs</DependentUpon>
     </Compile>
+    <Compile Include="PreferencesViewController.cs" />
+    <Compile Include="PreferencesViewController.designer.cs">
+      <DependentUpon>PreferencesViewController.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Main.storyboard" />

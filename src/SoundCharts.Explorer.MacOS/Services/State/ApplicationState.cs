@@ -12,6 +12,8 @@ namespace SoundCharts.Explorer.MacOS.Services.State
 
 	internal sealed record ApplicationState
 	{
+		public string? ApiEndpoint { get; init; }
+
 		public MapRegion? MapRegion { get; init; }
 
 		public OfflineTilesets? OfflineTilesets { get; init; }
