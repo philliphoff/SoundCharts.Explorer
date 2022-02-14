@@ -1,19 +1,21 @@
 ﻿using System;
 using Foundation;
 using MapKit;
-using ObjCRuntime;
 using SoundCharts.Explorer.Tiles;
 
 namespace SoundCharts.Explorer.MacOS
 {
-	public class TileSourceOverlay : MKTileOverlay
+	internal sealed class TileSourceOverlay : MKTileOverlay
 	{
-		private readonly ITileSource tileSource;
+		private readonly IObservableTileSource tileSource;
 
-		public TileSourceOverlay(ITileSource tileSource)
+		public TileSourceOverlay(IObservableTileSource tileSource)
 		{
 			this.tileSource = tileSource ?? throw new ArgumentNullException(nameof(tileSource));
+            this.tileSource.TilesChanged += this.OnTilesChanged;
 		}
+
+        public event EventHandler? NeedsReload;
 
         public override async void LoadTileAtPath(MKTileOverlayPath path, /* [BlockProxy(typeof(NIDMKTileOverlayLoadTileCompletionHandler))] */ MKTileOverlayLoadTileCompletionHandler result)
         {
@@ -39,7 +41,26 @@ namespace SoundCharts.Explorer.MacOS
 
             // NOTE: Arguments may be null.
             result(encodedImage!, error!);
+        }
 
+        protected override void Dispose(bool disposing)
+        {
+            try
+            {
+                if (disposing)
+                {
+                    this.tileSource.TilesChanged -= this.OnTilesChanged;
+                }
+            }
+            finally
+            {
+                base.Dispose(disposing);
+            }
+        }
+
+        private void OnTilesChanged(object sender, TilesChangedEventArgs e)
+        {
+            this.NeedsReload?.Invoke(this, EventArgs.Empty);
         }
     }
 }

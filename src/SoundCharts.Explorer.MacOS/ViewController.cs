@@ -34,12 +34,12 @@ namespace SoundCharts.Explorer.MacOS
 			this.mapView.OverlayRenderer =
 				(_, overlay) => overlay switch
 				{
-					MKTileOverlay tileOverlay => new MKTileOverlayRenderer(tileOverlay),
+					TileSourceOverlay tileOverlay => new TileSourceOverlayRenderer(tileOverlay),
 					_ => null! // TODO: Throw instead?
 				};
 
-			var applicationStateManager = AppDelegate.Services?.GetService<IApplicationStateManager>();
-			var loggerFactory = AppDelegate.Services?.GetService<ILoggerFactory>();
+			var applicationStateManager = AppDelegate.Services.GetRequiredService<IApplicationStateManager>();
+			var loggerFactory = AppDelegate.Services.GetRequiredService<ILoggerFactory>();
 
 			this.applicationStateListener = applicationStateManager?.CurrentState
 				.Where(update => update.State?.MapRegion is not null && update.Context != this)
@@ -62,7 +62,7 @@ namespace SoundCharts.Explorer.MacOS
 				.Subscribe(
 					region =>
 					{
-						applicationStateManager?.UpdateState(
+						applicationStateManager.UpdateState(
 							state =>
 							{
 								return (state ?? new ApplicationState()) with
@@ -75,23 +75,8 @@ namespace SoundCharts.Explorer.MacOS
 							this);
 					});
 
-			string cacheDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".soundcharts", "explorer", "caches");
-			string displayCacheDirectory = Path.Combine(cacheDirectory, "display");
-			string noaaCacheDirectory = Path.Combine(cacheDirectory, "noaa");
-
 			this.overlay = new TileSourceOverlay(
-				new CachedTileSource(
-					new InMemoryTileCache(), // TODO: Dispose of cache.
-//					new CachedTileSource(
-//						new FileTileCache(displayCacheDirectory), // TODO: Dispose of cache.
-//						new TransformedTileSource(
-//							TileSourceTransforms.OverzoomedTransform,
-//							new TransformedTileSource(
-//								TileSourceTransforms.EmptyTileTransformAsync,
-								new LiteDbTileSource("/Users/phoff/Downloads/litedb/MBTILES_06.litedb", loggerFactory)));
-								//new CachedTileSource(
-								//	new FileTileCache(noaaCacheDirectory), // TODO: Dispose of cache.
-								//	new HttpTileSource(new HttpClient(), HttpTileSets.NoaaQuiltedTileSet)))))));
+				new SwitchedTileSource(applicationStateManager, loggerFactory));
 
 			this.mapView.AddOverlay(this.overlay, MKOverlayLevel.AboveLabels);
 		}
