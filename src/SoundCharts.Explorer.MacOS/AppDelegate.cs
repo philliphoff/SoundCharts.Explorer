@@ -7,7 +7,9 @@ using Microsoft.Extensions.Logging;
 using SoundCharts.Explorer.MacOS.Components;
 using SoundCharts.Explorer.MacOS.Services.Logging;
 using SoundCharts.Explorer.MacOS.Services.State;
+using SoundCharts.Explorer.MacOS.Services.Tiles;
 using SoundCharts.Explorer.MacOS.Services.Tilesets;
+using SoundCharts.Explorer.Tiles;
 using SoundCharts.Explorer.Tiles.Tilesets;
 
 namespace SoundCharts.Explorer.MacOS
@@ -38,8 +40,11 @@ namespace SoundCharts.Explorer.MacOS
 									builder.AddProvider(new OSLoggerProvider());
 								});
                         })
+					.AddSingleton<IObservableTileSource, ApplicationTileSource>()
 					.AddSingleton<ITilesetServiceClient>(_ => new HttpTilesetServiceClient(HttpClient, new Uri("http://localhost:8080/tilesets")))
 					.AddSingleton<ITilesetManager, TilesetManager>()
+					.AddSingleton<OfflineTileSource>()
+					.AddSingleton<OnlineTileSource>()
 					.BuildServiceProvider();
 
 		public AppDelegate ()

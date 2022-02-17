@@ -10,6 +10,7 @@ using MapKit;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SoundCharts.Explorer.MacOS.Services.State;
+using SoundCharts.Explorer.Tiles;
 using SoundCharts.Explorer.Tiles.Caches;
 using SoundCharts.Explorer.Tiles.Sources;
 
@@ -39,7 +40,6 @@ namespace SoundCharts.Explorer.MacOS
 				};
 
 			var applicationStateManager = AppDelegate.Services.GetRequiredService<IApplicationStateManager>();
-			var loggerFactory = AppDelegate.Services.GetRequiredService<ILoggerFactory>();
 
 			this.applicationStateListener = applicationStateManager?.CurrentState
 				.Where(update => update.State?.MapRegion is not null && update.Context != this)
@@ -75,8 +75,7 @@ namespace SoundCharts.Explorer.MacOS
 							this);
 					});
 
-			this.overlay = new TileSourceOverlay(
-				new SwitchedTileSource(applicationStateManager, loggerFactory));
+			this.overlay = new TileSourceOverlay(AppDelegate.Services.GetRequiredService<IObservableTileSource>());
 
 			this.mapView.AddOverlay(this.overlay, MKOverlayLevel.AboveLabels);
 		}

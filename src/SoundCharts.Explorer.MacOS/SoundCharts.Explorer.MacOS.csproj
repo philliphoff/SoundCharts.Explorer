@@ -154,6 +154,7 @@
     <Folder Include="Services\Tilesets\" />
     <Folder Include="Services\Logging\" />
     <Folder Include="Views\SourceList\" />
+    <Folder Include="Services\Tiles\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -203,7 +204,9 @@
       <DependentUpon>PreferencesViewController.cs</DependentUpon>
     </Compile>
     <Compile Include="TIleSourceOverlayRenderer.cs" />
-    <Compile Include="SwitchedTileSource.cs" />
+    <Compile Include="Services\Tiles\ApplicationTileSource.cs" />
+    <Compile Include="Services\Tiles\OnlineTileSource.cs" />
+    <Compile Include="Services\Tiles\OfflineTileSource.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Main.storyboard" />

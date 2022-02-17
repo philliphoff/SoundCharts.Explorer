@@ -34,7 +34,7 @@ namespace SoundCharts.Explorer.MacOS
                     encodedImage = NSData.FromArray(data.Data);
                 }
             }
-            catch (Exception e)
+            catch
             {
                 // TODO: Return NSError?
             }
