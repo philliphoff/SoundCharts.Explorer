@@ -1,23 +1,24 @@
 name: sound-charts
 
+containerEngine: docker
+
 extensions:
 - name: dapr
   services:
     tileset-service:
       components-path: ./SoundCharts.Explorer.TilesetService/Components/Local
 
-ingress:
- - name: ingress
-   bindings:
-   - port: 8080
-   rules:
-   - path: /tiles
-     service: tiles-service
-   - path: /tilesets
-     service: tileset-service
-
 services:
 - name: tiles-service
   project: ./SoundCharts.Explorer.TilesService/SoundCharts.Explorer.TilesService.csproj
 - name: tileset-service
   project: ./SoundCharts.Explorer.TilesetService/SoundCharts.Explorer.TilesetService.csproj
+- name: nginx
+  image: nginx:latest
+  bindings:
+    - port: 8080
+      containerPort: 9090
+      protocol: http
+  volumes:
+    - source: nginx.conf
+      target: /etc/nginx/conf.d/default.conf
