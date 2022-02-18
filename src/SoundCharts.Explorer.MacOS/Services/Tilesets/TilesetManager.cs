@@ -1,45 +1,52 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Reactive.Linq;
-using System.Reactive.Subjects;
 using System.Threading;
 using System.Threading.Tasks;
 using SoundCharts.Explorer.Tiles.Tilesets;
 
 namespace SoundCharts.Explorer.MacOS.Services.Tilesets
 {
-	internal sealed class TilesetManager : ITilesetManager, IDisposable
+    internal sealed class TilesetManager : ITilesetManager, IDisposable
 	{
         private readonly ITilesetCache cache;
         private readonly ITilesetServiceClient client;
-
-        private IDictionary<string, ManagedTileset>? tilesets;
-        private readonly Subject<IImmutableSet<ManagedTileset>> subject = new Subject<IImmutableSet<ManagedTileset>>();
-        private readonly IDisposable cacheSubscription;
 
         public TilesetManager(ITilesetCache cache, ITilesetServiceClient client)
 		{
             this.cache = cache ?? throw new ArgumentNullException(nameof(cache));
             this.client = client ?? throw new ArgumentNullException(nameof(client));
 
-            this.cacheSubscription =
+            this.Tilesets =
                 this.cache
                     .Tilesets
                     .SelectMany(
-                        cachedTilesets =>
+                        async cachedTilesets =>
                         {
-                            // TODO: Update tilesets.
+                            var availableTilesets = await this.client.GetTilesetsAsync().ConfigureAwait(false);
 
-                            return Task.FromResult(true);
-                        })
-                    .Subscribe();
+                            var updatedTilesets = availableTilesets.ToDictionary(tileset => tileset.Id, tileset => new ManagedTileset(tileset.Id, TilesetState.NotDownloaded));
+
+                            foreach (var tileset in cachedTilesets)
+                            {
+                                if (updatedTilesets.TryGetValue(tileset.Id, out ManagedTileset managedTileset) && managedTileset.State == TilesetState.NotDownloaded)
+                                {
+                                    updatedTilesets[tileset.Id] = managedTileset with { State = TilesetState.Downloaded };
+                                }
+                                else
+                                {
+                                    updatedTilesets.Add(tileset.Id, new ManagedTileset(tileset.Id, TilesetState.Downloaded));
+                                }
+                            }
+
+                            return updatedTilesets.Values.ToImmutableHashSet();
+                        });
 		}
 
         #region ITilesetManager Members
 
-        public IObservable<IImmutableSet<ManagedTileset>> Tilesets => this.subject;
+        public IObservable<IImmutableSet<ManagedTileset>> Tilesets { get; }
 
         public async Task DeleteTilesetAsync(string id, CancellationToken cancellationToken = default)
         {
@@ -50,7 +57,10 @@ namespace SoundCharts.Explorer.MacOS.Services.Tilesets
         {
             var stream = await this.client.DownloadTilesetAsync(id, cancellationToken).ConfigureAwait(false);
 
-            await this.cache.AddTilesetAsync(id, stream, cancellationToken);
+            if (stream is not null)
+            {
+                await this.cache.AddTilesetAsync(id, stream, cancellationToken);
+            }
         }
 
         #endregion
@@ -59,33 +69,8 @@ namespace SoundCharts.Explorer.MacOS.Services.Tilesets
 
         public void Dispose()
         {
-            this.subject.Dispose();
-            this.cacheSubscription.Dispose();
         }
 
         #endregion
-
-        private async Task<IImmutableSet<ManagedTileset>> UpdateTilesetsAsync(IImmutableSet<CachedTileset> cachedTilesets)
-        {
-            // TODO: Need appropriate locking.
-            // TODO: Add cancellation?
-            var availableTilesets = await this.client.GetTilesetsAsync().ConfigureAwait(false);
-
-            var updatedTilesets = availableTilesets.ToDictionary(tileset => tileset.Id, tileset => new ManagedTileset(tileset.Id, TilesetState.NotDownloaded));
-
-            foreach (var tileset in cachedTilesets)
-            {
-                if (this.tilesets.TryGetValue(tileset.Id, out ManagedTileset managedTileset) && managedTileset.State == TilesetState.NotDownloaded)
-                {
-                    this.tilesets[tileset.Id] = managedTileset with { State = TilesetState.Downloaded };
-                }
-                else
-                {
-                    this.tilesets.Add(tileset.Id, new ManagedTileset(tileset.Id, TilesetState.Downloaded));
-                }
-            }
-
-            return updatedTilesets.Values.ToImmutableHashSet();
-        }
     }
 }

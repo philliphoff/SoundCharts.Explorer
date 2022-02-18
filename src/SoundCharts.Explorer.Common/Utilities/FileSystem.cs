@@ -2,6 +2,7 @@
 using System.Collections.Immutable;
 using System.IO;
 using System.Reactive.Linq;
+using System.Runtime.InteropServices;
 
 namespace SoundCharts.Explorer.Utilities
 {
@@ -16,10 +17,24 @@ namespace SoundCharts.Explorer.Utilities
 					: ImmutableHashSet<string>.Empty;
 			}
 
-			return Observable.Defer(
-				() => CreateObserver(path, filter)
-					.Select(_ => GetFiles())
-					.StartWith(GetFiles()));
+			if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+				return Observable.Defer(
+					() =>
+					{
+						// TODO: Ignore scans that have the same previous values.
+						return Observable
+							.Interval(TimeSpan.FromSeconds(2))
+							.Select(_ => GetFiles());
+					});
+            }
+			else
+            {
+				return Observable.Defer(
+					() => CreateObserver(path, filter)
+						.Select(_ => GetFiles())
+						.StartWith(GetFiles()));
+            }
         }
 
 		public static IObservable<FileSystemEventArgs> CreateObserver(string path, string filter)
@@ -29,6 +44,11 @@ namespace SoundCharts.Explorer.Utilities
 
 		public static IObservable<FileSystemEventArgs> CreateObserver(Func<FileSystemWatcher> onCreation)
         {
+			if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+				throw new NotSupportedException("The Xamarin Mac platform does not support FileSystemWatcher.");
+            }
+
 			return Observable.Create<FileSystemEventArgs>(
 				observer =>
                 {
@@ -47,6 +67,21 @@ namespace SoundCharts.Explorer.Utilities
 					return watcher;
                 });
         }
-    }
+
+		private static IObservable<IImmutableSet<string>> CreateXamarinMacDirectoryObserver(string path, string filter)
+		{
+			IImmutableSet<string> GetFiles()
+			{
+				return Directory.Exists(path)
+					? Directory.GetFiles(path, filter).ToImmutableHashSet()
+					: ImmutableHashSet<string>.Empty;
+			}
+
+			return Observable.Defer(
+				() => CreateObserver(path, filter)
+					.Select(_ => GetFiles())
+					.StartWith(GetFiles()));
+		}
+	}
 }
 
