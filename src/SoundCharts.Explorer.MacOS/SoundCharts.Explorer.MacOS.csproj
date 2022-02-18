@@ -178,7 +178,6 @@
     <Compile Include="Components\ApplicationStateMonitor.cs" />
     <Compile Include="Services\Tilesets\ITilesetManager.cs" />
     <Compile Include="Services\Tilesets\TilesetManager.cs" />
-    <Compile Include="Components\TilesetMonitor.cs" />
     <Compile Include="SourceListViewController.cs" />
     <Compile Include="SourceListViewController.designer.cs">
       <DependentUpon>SourceListViewController.cs</DependentUpon>
@@ -207,6 +206,8 @@
     <Compile Include="Services\Tiles\ApplicationTileSource.cs" />
     <Compile Include="Services\Tiles\OnlineTileSource.cs" />
     <Compile Include="Services\Tiles\OfflineTileSource.cs" />
+    <Compile Include="Services\Tilesets\ITilesetCache.cs" />
+    <Compile Include="Services\Tilesets\TilesetCache.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Main.storyboard" />

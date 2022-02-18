@@ -23,25 +23,25 @@ namespace SoundCharts.Explorer.MacOS
 				new ServiceCollection()
 					.AddSingleton<IApplicationStateManager, ApplicationStateManager>()
 					.AddSingleton<IApplicationComponent, ApplicationStateMonitor>()
-					.AddSingleton<IApplicationComponent, TilesetMonitor>()
 					.AddSingleton<ILoggerFactory>(
 						_ =>
-                        {
+						{
 							return LoggerFactory.Create(
 								builder =>
 								{
 									//builder.AddSystemdConsole(
 									//	options =>
-         //                               {
+									//                               {
 									//		options.IncludeScopes = true;
 									//		options.TimestampFormat = "hh:mm:ss ";
-         //                               });
+									//                               });
 
 									builder.AddProvider(new OSLoggerProvider());
 								});
-                        })
+						})
 					.AddSingleton<IObservableTileSource, ApplicationTileSource>()
 					.AddSingleton<ITilesetServiceClient>(_ => new HttpTilesetServiceClient(HttpClient, new Uri("http://localhost:8080/tilesets")))
+					.AddSingleton<ITilesetCache, TilesetCache>()
 					.AddSingleton<ITilesetManager, TilesetManager>()
 					.AddSingleton<OfflineTileSource>()
 					.AddSingleton<OnlineTileSource>()

@@ -27,7 +27,7 @@ namespace SoundCharts.Explorer.Tiles.Tilesets
 
         #region ITilesetServiceClient Members
 
-        public async Task<Stream> DownloadTilesetAsync(string id, CancellationToken cancellationToken = default)
+        public async Task<Stream?> DownloadTilesetAsync(string id, CancellationToken cancellationToken = default)
         {
             var methodEndpoint = new Uri(this.serviceEndpoint, $"{id}/download");
 
@@ -36,7 +36,7 @@ namespace SoundCharts.Explorer.Tiles.Tilesets
             return stream;
         }
 
-        public async Task<Tileset> GetTilesetAsync(string id, CancellationToken cancellationToken = default)
+        public async Task<Tileset?> GetTilesetAsync(string id, CancellationToken cancellationToken = default)
         {
             var methodEndpoint = new Uri(this.serviceEndpoint, id);
 
@@ -44,7 +44,7 @@ namespace SoundCharts.Explorer.Tiles.Tilesets
 
             var model = await JsonSerializer.DeserializeAsync<TilesetModel>(stream, Options, cancellationToken);
 
-            return model is not null ? new Tileset(model.Id) : null;
+            return model?.Id is not null ? new Tileset(model.Id) : null;
         }
 
         public async Task<IEnumerable<Tileset>> GetTilesetsAsync(CancellationToken cancellationToken = default)
@@ -55,7 +55,7 @@ namespace SoundCharts.Explorer.Tiles.Tilesets
 
             var models = await JsonSerializer.DeserializeAsync<TilesetModel[]>(stream, Options, cancellationToken);
 
-            return models is not null ? models.Select(model => new Tileset(model.Id)) : Enumerable.Empty<Tileset>();
+            return models is not null ? models.Where(model => model?.Id is not null).Select(model => new Tileset(model!.Id!)) : Enumerable.Empty<Tileset>();
         }
 
         #endregion

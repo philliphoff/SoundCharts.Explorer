@@ -12,9 +12,9 @@ namespace SoundCharts.Explorer.Tiles.Tilesets
 	{
 		Task<IEnumerable<Tileset>> GetTilesetsAsync(CancellationToken cancellationToken = default);
 
-		Task<Tileset> GetTilesetAsync(string id, CancellationToken cancellationToken = default);
+		Task<Tileset?> GetTilesetAsync(string id, CancellationToken cancellationToken = default);
 
-		Task<Stream> DownloadTilesetAsync(string id, CancellationToken cancellationToken = default);
+		Task<Stream?> DownloadTilesetAsync(string id, CancellationToken cancellationToken = default);
 	}
 }
 
