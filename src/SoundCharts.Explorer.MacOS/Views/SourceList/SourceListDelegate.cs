@@ -10,7 +10,7 @@ namespace SoundCharts.Explorer.MacOS.Views.SourceList
         {
             return item switch
             {
-                TilesetItem => 41,
+                TilesetItem => 50,
                 _ => 17
             };
         }
