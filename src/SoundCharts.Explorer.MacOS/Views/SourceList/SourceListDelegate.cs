@@ -6,6 +6,15 @@ namespace SoundCharts.Explorer.MacOS.Views.SourceList
 {
 	internal sealed class SourceListDelegate : NSOutlineViewDelegate
 	{
+        public override nfloat GetRowHeight(NSOutlineView outlineView, NSObject item)
+        {
+            return item switch
+            {
+                TilesetItem => 41,
+                _ => 17
+            };
+        }
+
         public override NSCell GetCell(NSOutlineView outlineView, NSTableColumn tableColumn, NSObject item)
         {
             nint row = outlineView.RowForItem(item);
@@ -53,9 +62,9 @@ namespace SoundCharts.Explorer.MacOS.Views.SourceList
 
         private NSView MakeView(NSOutlineView outlineView, TilesetItem item)
         {
-            var view = (NSTableCellView)outlineView.MakeView("DataCell", this);
+            var view = (OfflineTilesetView)outlineView.MakeView("OfflineTilesetView", this);
 
-            view.TextField.StringValue = item.Title;
+            view.Initialize(item.Title, "Some description.");
 
             return view;
         }

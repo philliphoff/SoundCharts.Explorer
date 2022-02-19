@@ -208,6 +208,10 @@
     <Compile Include="Services\Tiles\OfflineTileSource.cs" />
     <Compile Include="Services\Tilesets\ITilesetCache.cs" />
     <Compile Include="Services\Tilesets\TilesetCache.cs" />
+    <Compile Include="Views\SourceList\OfflineTilesetView.cs" />
+    <Compile Include="Views\SourceList\OfflineTilesetView.designer.cs">
+      <DependentUpon>Views\SourceList\OfflineTilesetView.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Main.storyboard" />
@@ -221,6 +225,7 @@
     <ProjectReference Include="..\SoundCharts.Explorer.ManagedLogging\SoundCharts.Explorer.ManagedLogging.csproj">
       <Project>{5A044DD0-B65E-46AD-B723-3F2262D7A42B}</Project>
       <Name>SoundCharts.Explorer.ManagedLogging</Name>
+      <ReferenceSourceTarget></ReferenceSourceTarget>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
