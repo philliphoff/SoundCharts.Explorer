@@ -17,6 +17,11 @@ namespace SoundCharts.Explorer.MacOS.Views.SourceList
             this.TitleTextField.StringValue = title;
             this.DescriptionTextField.StringValue = description;
         }
+
+        partial void OnActionButtonAction(NSObject sender)
+        {
+
+        }
     }
 }
 

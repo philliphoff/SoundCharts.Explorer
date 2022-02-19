@@ -12,21 +12,32 @@ namespace SoundCharts.Explorer.MacOS.Views.SourceList
 	partial class OfflineTilesetView
 	{
 		[Outlet]
+		AppKit.NSButton ActionButton { get; set; }
+
+		[Outlet]
 		AppKit.NSTextField DescriptionTextField { get; set; }
 
 		[Outlet]
 		AppKit.NSTextField TitleTextField { get; set; }
+
+		[Action ("OnActionButtonAction:")]
+		partial void OnActionButtonAction (Foundation.NSObject sender);
 		
 		void ReleaseDesignerOutlets ()
 		{
+			if (DescriptionTextField != null) {
+				DescriptionTextField.Dispose ();
+				DescriptionTextField = null;
+			}
+
 			if (TitleTextField != null) {
 				TitleTextField.Dispose ();
 				TitleTextField = null;
 			}
 
-			if (DescriptionTextField != null) {
-				DescriptionTextField.Dispose ();
-				DescriptionTextField = null;
+			if (ActionButton != null) {
+				ActionButton.Dispose ();
+				ActionButton = null;
 			}
 		}
 	}
