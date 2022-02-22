@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using AppKit;
 using Foundation;
 
@@ -10,7 +11,7 @@ namespace SoundCharts.Explorer.MacOS.Views.SourceList
         {
             return item switch
             {
-                TilesetItem => 50,
+                TilesetItem => 36,
                 _ => 17
             };
         }
@@ -64,7 +65,13 @@ namespace SoundCharts.Explorer.MacOS.Views.SourceList
         {
             var view = (OfflineTilesetView)outlineView.MakeView("OfflineTilesetView", this);
 
-            view.Initialize(item.Title, "Some description.");
+            view.Initialize(
+                item.Title,
+                "Some description.",
+                () =>
+                {
+                    return Task.FromResult(true);
+                });
 
             return view;
         }
