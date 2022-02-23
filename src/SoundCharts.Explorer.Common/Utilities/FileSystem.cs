@@ -22,10 +22,10 @@ namespace SoundCharts.Explorer.Utilities
 				return Observable.Defer(
 					() =>
 					{
-						// TODO: Ignore scans that have the same previous values.
 						return Observable
 							.Interval(TimeSpan.FromSeconds(2))
-							.Select(_ => GetFiles());
+							.Select(_ => GetFiles())
+							.DistinctUntilChanged(new ImmutableSetComparer<string>());
 					});
             }
 			else
