@@ -68,10 +68,7 @@ namespace SoundCharts.Explorer.MacOS.Views.SourceList
             view.Initialize(
                 item.Title,
                 "Some description.",
-                () =>
-                {
-                    return Task.FromResult(true);
-                });
+                item.DownloadAsync);
 
             return view;
         }

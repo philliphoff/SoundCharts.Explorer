@@ -53,7 +53,13 @@ namespace SoundCharts.Explorer.MacOS.Views.SourceList
                                     new HeaderItem(
                                         "Tilesets",
                                         new SourceListItem[] { this.switchItem }
-                                            .Concat(tilesets.Select(tileset => new TilesetItem(tileset.Id))))
+                                            .Concat(tilesets.Select(tileset =>
+                                                new TilesetItem(
+                                                    tileset.Id,
+                                                    async () =>
+                                                    {
+                                                        await tilesetManager.DownloadTilesetAsync(tileset.Id);
+                                                    }))))
                                 };
 
                             this.ItemsChanged?.Invoke(this, EventArgs.Empty);

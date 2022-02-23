@@ -40,7 +40,7 @@ namespace SoundCharts.Explorer.MacOS
 								});
 						})
 					.AddSingleton<IObservableTileSource, ApplicationTileSource>()
-					.AddSingleton<ITilesetServiceClient>(_ => new HttpTilesetServiceClient(HttpClient, new Uri("http://localhost:8080/tilesets")))
+					.AddSingleton<ITilesetServiceClient>(_ => new HttpTilesetServiceClient(HttpClient, new Uri("http://localhost:8080/tilesets/")))
 					.AddSingleton<ITilesetCache, TilesetCache>()
 					.AddSingleton<ITilesetManager, TilesetManager>()
 					.AddSingleton<OfflineTileSource>()
