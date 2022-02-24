@@ -26,17 +26,23 @@ namespace SoundCharts.Explorer.MacOS.Views.SourceList
             this.AddTrackingArea(area);
         }
 
-        public void Initialize(string title, string description, Func<Task> onAction)
+        public void Initialize(string title, string description, Func<Task> onAction, bool isDownloadAction)
         {
             this.TitleTextField.StringValue = title;
             this.DescriptionTextField.StringValue = description;
+
+            if (!isDownloadAction)
+            {
+                this.ActionButton.Image = NSImage.GetSystemSymbol("multiply.circle.fill", null);
+            }
 
             this.onAction = onAction;
         }
 
         partial void OnActionButtonAction(NSObject sender)
         {
-            this.onAction?.Invoke();
+            this.PerformActionAsync()
+                .ContinueWith(_ => { /* TODO: Handle errors. */ });
         }
 
         public override void MouseEntered(NSEvent theEvent)
@@ -51,6 +57,25 @@ namespace SoundCharts.Explorer.MacOS.Views.SourceList
             this.ActionButton.Hidden = true;
 
             base.MouseExited(theEvent);
+        }
+
+        private async Task PerformActionAsync()
+        {
+            var action = this.onAction;
+
+            if (action is not null)
+            {
+                this.ActionButton.Enabled = false;
+
+                try
+                {
+                    await action();
+                }
+                finally
+                {
+                    this.ActionButton.Enabled = true;
+                }
+            }
         }
     }
 }

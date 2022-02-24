@@ -53,13 +53,30 @@ namespace SoundCharts.Explorer.MacOS.Views.SourceList
                                     new HeaderItem(
                                         "Tilesets",
                                         new SourceListItem[] { this.switchItem }
-                                            .Concat(tilesets.Select(tileset =>
-                                                new TilesetItem(
-                                                    tileset.Id,
-                                                    async () =>
-                                                    {
-                                                        await tilesetManager.DownloadTilesetAsync(tileset.Id);
-                                                    }))))
+                                            .Concat(
+                                                tilesets
+                                                    .Select(tileset =>
+                                                        new TilesetItem(
+                                                            tileset.Id,
+                                                            async () =>
+                                                            {
+                                                                switch (tileset.State)
+                                                                {
+                                                                    case TilesetState.Downloaded:
+
+                                                                        await tilesetManager.DeleteTilesetAsync(tileset.Id);
+
+                                                                        break;
+
+                                                                    case TilesetState.NotDownloaded:
+
+                                                                        await tilesetManager.DownloadTilesetAsync(tileset.Id);
+
+                                                                        break;
+                                                                }
+                                                            },
+                                                            tileset.State == TilesetState.NotDownloaded))
+                                                    .OrderBy(tileset => tileset.Title)))
                                 };
 
                             this.ItemsChanged?.Invoke(this, EventArgs.Empty);

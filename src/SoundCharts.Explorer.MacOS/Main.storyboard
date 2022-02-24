@@ -690,7 +690,7 @@
         <!--Window Controller-->
         <scene sceneID="EGh-89-xvh">
             <objects>
-                <windowController id="VdR-yd-tC9" sceneMemberID="viewController">
+                <windowController id="VdR-yd-tC9" customClass="AppViewController" sceneMemberID="viewController">
                     <window key="window" title="SoundCharts Explorer" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" toolbarStyle="compact" id="o2q-Kb-Lmc">
                         <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" fullSizeContentView="YES"/>
                         <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
@@ -700,8 +700,16 @@
                             <rect key="frame" x="0.0" y="0.0" width="480" height="270"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </view>
-                        <toolbar key="toolbar" implicitIdentifier="09D11707-F4A3-4FD5-970E-AC5832E91C2B" autosavesConfiguration="NO" displayMode="iconAndLabel" sizeMode="regular" id="fY3-fY-y0h">
+                        <toolbar key="toolbar" implicitIdentifier="09D11707-F4A3-4FD5-970E-AC5832E91C2B" autosavesConfiguration="NO" displayMode="iconOnly" sizeMode="regular" id="fY3-fY-y0h">
                             <allowedToolbarItems>
+                                <toolbarItem implicitItemIdentifier="C607F1A4-0151-4EFA-BFC3-47A0EB7E96DB" explicitItemIdentifier="NSToolbarSidebarTrackingSeparatorItemIdentifier" label="Toolbar Item" paletteLabel="Toolbar Item" tag="-1" bordered="YES" id="T8F-ab-SyT">
+                                    <size key="minSize" width="24" height="25"/>
+                                    <size key="maxSize" width="24" height="25"/>
+                                </toolbarItem>
+                                <toolbarItem implicitItemIdentifier="302C498B-65BB-408B-AAEF-7A127FB857EE" label="Toggle Sidebar" paletteLabel="Toolbar Sidebar" toolTip="Toggle sidebar" tag="-1" image="sidebar.left" catalog="system" bordered="YES" id="zHN-aa-SHe">
+                                    <size key="minSize" width="30" height="25"/>
+                                    <size key="maxSize" width="30" height="25"/>
+                                </toolbarItem>
                                 <toolbarItem implicitItemIdentifier="NSToolbarShowColorsItem" id="RFH-AV-Jyp"/>
                                 <toolbarItem implicitItemIdentifier="NSToolbarShowFontsItem" id="tXC-CE-KDU"/>
                                 <toolbarItem implicitItemIdentifier="NSToolbarPrintItem" id="Mf3-yt-2Bd"/>
@@ -711,6 +719,8 @@
                             <defaultToolbarItems>
                                 <toolbarItem reference="RFH-AV-Jyp"/>
                                 <toolbarItem reference="tXC-CE-KDU"/>
+                                <toolbarItem reference="T8F-ab-SyT"/>
+                                <toolbarItem reference="zHN-aa-SHe"/>
                                 <toolbarItem reference="Dls-7W-HLD"/>
                                 <toolbarItem reference="Mf3-yt-2Bd"/>
                             </defaultToolbarItems>
@@ -894,8 +904,8 @@
                                                                 <imageView wantsLayer="YES" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="g79-z4-iaE">
                                                                     <rect key="frame" x="2" y="3" width="30" height="30"/>
                                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES"/>
-                                                                    <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyUpOrDown" imageFrameStyle="grayBezel" image="square.3.layers.3d.down.right" catalog="system" id="GDr-q9-amg"/>
-                                                                    <color key="contentTintColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                                    <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyUpOrDown" image="map.circle.fill" catalog="system" id="GDr-q9-amg"/>
+                                                                    <color key="contentTintColor" name="secondaryLabelColor" catalog="System" colorSpace="catalog"/>
                                                                 </imageView>
                                                                 <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="XRz-zQ-Atf">
                                                                     <rect key="frame" x="35" y="12" width="214" height="21"/>
@@ -918,7 +928,7 @@
                                                                 <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Exh-fV-kde">
                                                                     <rect key="frame" x="255" y="5" width="20" height="26"/>
                                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES"/>
-                                                                    <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="NSTouchBarDownloadTemplate" imagePosition="only" alignment="center" imageScaling="proportionallyUpOrDown" inset="2" id="Znt-t8-cWc">
+                                                                    <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="arrow.down.circle.fill" catalog="system" imagePosition="only" alignment="center" imageScaling="proportionallyUpOrDown" inset="2" id="Znt-t8-cWc">
                                                                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                                         <font key="font" metaFont="system"/>
                                                                     </buttonCell>
@@ -987,7 +997,8 @@
         </scene>
     </scenes>
     <resources>
-        <image name="NSTouchBarDownloadTemplate" width="15" height="15"/>
-        <image name="square.3.layers.3d.down.right" catalog="system" width="16" height="17"/>
+        <image name="arrow.down.circle.fill" catalog="system" width="15" height="15"/>
+        <image name="map.circle.fill" catalog="system" width="15" height="15"/>
+        <image name="sidebar.left" catalog="system" width="18" height="14"/>
     </resources>
 </document>
