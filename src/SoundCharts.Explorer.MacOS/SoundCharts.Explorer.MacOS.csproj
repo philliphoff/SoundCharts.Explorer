@@ -213,6 +213,9 @@
       <DependentUpon>Views\SourceList\OfflineTilesetView.cs</DependentUpon>
     </Compile>
     <Compile Include="AppViewController.cs" />
+    <Compile Include="AppViewController.designer.cs">
+      <DependentUpon>AppViewController.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Main.storyboard" />
