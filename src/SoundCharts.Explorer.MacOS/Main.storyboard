@@ -724,6 +724,7 @@
                                 <toolbarItem implicitItemIdentifier="NSToolbarFlexibleSpaceItem" id="Dls-7W-HLD"/>
                             </allowedToolbarItems>
                             <defaultToolbarItems>
+                                <toolbarItem reference="Dls-7W-HLD"/>
                                 <toolbarItem reference="zHN-aa-SHe"/>
                                 <toolbarItem reference="T8F-ab-SyT"/>
                                 <toolbarItem reference="Dls-7W-HLD"/>
