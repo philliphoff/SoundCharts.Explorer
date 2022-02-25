@@ -85,7 +85,7 @@ namespace SoundCharts.Explorer.Tiles.Sources
             );
         }
 
-        private static async Task<TileData> ExtractTileAtPathAsync(TileIndex destPath, TileData tile, TileIndex sourcePath, CancellationToken cancellationToken)
+        private static async Task<TileData?> ExtractTileAtPathAsync(TileIndex destPath, TileData tile, TileIndex sourcePath, CancellationToken cancellationToken)
         {
             Debug.Assert(sourcePath.Zoom < destPath.Zoom && destPath.Zoom < 30, "ExtractTileAtPathAsync assertion", "Source Zoom: {0}, Dest Zoom: {1}", sourcePath.Zoom, destPath.Zoom);
 
@@ -102,13 +102,22 @@ namespace SoundCharts.Explorer.Tiles.Sources
                 float sourceImageHeight = sourceImage.Height;
                 float sourceImageWidth = sourceImage.Width;
 
+                float scalingHeight = sourceImageHeight / normalizedSideLength;
+                float scalingWidth = sourceImageWidth / normalizedSideLength;
+
+                // TODO: Further investigate when this happens.
+                if (scalingHeight < 1 || scalingWidth < 1)
+                {
+                    return null;
+                }
+
                 // Calculate the rect to use for scaling
                 //
                 var scalingRect = new Rectangle(
-                    /* x */ (int)(x * (sourceImageWidth / normalizedSideLength)),
-                    /* y */ (int)(y * (sourceImageHeight / normalizedSideLength)),
-                    /* width */ (int)(sourceImageWidth / normalizedSideLength),
-                    /* height */ (int)(sourceImageHeight / normalizedSideLength));
+                    /* x */ (int)(x * scalingWidth),
+                    /* y */ (int)(y * scalingHeight),
+                    /* width */ (int)scalingWidth,
+                    /* height */ (int)scalingHeight);
 
                 var destSize = new Size(
                     /* width */ 256,

@@ -985,7 +985,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="302" height="300"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
-                            <mapView fixedFrame="YES" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="DI0-uv-YPL">
+                            <mapView fixedFrame="YES" mapType="standard" pitchEnabled="NO" showsBuildings="NO" showsPointsOfInterest="NO" showsScale="YES" translatesAutoresizingMaskIntoConstraints="NO" id="DI0-uv-YPL">
                                 <rect key="frame" x="0.0" y="0.0" width="302" height="300"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             </mapView>
@@ -1003,7 +1003,7 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="QTd-r9-ooR"/>
+        <segue reference="7yd-c1-w3q"/>
     </inferredMetricsTieBreakers>
     <resources>
         <image name="arrow.down.circle.fill" catalog="system" width="15" height="15"/>
