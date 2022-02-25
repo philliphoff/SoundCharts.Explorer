@@ -1,6 +1,6 @@
 namespace SoundCharts.Explorer.TilesetService.Services;
 
-internal record Tileset(string Id, string Name, string Url);
+internal record Tileset(string Id, string Name, string? Description, string Url);
 
 internal interface ITilesetProvider
 {
@@ -9,4 +9,6 @@ internal interface ITilesetProvider
     Task<Tileset?> GetTilesetById(string id);
 
     Task<Uri?> GetTilesetDownloadUriById(string id);
+
+    Task UpdateTilesetMetadata(string id);
 }

@@ -2,6 +2,7 @@ using Azure.Storage;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Azure.Storage.Sas;
+using LiteDB;
 
 namespace SoundCharts.Explorer.TilesetService.Services;
 
@@ -32,7 +33,10 @@ internal sealed class TilesetProvider : ITilesetProvider
         {
             string id = hierarchyItem.Blob.Tags["sc-tileset-id"];
 
-            tilesets.Add(new Tileset(id, hierarchyItem.Blob.Name, "TODO: Get SAS-based URL"));
+            hierarchyItem.Blob.Metadata.TryGetValue("sctilesetdescription", out string? description);
+            hierarchyItem.Blob.Metadata.TryGetValue("sctilesetname", out string? name);
+
+            tilesets.Add(new Tileset(id, name ?? hierarchyItem.Blob.Name, description, "TODO: Get SAS-based URL"));
         }
 
         return tilesets;
@@ -53,7 +57,10 @@ internal sealed class TilesetProvider : ITilesetProvider
 
         var properties = await blobClient.GetPropertiesAsync();
 
-        return new Tileset(id, taggedBlob.BlobName, "TODO: Get SAS-based URL");
+        properties.Value.Metadata.TryGetValue("sctilesetdescription", out string? description);
+        properties.Value.Metadata.TryGetValue("sctilesetname", out string? name);
+
+        return new Tileset(id, name ?? taggedBlob.BlobName, description, "TODO: Get SAS-based URL");
     }
 
     public async Task<Uri?> GetTilesetDownloadUriById(string id)
@@ -88,5 +95,65 @@ internal sealed class TilesetProvider : ITilesetProvider
         };
 
         return blobUriBuilder.ToUri();
+    }
+
+    public async Task UpdateTilesetMetadata(string id)
+    {
+        var blobServiceClient = new BlobServiceClient(this.connectionString);
+        var taggedBlob = await blobServiceClient.FindBlobsByTagsAsync($"\"sc-tileset-id\" = '{id}'").FirstOrDefaultAsync();
+
+        if (taggedBlob is null)
+        {
+            return;
+        }
+
+        var blobContainerClient = blobServiceClient.GetBlobContainerClient(taggedBlob.BlobContainerName);
+        var blobClient = blobContainerClient.GetBlobClient(taggedBlob.BlobName);
+
+        string tempFilePath = Path.GetTempFileName();
+
+        using (var fileStream = File.OpenWrite(tempFilePath))
+        {
+            await blobClient.DownloadToAsync(fileStream);
+        }
+
+        IDictionary<string, string> metadata;
+
+        try
+        {
+            using (var litedb = new LiteDatabase(tempFilePath))
+            {
+                metadata =
+                    litedb
+                        .GetCollection<MetadataTable>("metadata")
+                        .FindAll()
+                        .ToDictionary(m => m.Name!, m => m.Value!);
+            }
+        }
+        finally
+        {
+            File.Delete(tempFilePath);
+        }
+
+        metadata.TryGetValue("description", out string? description);
+        metadata.TryGetValue("name", out string? name);
+
+        // NOTE: Metadata keys must be adhere to rules for naming C# identifiers.
+
+        await blobClient.SetMetadataAsync(
+            new Dictionary<string, string>
+            {
+                { "sctilesetdescription", description ?? String.Empty },
+                { "sctilesetname", name ?? String.Empty }
+            });
+    }
+
+    private sealed class MetadataTable
+    {
+        [BsonField("name")]
+        public string? Name { get; set; }
+
+        [BsonField("value")]
+        public string? Value { get; set; }
     }
 }

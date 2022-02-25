@@ -85,4 +85,15 @@ app.MapGet("/tilesets/{id}/download",
     })
     .WithName("DownloadTileset");
 
+app.MapMethods(
+    "/tilesets/{id}/metadata",
+    new[] {  "PATCH" },
+    async (string id) =>
+    {
+        await tilesetProvider.UpdateTilesetMetadata(id);
+
+        return Results.NoContent();
+    })
+    .WithName("UpdateTilesetMetadata");
+
 app.Run();
