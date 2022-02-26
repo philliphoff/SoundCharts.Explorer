@@ -910,7 +910,7 @@
                                                                 <imageView wantsLayer="YES" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="g79-z4-iaE">
                                                                     <rect key="frame" x="2" y="3" width="30" height="30"/>
                                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES"/>
-                                                                    <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyUpOrDown" image="map.circle.fill" catalog="system" id="GDr-q9-amg"/>
+                                                                    <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyUpOrDown" image="map.circle" catalog="system" id="GDr-q9-amg"/>
                                                                     <color key="contentTintColor" name="secondaryLabelColor" catalog="System" colorSpace="catalog"/>
                                                                 </imageView>
                                                                 <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="XRz-zQ-Atf">
@@ -946,6 +946,7 @@
                                                             <connections>
                                                                 <outlet property="ActionButton" destination="Exh-fV-kde" id="SfN-oX-UTw"/>
                                                                 <outlet property="DescriptionTextField" destination="Xxt-AT-hsr" id="eux-mK-EXl"/>
+                                                                <outlet property="TilesetImage" destination="g79-z4-iaE" id="3b0-m5-77e"/>
                                                                 <outlet property="TitleTextField" destination="XRz-zQ-Atf" id="JP5-wv-0uy"/>
                                                             </connections>
                                                         </customView>
@@ -1008,7 +1009,7 @@
     <resources>
         <image name="arrow.down.circle.fill" catalog="system" width="15" height="15"/>
         <image name="gearshape" catalog="system" width="16" height="16"/>
-        <image name="map.circle.fill" catalog="system" width="15" height="15"/>
+        <image name="map.circle" catalog="system" width="15" height="15"/>
         <image name="sidebar.left" catalog="system" width="18" height="14"/>
     </resources>
 </document>

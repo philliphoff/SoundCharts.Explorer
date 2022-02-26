@@ -39,6 +39,7 @@ namespace SoundCharts.Explorer.MacOS.Views.SourceList
             if (!isDownloadAction)
             {
                 this.ActionButton.Image = NSImage.GetSystemSymbol("multiply.circle.fill", null);
+                this.TilesetImage.Image = NSImage.GetSystemSymbol("map.circle.fill", null);
             }
 
             this.onAction = onAction;

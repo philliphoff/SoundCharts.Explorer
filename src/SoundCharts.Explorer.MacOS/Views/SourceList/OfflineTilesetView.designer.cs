@@ -18,6 +18,9 @@ namespace SoundCharts.Explorer.MacOS.Views.SourceList
 		AppKit.NSTextField DescriptionTextField { get; set; }
 
 		[Outlet]
+		AppKit.NSImageView TilesetImage { get; set; }
+
+		[Outlet]
 		AppKit.NSTextField TitleTextField { get; set; }
 
 		[Action ("OnActionButtonAction:")]
@@ -25,6 +28,11 @@ namespace SoundCharts.Explorer.MacOS.Views.SourceList
 		
 		void ReleaseDesignerOutlets ()
 		{
+			if (ActionButton != null) {
+				ActionButton.Dispose ();
+				ActionButton = null;
+			}
+
 			if (DescriptionTextField != null) {
 				DescriptionTextField.Dispose ();
 				DescriptionTextField = null;
@@ -35,9 +43,9 @@ namespace SoundCharts.Explorer.MacOS.Views.SourceList
 				TitleTextField = null;
 			}
 
-			if (ActionButton != null) {
-				ActionButton.Dispose ();
-				ActionButton = null;
+			if (TilesetImage != null) {
+				TilesetImage.Dispose ();
+				TilesetImage = null;
 			}
 		}
 	}
