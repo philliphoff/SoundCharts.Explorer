@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Threading.Tasks;
 using AppKit;
 using Foundation;
@@ -28,7 +29,11 @@ namespace SoundCharts.Explorer.MacOS.Views.SourceList
 
         public void Initialize(string title, string description, Func<Task> onAction, bool isDownloadAction)
         {
-            this.TitleTextField.StringValue = title;
+            var culture = CultureInfo.CurrentCulture;
+
+            // NOTE: TextInfo.ToTitleCase() will not modify all-uppercase words, so first convert to lowercase.
+            this.TitleTextField.StringValue = culture.TextInfo.ToTitleCase(title.ToLower(culture));
+
             this.DescriptionTextField.StringValue = description;
 
             if (!isDownloadAction)

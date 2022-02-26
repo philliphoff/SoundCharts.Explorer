@@ -914,7 +914,7 @@
                                                                     <color key="contentTintColor" name="secondaryLabelColor" catalog="System" colorSpace="catalog"/>
                                                                 </imageView>
                                                                 <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="XRz-zQ-Atf">
-                                                                    <rect key="frame" x="35" y="12" width="214" height="21"/>
+                                                                    <rect key="frame" x="38" y="12" width="211" height="21"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                                     <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Title" usesSingleLineMode="YES" id="YYR-C9-zg5">
                                                                         <font key="font" usesAppearanceFont="YES"/>
@@ -923,7 +923,7 @@
                                                                     </textFieldCell>
                                                                 </textField>
                                                                 <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Xxt-AT-hsr">
-                                                                    <rect key="frame" x="35" y="-4" width="214" height="21"/>
+                                                                    <rect key="frame" x="38" y="-4" width="211" height="21"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                                                     <textFieldCell key="cell" controlSize="small" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Description" usesSingleLineMode="YES" id="5UA-Wf-X9P">
                                                                         <font key="font" metaFont="smallSystem"/>
