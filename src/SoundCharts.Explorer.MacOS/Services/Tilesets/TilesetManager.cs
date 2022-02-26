@@ -26,7 +26,7 @@ namespace SoundCharts.Explorer.MacOS.Services.Tilesets
                         {
                             var availableTilesets = await this.client.GetTilesetsAsync().ConfigureAwait(false);
 
-                            var updatedTilesets = availableTilesets.ToDictionary(tileset => tileset.Id, tileset => new ManagedTileset(tileset.Id, TilesetState.NotDownloaded));
+                            var updatedTilesets = availableTilesets.ToDictionary(tileset => tileset.Id, tileset => new ManagedTileset(tileset.Id, tileset.Name, tileset.Description, TilesetState.NotDownloaded));
 
                             foreach (var tileset in cachedTilesets)
                             {
@@ -36,7 +36,7 @@ namespace SoundCharts.Explorer.MacOS.Services.Tilesets
                                 }
                                 else
                                 {
-                                    updatedTilesets.Add(tileset.Id, new ManagedTileset(tileset.Id, TilesetState.Downloaded));
+                                    updatedTilesets.Add(tileset.Id, new ManagedTileset(tileset.Id, null, null, TilesetState.Downloaded));
                                 }
                             }
 

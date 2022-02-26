@@ -67,7 +67,7 @@ namespace SoundCharts.Explorer.MacOS.Views.SourceList
 
             view.Initialize(
                 item.Title,
-                "Some description.",
+                item.Description,
                 item.DownloadAsync,
                 item.IsDownloadAction);
 

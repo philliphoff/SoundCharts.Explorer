@@ -14,7 +14,7 @@ namespace SoundCharts.Explorer.MacOS.Services.Tilesets
 		Downloaded
     }
 
-	internal sealed record ManagedTileset(string Id, TilesetState State);
+	internal sealed record ManagedTileset(string Id, string? Name, string? Description, TilesetState State);
 
 	internal interface ITilesetManager
 	{

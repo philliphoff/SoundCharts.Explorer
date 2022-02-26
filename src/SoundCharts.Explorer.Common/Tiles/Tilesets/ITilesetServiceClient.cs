@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SoundCharts.Explorer.Tiles.Tilesets
 {
-	public sealed record Tileset(string Id);
+	public sealed record Tileset(string Id, string? Name, string? Description);
 
 	public interface ITilesetServiceClient
 	{

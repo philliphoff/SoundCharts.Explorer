@@ -63,6 +63,22 @@ app.MapGet("/tilesets",
     })
     .WithName("GetTilesets");
 
+app.MapMethods(
+    "/tilesets/metadata",
+    new[] {  "PATCH" },
+    async () =>
+    {
+        var tilesets = await tilesetProvider.GetTilesets();
+
+        foreach (var tileset in tilesets)
+        {
+            await tilesetProvider.UpdateTilesetMetadata(tileset.Id);
+        }
+
+        return Results.NoContent();
+    })
+    .WithName("UpdateTilesetsMetadata");
+
 app.MapGet("/tilesets/{id}", 
     async (string id) =>
     {

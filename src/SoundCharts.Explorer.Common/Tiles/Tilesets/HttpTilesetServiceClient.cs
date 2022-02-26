@@ -44,7 +44,7 @@ namespace SoundCharts.Explorer.Tiles.Tilesets
 
             var model = await JsonSerializer.DeserializeAsync<TilesetModel>(stream, Options, cancellationToken);
 
-            return model?.Id is not null ? new Tileset(model.Id) : null;
+            return model?.Id is not null ? new Tileset(model.Id, model.Name, model.Description) : null;
         }
 
         public async Task<IEnumerable<Tileset>> GetTilesetsAsync(CancellationToken cancellationToken = default)
@@ -55,7 +55,7 @@ namespace SoundCharts.Explorer.Tiles.Tilesets
 
             var models = await JsonSerializer.DeserializeAsync<TilesetModel[]>(stream, Options, cancellationToken);
 
-            return models is not null ? models.Where(model => model?.Id is not null).Select(model => new Tileset(model!.Id!)) : Enumerable.Empty<Tileset>();
+            return models is not null ? models.Where(model => model?.Id is not null).Select(model => new Tileset(model!.Id!, model.Name, model.Description)) : Enumerable.Empty<Tileset>();
         }
 
         #endregion
@@ -64,6 +64,12 @@ namespace SoundCharts.Explorer.Tiles.Tilesets
         {
             [JsonPropertyName("id")]
             public string? Id { get; set; }
+
+            [JsonPropertyName("name")]
+            public string? Name { get; set; }
+
+            [JsonPropertyName("description")]
+            public string? Description { get; set; }
         }
     }
 }

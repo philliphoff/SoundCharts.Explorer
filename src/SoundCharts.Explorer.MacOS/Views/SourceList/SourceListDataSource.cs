@@ -57,7 +57,8 @@ namespace SoundCharts.Explorer.MacOS.Views.SourceList
                                                 tilesets
                                                     .Select(tileset =>
                                                         new TilesetItem(
-                                                            tileset.Id,
+                                                            tileset.Description ?? tileset.Id,
+                                                            tileset.Name ?? tileset.Id,
                                                             async () =>
                                                             {
                                                                 switch (tileset.State)
