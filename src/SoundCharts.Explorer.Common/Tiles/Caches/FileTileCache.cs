@@ -21,19 +21,22 @@ namespace SoundCharts.Explorer.Tiles.Caches
             return Task.Run(
                 () =>
                 {
-                    this.directoryLock.EnterWriteLock();
+                    if (Directory.Exists(this.directory))
+                    {
+                        this.directoryLock.EnterWriteLock();
 
-                    try
-                    {
-                        Directory.Delete(this.directory, recursive: true);
-                    }
-                    catch (DirectoryNotFoundException)
-                    {
-                        // NOTE: No-op.
-                    }
-                    finally
-                    {
-                        this.directoryLock.ExitWriteLock();
+                        try
+                        {
+                            Directory.Delete(this.directory, recursive: true);
+                        }
+                        catch (DirectoryNotFoundException)
+                        {
+                            // NOTE: No-op.
+                        }
+                        finally
+                        {
+                            this.directoryLock.ExitWriteLock();
+                        }
                     }
                 });
         }

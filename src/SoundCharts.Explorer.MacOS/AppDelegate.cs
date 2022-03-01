@@ -29,14 +29,14 @@ namespace SoundCharts.Explorer.MacOS
 							return LoggerFactory.Create(
 								builder =>
 								{
-									//builder.AddSystemdConsole(
-									//	options =>
-									//                               {
-									//		options.IncludeScopes = true;
-									//		options.TimestampFormat = "hh:mm:ss ";
-									//                               });
+									builder.AddSystemdConsole(
+										options =>
+										{
+											options.IncludeScopes = true;
+											options.TimestampFormat = "hh:mm:ss ";
+										});
 
-									builder.AddProvider(new OSLoggerProvider());
+									builder.AddMacConsole();
 								});
 						})
 					.AddSingleton<IObservableTileSource, ApplicationTileSource>()
