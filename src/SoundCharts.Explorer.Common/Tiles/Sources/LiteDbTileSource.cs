@@ -41,9 +41,15 @@ namespace SoundCharts.Explorer.Tiles.Sources
                             && Double.TryParse(boundsParts[2], out double right)
                             && Double.TryParse(boundsParts[3], out double top))
                         {
+                            // NOTES: Some tilesets appear to reverse the left and right bounds.
+                            //        Some tilesets appear to use left/right bounds that exceed +/- 180,
+                            //        i.e. to represent bounds that wrap around the back
+                            //
+                            // TODO: Better handle the latter case.
+
                             return new TileBounds(
-                                new TileCoordinate(bottom, left),
-                                new TileCoordinate(top, right));
+                                new TileCoordinate(bottom, left < right ? left : right),
+                                new TileCoordinate(top, right > left ? right : left));
                         }
                     }
 

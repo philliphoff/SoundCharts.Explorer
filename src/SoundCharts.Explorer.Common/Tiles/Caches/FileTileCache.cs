@@ -9,37 +9,85 @@ namespace SoundCharts.Explorer.Tiles.Caches
 	public sealed class FileTileCache : TileCacheBase
 	{
         private readonly string directory;
+        private readonly ReaderWriterLockSlim directoryLock = new ReaderWriterLockSlim();
 
 		public FileTileCache(string directory)
 		{
             this.directory = directory ?? throw new ArgumentNullException(nameof(directory));
 		}
 
-        protected override async Task<TileData?> GetCachedTileAsync(TileIndex index, CancellationToken cancellationToken)
+        public override Task ClearCacheAsync(CancellationToken cancellationToken = default)
         {
-            var (directory, fileName) = GetFileNameForTile(index);
+            return Task.Run(
+                () =>
+                {
+                    this.directoryLock.EnterWriteLock();
 
-            string filePath = Path.Combine(this.directory, directory, fileName + ".png");
-
-            var format = TileFormat.Png;
-
-            if (!File.Exists(filePath))
-            {
-                filePath = Path.ChangeExtension(filePath, ".jpg");
-                format = TileFormat.Jpeg;
-            }
-
-            if (!File.Exists(filePath))
-            {
-                return null;
-            }
-
-            var data = await File.ReadAllBytesAsync(filePath, cancellationToken).ConfigureAwait(false);
-
-            return new TileData(format, data);
+                    try
+                    {
+                        Directory.Delete(this.directory, recursive: true);
+                    }
+                    catch (DirectoryNotFoundException)
+                    {
+                        // NOTE: No-op.
+                    }
+                    finally
+                    {
+                        this.directoryLock.ExitWriteLock();
+                    }
+                });
         }
 
-        protected override async Task SetCachedTileAsync(TileIndex index, TileData data, CancellationToken cancellationToken)
+        protected override void Dispose(bool disposing)
+        {
+            try
+            {
+                if (disposing)
+                {
+                    this.directoryLock.Dispose();
+                }
+            }
+            finally
+            {
+                base.Dispose(disposing);
+            }
+        }
+
+        protected override Task<TileData?> GetCachedTileAsync(TileIndex index, CancellationToken cancellationToken)
+        {
+            return Task.Run(
+                () =>
+                {
+                    var (directory, fileName) = GetFileNameForTile(index);
+
+                    string filePath = Path.Combine(this.directory, directory, fileName + ".png");
+
+                    var format = TileFormat.Png;
+
+                    cancellationToken.ThrowIfCancellationRequested();
+
+                    if (!File.Exists(filePath))
+                    {
+                        filePath = Path.ChangeExtension(filePath, ".jpg");
+                        format = TileFormat.Jpeg;
+                    }
+
+                    cancellationToken.ThrowIfCancellationRequested();
+
+                    if (!File.Exists(filePath))
+                    {
+                        return null;
+                    }
+
+                    cancellationToken.ThrowIfCancellationRequested();
+
+                    var data = File.ReadAllBytes(filePath);
+
+                    return new TileData(format, data);
+                });
+        }
+
+        protected override Task SetCachedTileAsync(TileIndex index, TileData data, CancellationToken cancellationToken)
         {
             var extension = data.Format switch
             {
@@ -48,15 +96,31 @@ namespace SoundCharts.Explorer.Tiles.Caches
                 _ => throw new InvalidOperationException("Unsupported tile format.")
             };
 
-            var (relativeDirectory, fileName) = GetFileNameForTile(index);
+            return Task.Run(
+                () =>
+                {
+                    var (relativeDirectory, fileName) = GetFileNameForTile(index);
 
-            string directory = Path.Combine(this.directory, relativeDirectory);
+                    string directory = Path.Combine(this.directory, relativeDirectory);
+                    string filePath = Path.Combine(directory, fileName + extension);
 
-            Directory.CreateDirectory(directory);
+                    this.directoryLock.EnterWriteLock();
 
-            string filePath = Path.Combine(directory, fileName + extension);
+                    try
+                    {
+                        cancellationToken.ThrowIfCancellationRequested();
 
-            await File.WriteAllBytesAsync(filePath, data.Data, cancellationToken).ConfigureAwait(false);
+                        Directory.CreateDirectory(directory);
+
+                        cancellationToken.ThrowIfCancellationRequested();
+
+                        File.WriteAllBytes(filePath, data.Data);
+                    }
+                    finally
+                    {
+                        this.directoryLock.ExitWriteLock();
+                    }
+                });
         }
 
         private static (string relativeDirectory, string fileName) GetFileNameForTile(TileIndex index)

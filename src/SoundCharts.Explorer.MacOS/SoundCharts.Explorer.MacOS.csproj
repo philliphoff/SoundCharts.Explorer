@@ -216,6 +216,7 @@
     <Compile Include="AppViewController.designer.cs">
       <DependentUpon>AppViewController.cs</DependentUpon>
     </Compile>
+    <Compile Include="Services\Logging\ILoggingBuilderExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Main.storyboard" />
@@ -224,12 +225,10 @@
     <ProjectReference Include="..\SoundCharts.Explorer.Common\SoundCharts.Explorer.Common.csproj">
       <Project>{0180F69C-D4F3-451B-9B42-53B6362255A5}</Project>
       <Name>SoundCharts.Explorer.Common</Name>
-      <ReferenceSourceTarget></ReferenceSourceTarget>
     </ProjectReference>
     <ProjectReference Include="..\SoundCharts.Explorer.ManagedLogging\SoundCharts.Explorer.ManagedLogging.csproj">
       <Project>{5A044DD0-B65E-46AD-B723-3F2262D7A42B}</Project>
       <Name>SoundCharts.Explorer.ManagedLogging</Name>
-      <ReferenceSourceTarget></ReferenceSourceTarget>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

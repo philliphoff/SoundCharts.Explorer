@@ -10,6 +10,13 @@ namespace SoundCharts.Explorer.Tiles.Caches
 	{
         private readonly ConcurrentDictionary<TileIndex, TileData> tiles = new();
 
+        public override Task ClearCacheAsync(CancellationToken cancellationToken = default)
+        {
+            this.tiles.Clear();
+
+            return Task.CompletedTask;
+        }
+
         protected override Task<TileData?> GetCachedTileAsync(TileIndex index, CancellationToken cancellationToken)
         {
             return Task.FromResult(this.tiles.TryGetValue(index, out TileData? tileData) ? tileData : null);

@@ -13,10 +13,14 @@ namespace SoundCharts.Explorer.MacOS.Services.Tiles
 {
     internal sealed class ApplicationTileSource : IObservableTileSource, IDisposable
     {
+        private FileTileCache? fileTileCache;
+        private readonly InMemoryTileCache inMemoryCache = new InMemoryTileCache();
         private readonly IObservableTileSource offlineTileSource;
         private readonly IObservableTileSource onlineTileSource;
         private readonly IDisposable stateSubscription;
         private ITileSource? tileSource;
+        private readonly SemaphoreSlim updateLock = new SemaphoreSlim(1, 1);
+        private bool useOnline;
 
         public ApplicationTileSource(
             IApplicationStateManager applicationStateManager,
@@ -39,27 +43,18 @@ namespace SoundCharts.Explorer.MacOS.Services.Tiles
                     .CurrentState
                     .Select(state => state.State?.OfflineTilesets?.Enabled)
                     .DistinctUntilChanged()
-                    .Subscribe(
-                        enabled =>
+                    .SelectMany(
+                        async enabled =>
                         {
-                            bool useOnline = enabled != true;
+                            this.useOnline = enabled != true;
 
-                            string cacheDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".soundcharts", "explorer", "caches");
-                            string displayCacheDirectory = Path.Combine(cacheDirectory, "display", useOnline ? "online" : "offline");
+                            await this.UpdateAsync();
 
-                            this.tileSource =
-                                new CachedTileSource(
-                                    new InMemoryTileCache(), // TODO: Dispose of cache.
-                                    new CachedTileSource(
-                                        new FileTileCache(displayCacheDirectory), // TODO: Dispose of cache.
-                                        new TransformedTileSource(
-                                            TileSourceTransforms.OverzoomedTransform,
-                                            new TransformedTileSource(
-                                                TileSourceTransforms.EmptyTileTransformAsync,
-                                                useOnline ? onlineTileSource : offlineTileSource))));
-
-
-                            this.NotifyTilesChanged();
+                            return enabled;
+                        })
+                    .Subscribe(
+                        _ =>
+                        {
                         });
         }
 
@@ -87,18 +82,52 @@ namespace SoundCharts.Explorer.MacOS.Services.Tiles
             this.onlineTileSource.TilesChanged -= this.OnTilesChanged;
 
             this.stateSubscription.Dispose();
+
+            this.fileTileCache?.Dispose();
+            this.inMemoryCache.Dispose();
+
+            this.updateLock.Dispose();
         }
 
         #endregion
 
         private void OnTilesChanged(object sender, TilesChangedEventArgs e)
         {
-            this.NotifyTilesChanged();
+            // TODO: Trap errors.
+            this.UpdateAsync()
+                .ContinueWith(_ => { });
         }
 
         private void NotifyTilesChanged()
         {
             this.TilesChanged?.Invoke(this, new TilesChangedEventArgs(Enumerable.Empty<TileIndex>()));
+        }
+
+        private async Task UpdateAsync()
+        {
+            string cacheDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".soundcharts", "explorer", "caches");
+            string displayCacheDirectory = Path.Combine(cacheDirectory, "display", useOnline ? "online" : "offline");
+
+            this.fileTileCache?.Dispose();
+
+            this.fileTileCache = new FileTileCache(displayCacheDirectory);
+
+            await this.fileTileCache.ClearCacheAsync();
+
+            await this.inMemoryCache.ClearCacheAsync();
+
+            this.tileSource =
+                new CachedTileSource(
+                    this.inMemoryCache,
+                    new CachedTileSource(
+                        this.fileTileCache,
+                        new TransformedTileSource(
+                            TileSourceTransforms.OverzoomedTransform,
+                            new TransformedTileSource(
+                                TileSourceTransforms.EmptyTileTransformAsync,
+                                useOnline ? onlineTileSource : offlineTileSource))));
+
+            this.NotifyTilesChanged();
         }
     }
 }

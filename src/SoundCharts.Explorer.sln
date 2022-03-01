@@ -11,6 +11,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoundCharts.Explorer.Cli", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoundCharts.Explorer.ManagedLogging", "SoundCharts.Explorer.ManagedLogging\SoundCharts.Explorer.ManagedLogging.csproj", "{5A044DD0-B65E-46AD-B723-3F2262D7A42B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoundCharts.Explorer.TilesService", "SoundCharts.Explorer.TilesService\SoundCharts.Explorer.TilesService.csproj", "{70EF36E5-CC06-41FB-9CE5-4B29950BA592}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoundCharts.Explorer.TilesetService", "SoundCharts.Explorer.TilesetService\SoundCharts.Explorer.TilesetService.csproj", "{449AE64F-E95E-4CEC-9CB3-CC69F4049CE7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +37,14 @@ Global
 		{5A044DD0-B65E-46AD-B723-3F2262D7A42B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5A044DD0-B65E-46AD-B723-3F2262D7A42B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5A044DD0-B65E-46AD-B723-3F2262D7A42B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{70EF36E5-CC06-41FB-9CE5-4B29950BA592}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70EF36E5-CC06-41FB-9CE5-4B29950BA592}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70EF36E5-CC06-41FB-9CE5-4B29950BA592}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{70EF36E5-CC06-41FB-9CE5-4B29950BA592}.Release|Any CPU.Build.0 = Release|Any CPU
+		{449AE64F-E95E-4CEC-9CB3-CC69F4049CE7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{449AE64F-E95E-4CEC-9CB3-CC69F4049CE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{449AE64F-E95E-4CEC-9CB3-CC69F4049CE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{449AE64F-E95E-4CEC-9CB3-CC69F4049CE7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -62,6 +62,8 @@ namespace SoundCharts.Explorer.Tiles.Caches
 
         #endregion
 
+        public abstract Task ClearCacheAsync(CancellationToken cancellationToken = default);
+
         protected abstract Task<TileData?> GetCachedTileAsync(TileIndex index, CancellationToken cancellationToken);
 
         protected abstract Task SetCachedTileAsync(TileIndex index, TileData data, CancellationToken cancellationToken);
