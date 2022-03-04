@@ -9,8 +9,8 @@ extensions:
       components-path: ./SoundCharts.Explorer.TilesetService/Components/Local
 
 services:
-- name: tiles-service
-  project: ./SoundCharts.Explorer.TilesService/SoundCharts.Explorer.TilesService.csproj
+- name: tile-service
+  project: ./SoundCharts.Explorer.TileService/SoundCharts.Explorer.TileService.csproj
 - name: tileset-service
   project: ./SoundCharts.Explorer.TilesetService/SoundCharts.Explorer.TilesetService.csproj
 - name: nginx
