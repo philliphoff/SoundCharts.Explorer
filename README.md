@@ -1,6 +1,6 @@
 # SoundCharts Explorer
 [![Build SoundCharts Explorer](https://github.com/philliphoff/SoundCharts.Explorer/actions/workflows/ci.yaml/badge.svg)](https://github.com/philliphoff/SoundCharts.Explorer/actions/workflows/ci.yaml)
-![Main Screenshot](https://soundcharts.blob.core.windows.net/readme/SoundChartsExplorer.gif)
+![Main Screenshot](https://soundcharts.blob.core.windows.net/readme/SoundChartsExplorerSmall.gif)
 
 SoundCharts Explorer is a MacOS application for viewing nautical charts. Users can view "quilted" raster nautical charts (RNCs) from the National Oceanic and Atmospheric Administration (NOAA), both offered online as well as by downloading chart "tilesets". (Quilted means showing the chart that best matches the current scale of the map.)
 
