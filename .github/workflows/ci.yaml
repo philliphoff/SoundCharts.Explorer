@@ -74,7 +74,7 @@ jobs:
     env:
       RESOURCE_GROUP: sound-charts
 
-    depends-on: [services-build]
+    needs: services-build
 
     runs-on: ubuntu-latest
 
