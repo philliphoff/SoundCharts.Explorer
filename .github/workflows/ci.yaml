@@ -69,6 +69,34 @@ jobs:
         push: true
         tags: ${{ env.REGISTRY }}/tile-service:${{ steps.prep.outputs.BUILD_ID }}
 
+  services-deploy:
+
+    env:
+      RESOURCE_GROUP: sound-charts
+
+    depends-on: [services-build]
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Deploy bicep
+      uses: azure/CLI@v1
+      with:
+        inlineScript: |
+          az deployment group create \
+            --resource-group ${{ env.RESOURCE_GROUP }} \
+            --template-file ./infra/main.bicep \
+            --parameters \
+              name='sound-charts'
+
   mac-build:
 
     runs-on: macos-11
