@@ -54,7 +54,7 @@ jobs:
         password: ${{ secrets.ACR_PASSWORD }}
 
     - name: Build tileset-service
-      id: docker_build
+      id: docker_build_tileset
       uses: docker/build-push-action@v2
       with:
         file: src/SoundCharts.Explorer.TilesetService/Dockerfile
@@ -62,7 +62,7 @@ jobs:
         tags: ${{ env.REGISTRY }}/tileset-service:${{ steps.prep.outputs.BUILD_ID }}
 
     - name: Build tile-service
-      id: docker_build
+      id: docker_build_tile
       uses: docker/build-push-action@v2
       with:
         file: src/SoundCharts.Explorer.TileService/Dockerfile
