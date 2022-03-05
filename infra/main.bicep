@@ -1,10 +1,11 @@
-param name string
+param appsLocation string = 'CanadaCentral'
+param environmentName string
+param location string = resourceGroup().location
 param secrets array = []
+param tileServiceTag string
+param tilesetServiceTag string
 
-var location = resourceGroup().location
-var appsLocation = 'CanadaCentral'
-var environmentName = '${name}'
-var workspaceName = '${name}-logs'
+var workspaceName = '${environmentName}-logs'
 
 resource workspace 'Microsoft.OperationalInsights/workspaces@2020-08-01' = {
   name: workspaceName
@@ -34,7 +35,7 @@ resource environment 'Microsoft.Web/kubeEnvironments@2021-03-01' = {
   }
 }
 
-resource containerApp 'Microsoft.Web/containerapps@2021-03-01' = {
+resource tileServiceContainerApp 'Microsoft.Web/containerapps@2021-03-01' = {
   name: 'tile-service'
   kind: 'containerapps'
   location: appsLocation
@@ -52,7 +53,37 @@ resource containerApp 'Microsoft.Web/containerapps@2021-03-01' = {
       containers: [
         {
           'name':'tile-service-container'
-          'image':'soundcharts.azurecr.io/tile-service:main-2022-03-04T21-12-08Z-SHA161dfe42'
+          'image': tileServiceTag
+          'command':[]
+          'resources':{
+            'cpu':'.25'
+            'memory':'.5Gi'
+          }
+        }
+      ]
+    }
+  }
+}
+
+resource tilesetServiceContainerApp 'Microsoft.Web/containerapps@2021-03-01' = {
+  name: 'tileset-service'
+  kind: 'containerapps'
+  location: appsLocation
+  properties: {
+    kubeEnvironmentId: environment.id
+    configuration: {
+      secrets: secrets
+      registries: []
+      ingress: {
+        'external':true
+        'targetPort':5000
+      }
+    }
+    template: {
+      containers: [
+        {
+          'name':'tileset-service-container'
+          'image': tilesetServiceTag
           'command':[]
           'resources':{
             'cpu':'.25'

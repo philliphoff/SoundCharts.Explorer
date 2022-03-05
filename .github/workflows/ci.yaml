@@ -31,14 +31,24 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    outputs:
+      tile-service-tag: ${{ steps.tags.outputs.tile-service-tag }}
+      tileset-service-tag: ${{ steps.tags.outputs.tileset-service-tag }}
+
     steps:
     - name: Generate build ID
-      id: prep
+      id: build-id
       run: |
         branch=${GITHUB_REF##*/}
         sha=${GITHUB_SHA::8}
         ts=$(date +"%Y-%m-%dT%H-%M-%SZ")
-        echo "::set-output name=BUILD_ID::${branch}-${ts}-SHA${sha}"
+        echo "::set-output name=build-id::${branch}-${ts}-SHA${sha}"
+
+    - name: Generate service tags
+      id: tags
+      run: |
+        echo "::set-output name=tile-service-tag::${{ env.REGISTRY }}/tile-service:${{ steps.build-id.outputs.build-id }}"
+        echo "::set-output name=tileset-service-tag::${{ env.REGISTRY }}/tileset-service:${{ steps.build-id.outputs.build-id }}"
 
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v1
@@ -95,7 +105,9 @@ jobs:
             --resource-group ${{ env.RESOURCE_GROUP }} \
             --template-file ./infra/main.bicep \
             --parameters \
-              name='sound-charts'
+              environmentName='sound-charts' \
+              tileServiceTag='${{ needs.services-build.outputs.tile-service-tag }}' \
+              tilesetServiceTag='${{ needs.services-build.outputs.tileset-service-tag }}'
 
   mac-build:
 
