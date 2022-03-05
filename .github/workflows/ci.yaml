@@ -2,6 +2,9 @@ name: Build SoundCharts Explorer
 
 on: [push]
 
+env:
+  REGISTRY: soundcharts.azurecr.io
+
 jobs:
   cli-build:
 
@@ -26,9 +29,6 @@ jobs:
 
   services-build:
 
-    env:
-      REGISTRY: soundcharts.azurecr.io
-
     runs-on: ubuntu-latest
 
     outputs:
@@ -47,8 +47,8 @@ jobs:
     - name: Generate service tags
       id: tags
       run: |
-        echo "::set-output name=tile-service-tag::${{ env.REGISTRY }}/tile-service:${{ steps.build-id.outputs.build-id }}"
-        echo "::set-output name=tileset-service-tag::${{ env.REGISTRY }}/tileset-service:${{ steps.build-id.outputs.build-id }}"
+        echo "::set-output name=tile-service-tag::tile-service:${{ steps.build-id.outputs.build-id }}"
+        echo "::set-output name=tileset-service-tag::tileset-service:${{ steps.build-id.outputs.build-id }}"
 
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v1
@@ -68,14 +68,14 @@ jobs:
       with:
         file: src/SoundCharts.Explorer.TileService/Dockerfile
         push: true
-        tags: ${{ steps.tags.outputs.tile-service-tag }}
+        tags: ${{ env.REGISTRY }}/${{ steps.tags.outputs.tile-service-tag }}
 
     - name: Build tileset-service
       uses: docker/build-push-action@v2
       with:
         file: src/SoundCharts.Explorer.TilesetService/Dockerfile
         push: true
-        tags: ${{ steps.tags.outputs.tileset-service-tag }}
+        tags: ${{ env.REGISTRY }}/${{ steps.tags.outputs.tileset-service-tag }}
 
   services-deploy:
 
@@ -104,8 +104,8 @@ jobs:
             --template-file ./infra/main.bicep \
             --parameters \
               environmentName='sound-charts' \
-              tileServiceTag='${{ needs.services-build.outputs.tile-service-tag }}' \
-              tilesetServiceTag='${{ needs.services-build.outputs.tileset-service-tag }}'
+              tileServiceTag='${{ env.REGISTRY }}/${{ needs.services-build.outputs.tile-service-tag }}' \
+              tilesetServiceTag='${{ env.REGISTRY }}/${{ needs.services-build.outputs.tileset-service-tag }}'
 
   mac-build:
 
