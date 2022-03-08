@@ -1,7 +1,3 @@
-using Dapr.Client;
-using Dapr.Extensions.Configuration;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
 using SoundCharts.Explorer.TilesetService;
 using SoundCharts.Explorer.TilesetService.Services;
 
@@ -13,24 +9,6 @@ var secretNames = new[]
 };
 
 var builder = WebApplication.CreateBuilder(args);
-
-builder.Host.ConfigureAppConfiguration(
-    (context, config) =>
-    {
-        var useEnvironmentVariables = Environment.GetEnvironmentVariable(Constants.Secrets.UseEnvironmentVariablesName);
-
-        if (!String.IsNullOrEmpty(useEnvironmentVariables))
-        {
-            config.AddInMemoryCollection(secretNames.Select(secretname => new KeyValuePair<string, string>(secretname, Environment.GetEnvironmentVariable(secretname))));
-        }
-        else
-        {
-            var daprClient = new DaprClientBuilder().Build();
-            var secretDescriptors = secretNames.Select(secretName => new DaprSecretDescriptor(secretName)).ToList();
-
-            config.AddDaprSecretStore("service-secrets", secretDescriptors, daprClient);
-        }
-    });
 
 builder.Host.ConfigureServices(
     (context, services) =>

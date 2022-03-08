@@ -4,9 +4,8 @@ internal static class Constants
 {
     public static class Secrets
     {
-        public const string UseEnvironmentVariablesName = "soundchartsuseenvironmentvariables";
-        public const string ConnectionStringSecretName = "soundchartstilesetserviceconnectionstring";
-        public const string AccountNameSecretName = "soundchartstilesetserviceaccountname";
-        public const string AccountKeySecretName = "soundchartstilesetserviceaccountkey";
+        public const string ConnectionStringSecretName = "SOUNDCHARTS_TILESET_SERVICE_CONNECTION_STRING";
+        public const string AccountNameSecretName = "SOUNDCHARTS_TILESET_SERVICE_ACCOUNT_NAME";
+        public const string AccountKeySecretName = "SOUNDCHARTS_TILESET_SERVICE_ACCOUNT_KEY";
     }
 }

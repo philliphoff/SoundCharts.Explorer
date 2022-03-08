@@ -2,17 +2,13 @@ name: sound-charts
 
 containerEngine: docker
 
-extensions:
-- name: dapr
-  services:
-    tileset-service:
-      components-path: ./SoundCharts.Explorer.TilesetService/Components/Local
-
 services:
 - name: tile-service
   project: ./SoundCharts.Explorer.TileService/SoundCharts.Explorer.TileService.csproj
 - name: tileset-service
   project: ./SoundCharts.Explorer.TilesetService/SoundCharts.Explorer.TilesetService.csproj
+  env_file:
+  - ../secrets.env
 - name: ingress
   project: ./SoundCharts.Explorer.Ingress/SoundCharts.Explorer.Ingress.csproj
   bindings:
