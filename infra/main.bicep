@@ -1,10 +1,18 @@
 param appsLocation string = 'CanadaCentral'
 param environmentName string
 param location string = resourceGroup().location
-param secrets array = []
 param ingressTag string
 param tileServiceTag string
 param tilesetServiceTag string
+
+@secure()
+param tilesetServiceAccountKey string
+
+@secure()
+param tilesetServiceAccountName string
+
+@secure()
+param tilesetServiceConnectionString string
 
 var workspaceName = '${environmentName}-logs'
 
@@ -43,7 +51,6 @@ resource tileServiceContainerApp 'Microsoft.Web/containerapps@2021-03-01' = {
   properties: {
     kubeEnvironmentId: environment.id
     configuration: {
-      secrets: secrets
       registries: []
       ingress: {
         'external': false
@@ -73,7 +80,20 @@ resource tilesetServiceContainerApp 'Microsoft.Web/containerapps@2021-03-01' = {
   properties: {
     kubeEnvironmentId: environment.id
     configuration: {
-      secrets: secrets
+      secrets: [
+        {
+          name: 'soundcharts-tileset-service-account-key'
+          value: tilesetServiceAccountKey
+        }
+        {
+          name: 'soundcharts-tileset-service-account-name'
+          value: tilesetServiceAccountName
+        }
+        {
+          name: 'soundcharts-tileset-service-connection-string'
+          value: tilesetServiceConnectionString
+        }
+      ]
       registries: []
       ingress: {
         'external': false
@@ -117,7 +137,6 @@ resource ingressContainerApp 'Microsoft.Web/containerapps@2021-03-01' = {
   properties: {
     kubeEnvironmentId: environment.id
     configuration: {
-      secrets: secrets
       registries: []
       ingress: {
         'external': true
