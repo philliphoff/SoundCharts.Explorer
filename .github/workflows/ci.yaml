@@ -32,6 +32,7 @@ jobs:
     runs-on: ubuntu-latest
 
     outputs:
+      ingress-tag: ${{ steps.tags.outputs.ingress-tag }}
       tile-service-tag: ${{ steps.tags.outputs.tile-service-tag }}
       tileset-service-tag: ${{ steps.tags.outputs.tileset-service-tag }}
 
