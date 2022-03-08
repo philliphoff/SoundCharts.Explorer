@@ -13,16 +13,7 @@ services:
   project: ./SoundCharts.Explorer.TileService/SoundCharts.Explorer.TileService.csproj
 - name: tileset-service
   project: ./SoundCharts.Explorer.TilesetService/SoundCharts.Explorer.TilesetService.csproj
-- name: yarp
+- name: ingress
   project: ./SoundCharts.Explorer.Ingress/SoundCharts.Explorer.Ingress.csproj
   bindings:
-   - port: 8081
-- name: nginx
-  image: nginx:latest
-  bindings:
-    - port: 8080
-      containerPort: 9090
-      protocol: http
-  volumes:
-    - source: nginx.conf
-      target: /etc/nginx/conf.d/default.conf
+   - port: 8080
