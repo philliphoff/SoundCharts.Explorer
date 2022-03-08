@@ -2,6 +2,7 @@ param appsLocation string = 'CanadaCentral'
 param environmentName string
 param location string = resourceGroup().location
 param secrets array = []
+param ingressTag string
 param tileServiceTag string
 param tilesetServiceTag string
 
@@ -45,8 +46,8 @@ resource tileServiceContainerApp 'Microsoft.Web/containerapps@2021-03-01' = {
       secrets: secrets
       registries: []
       ingress: {
-        'external':true
-        'targetPort':5000
+        'external': false
+        'targetPort': 5000
       }
     }
     template: {
@@ -75,8 +76,8 @@ resource tilesetServiceContainerApp 'Microsoft.Web/containerapps@2021-03-01' = {
       secrets: secrets
       registries: []
       ingress: {
-        'external':true
-        'targetPort':5000
+        'external': false
+        'targetPort': 5000
       }
     }
     template: {
@@ -89,6 +90,46 @@ resource tilesetServiceContainerApp 'Microsoft.Web/containerapps@2021-03-01' = {
             'cpu':'.25'
             'memory':'.5Gi'
           }
+        }
+      ]
+    }
+  }
+}
+
+resource ingressContainerApp 'Microsoft.Web/containerapps@2021-03-01' = {
+  name: 'ingress'
+  kind: 'containerapps'
+  location: appsLocation
+  properties: {
+    kubeEnvironmentId: environment.id
+    configuration: {
+      secrets: secrets
+      registries: []
+      ingress: {
+        'external': true
+        'targetPort': 5000
+      }
+    }
+    template: {
+      containers: [
+        {
+          'name':'ingress-container'
+          'image': ingressTag
+          'command':[]
+          'resources':{
+            'cpu':'.25'
+            'memory':'.5Gi'
+          }
+          'env': [
+            {
+              'name':'TILE-SERVICE_SERVICE_ENDPOINT'
+              'value':'https://${tileServiceContainerApp.properties.configuration.ingress.fqdn}'
+            }
+            {
+              'name':'TILESET-SERVICE_SERVICE_ENDPOINT'
+              'value':'https://${tilesetServiceContainerApp.properties.configuration.ingress.fqdn}'
+            }
+          ]
         }
       ]
     }

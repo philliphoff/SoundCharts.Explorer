@@ -47,6 +47,7 @@ jobs:
     - name: Generate service tags
       id: tags
       run: |
+        echo "::set-output name=ingress-tag::ingress:${{ steps.build-id.outputs.build-id }}"
         echo "::set-output name=tile-service-tag::tile-service:${{ steps.build-id.outputs.build-id }}"
         echo "::set-output name=tileset-service-tag::tileset-service:${{ steps.build-id.outputs.build-id }}"
 
@@ -62,6 +63,13 @@ jobs:
         login-server: ${{ env.REGISTRY }}
         username: ${{ secrets.ACR_USERNAME }}
         password: ${{ secrets.ACR_PASSWORD }}
+
+    - name: Build ingress
+      uses: docker/build-push-action@v2
+      with:
+        file: src/SoundCharts.Explorer.Ingress/Dockerfile
+        push: true
+        tags: ${{ env.REGISTRY }}/${{ steps.tags.outputs.ingress-tag }}
 
     - name: Build tile-service
       uses: docker/build-push-action@v2
@@ -104,6 +112,7 @@ jobs:
             --template-file ./infra/main.bicep \
             --parameters \
               environmentName='sound-charts' \
+              ingressTag='${{ env.REGISTRY }}/${{ needs.services-build.outputs.ingress-tag }}' \
               tileServiceTag='${{ env.REGISTRY }}/${{ needs.services-build.outputs.tile-service-tag }}' \
               tilesetServiceTag='${{ env.REGISTRY }}/${{ needs.services-build.outputs.tileset-service-tag }}'
 
