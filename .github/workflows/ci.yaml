@@ -115,9 +115,9 @@ jobs:
               environmentName='sound-charts' \
               ingressTag='${{ env.REGISTRY }}/${{ needs.services-build.outputs.ingress-tag }}' \
               tileServiceTag='${{ env.REGISTRY }}/${{ needs.services-build.outputs.tile-service-tag }}' \
-              tilesetServiceAccountKey='${{ secrets.SOUNDCHARTS_TILESET_SERVICE_ACCOUNT_KEY }}}' \
-              tilesetServiceAccountName='${{ secrets.SOUNDCHARTS_TILESET_SERVICE_ACCOUNT_NAME }}}' \
-              tilesetServiceConnectionString='${{ secrets.SOUNDCHARTS_TILESET_SERVICE_CONNECTION_STRING }}}' \
+              tilesetServiceAccountKey='${{ secrets.SOUNDCHARTS_TILESET_SERVICE_ACCOUNT_KEY }}' \
+              tilesetServiceAccountName='${{ secrets.SOUNDCHARTS_TILESET_SERVICE_ACCOUNT_NAME }}' \
+              tilesetServiceConnectionString='${{ secrets.SOUNDCHARTS_TILESET_SERVICE_CONNECTION_STRING }}' \
               tilesetServiceTag='${{ env.REGISTRY }}/${{ needs.services-build.outputs.tileset-service-tag }}'
 
   mac-build:
