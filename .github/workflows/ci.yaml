@@ -111,6 +111,10 @@ jobs:
           az deployment group create \
             --resource-group ${{ env.RESOURCE_GROUP }} \
             --template-file ./infra/main.bicep \
+            --secrets \
+              soundcharts-tileset-service-connection-string='${{ secrets.SOUNDCHARTS_TILESET_SERVICE_CONNECTION_STRING }}}' \
+              soundcharts-tileset-service-account-name='${{ secrets.SOUNDCHARTS_TILESET_SERVICE_ACCOUNT_NAME }}}' \
+              soundcharts-tileset-service-account-key='${{ secrets.SOUNDCHARTS_TILESET_SERVICE_ACCOUNT_KEY }}}' \
             --parameters \
               environmentName='sound-charts' \
               ingressTag='${{ env.REGISTRY }}/${{ needs.services-build.outputs.ingress-tag }}' \

@@ -90,6 +90,20 @@ resource tilesetServiceContainerApp 'Microsoft.Web/containerapps@2021-03-01' = {
             'cpu':'.25'
             'memory':'.5Gi'
           }
+          'env': [
+            {
+              'name': 'SOUNDCHARTS_TILESET_SERVICE_CONNECTION_STRING'
+              'secretRef': 'soundcharts-tileset-service-connection-string'
+            }
+            {
+              'name': 'SOUNDCHARTS_TILESET_SERVICE_ACCOUNT_NAME'
+              'secretRef': 'soundcharts-tileset-service-account-name'
+            }
+            {
+              'name': 'SOUNDCHARTS_TILESET_SERVICE_ACCOUNT_KEY'
+              'secretRef': 'soundcharts-tileset-service-account-key'
+            }
+          ]
         }
       ]
     }
