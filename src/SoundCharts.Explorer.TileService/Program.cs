@@ -24,7 +24,7 @@ app.MapGet("/tiles/{z}/{x}/{y}.png",
     {
         var tileIndex = new TileIndex(x, y, z);
 
-        var url = HttpTileSets.NoaaQuiltedTileSet(tileIndex);
+        var url = HttpTileSources.NoaaQuiltedTileSet(tileIndex);
 
         return Results.Redirect(url.ToString());
     })
