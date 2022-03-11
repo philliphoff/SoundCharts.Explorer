@@ -65,7 +65,7 @@
       <HintPath>..\packages\System.Memory.4.5.4\lib\netstandard2.0\System.Memory.dll</HintPath>
     </Reference>
     <Reference Include="SixLabors.ImageSharp">
-      <HintPath>..\packages\SixLabors.ImageSharp.1.0.4\lib\netstandard2.1\SixLabors.ImageSharp.dll</HintPath>
+      <HintPath>..\packages\SixLabors.ImageSharp.2.0.0\lib\netstandard2.1\SixLabors.ImageSharp.dll</HintPath>
     </Reference>
     <Reference Include="System.Reactive">
       <HintPath>..\packages\System.Reactive.5.0.0\lib\netstandard2.0\System.Reactive.dll</HintPath>
@@ -129,6 +129,15 @@
     </Reference>
     <Reference Include="System.Collections.Immutable">
       <HintPath>..\packages\System.Collections.Immutable.6.0.0\lib\netstandard2.0\System.Collections.Immutable.dll</HintPath>
+    </Reference>
+    <Reference Include="System.IO.Pipelines">
+      <HintPath>..\packages\System.IO.Pipelines.5.0.1\lib\netstandard2.0\System.IO.Pipelines.dll</HintPath>
+    </Reference>
+    <Reference Include="OncaInc.NauticalCharts">
+      <HintPath>..\packages\OncaInc.NauticalCharts.0.3.0\lib\netstandard2.1\OncaInc.NauticalCharts.dll</HintPath>
+    </Reference>
+    <Reference Include="OncaInc.NauticalCharts.ImageSharp">
+      <HintPath>..\packages\OncaInc.NauticalCharts.ImageSharp.0.3.0\lib\netstandard2.1\OncaInc.NauticalCharts.ImageSharp.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -219,8 +228,8 @@
       <DependentUpon>AppViewController.cs</DependentUpon>
     </Compile>
     <Compile Include="Services\Logging\ILoggingBuilderExtensions.cs" />
-    <Compile Include="Views\Overlays\ChartOverlay.cs" />
-    <Compile Include="Views\Overlays\ChartOverlayRenderer.cs" />
+    <Compile Include="Views\Overlays\ImageOverlay.cs" />
+    <Compile Include="Views\Overlays\ImageOverlayRenderer.cs" />
     <Compile Include="Services\Http\IHttpClientManager.cs" />
     <Compile Include="Services\Http\HttpClientManager.cs" />
   </ItemGroup>

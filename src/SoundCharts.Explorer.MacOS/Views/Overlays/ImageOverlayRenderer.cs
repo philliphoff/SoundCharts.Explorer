@@ -5,16 +5,16 @@ using MapKit;
 
 namespace SoundCharts.Explorer.MacOS.Views.Overlays
 {
-	internal sealed class ChartOverlayRenderer : MKOverlayRenderer
+	internal sealed class ImageOverlayRenderer : MKOverlayRenderer
 	{
-		public ChartOverlayRenderer(ChartOverlay overlay)
+		public ImageOverlayRenderer(ImageOverlay overlay)
 			: base(overlay)
 		{
 		}
 
         public override void DrawMapRect(MKMapRect mapRect, nfloat zoomScale, CGContext context)
         {
-			var overlay = (ChartOverlay)this.Overlay;
+			var overlay = (ImageOverlay)this.Overlay;
 
 			var drawRect = this.RectForMapRect(overlay.BoundingMapRect);
 

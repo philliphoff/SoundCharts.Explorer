@@ -4,6 +4,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 
 namespace SoundCharts.Explorer.Tiles.Sources
@@ -20,24 +21,32 @@ namespace SoundCharts.Explorer.Tiles.Sources
 			return Task.Run(
 				() =>
 				{
-                    // TODO: Pass in image format?
-                    using (var image = Image.Load(data.Data))
-                    {
-                        for (int i = 0; i < image.Height; i++)
-                        {
-                            var pixelRow = image.GetPixelRowSpan(i);
+                    bool isEmpty = true;
 
-                            foreach (var pixel in pixelRow)
+                    // TODO: Pass in image format?
+                    using (var image = Image.Load<Rgba32>(data.Data))
+                    {
+                        image.ProcessPixelRows(
+                            accessor =>
                             {
-                                if (pixel.A != 0)
+                                for (int i = 0; i < accessor.Height; i++)
                                 {
-                                    return data;
+                                    var pixelRow = accessor.GetRowSpan(i);
+
+                                    foreach (var pixel in pixelRow)
+                                    {
+                                        if (pixel.A != 0)
+                                        {
+                                            isEmpty = false;
+
+                                            return;
+                                        }
+                                    }
                                 }
-                            }
-                        }
+                            });
                     }
 
-                    return null;
+                    return isEmpty ? null : data;
                 },
 				cancellationToken);
         }
