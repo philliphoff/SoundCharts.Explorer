@@ -77,12 +77,12 @@ namespace SoundCharts.Explorer.MacOS
 							this);
 					});
 
-			this.overlay = new TileSourceOverlay(AppDelegate.Services.GetRequiredService<IObservableTileSource>());
+			//this.overlay = new TileSourceOverlay(AppDelegate.Services.GetRequiredService<IObservableTileSource>());
 
-			this.mapView.AddOverlay(this.overlay, MKOverlayLevel.AboveLabels);
+			//this.mapView.AddOverlay(this.overlay, MKOverlayLevel.AboveLabels);
 
-			//this.TryLoadChart()
-			//	.ContinueWith(_ => { });
+			this.TryLoadChart()
+				.ContinueWith(_ => { });
 		}
 
 		private async Task TryLoadChart()
