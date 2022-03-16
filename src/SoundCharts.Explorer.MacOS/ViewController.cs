@@ -104,6 +104,8 @@ namespace SoundCharts.Explorer.MacOS
 
 			var nsImage = NSImage.FromStream(memoryStream);
 
+			nsImage.Flipped = true;
+
 			var left = metadata.Border.Select(b => b.Longitude).Aggregate(180.0, (x, y) => Math.Min(x, y));
 			var right = metadata.Border.Select(b => b.Longitude).Aggregate(-180.0, (x, y) => Math.Max(x, y));
 			var top = metadata.Border.Select(b => b.Latitude).Aggregate(-90.0, (x, y) => Math.Max(x, y));
