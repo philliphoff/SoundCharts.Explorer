@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using NauticalCharts;
 using SixLabors.ImageSharp;
 using SoundCharts.Explorer.MacOS.Services.State;
+using SoundCharts.Explorer.MacOS.Utils;
 using SoundCharts.Explorer.MacOS.Views.Overlays;
 using SoundCharts.Explorer.Tiles;
 
@@ -91,43 +92,14 @@ namespace SoundCharts.Explorer.MacOS
 
 			using var stream = File.Open(path, FileMode.Open);
 
-			var chart = await Task.Run(() => BsbChartReader.ReadChartAsync(stream));
+			var chart = await BsbChartReader.ReadChartAsync(stream);
 			var metadata = BsbMetadataReader.ReadMetadata(chart.TextSegment);
 
-			var image = chart.ToImage();
+			var image = await chart.ToNSImageAsync();
 
-			using var memoryStream = new MemoryStream();
+			var (bounds, center) = metadata.ToMapBounds();
 
-			await image.SaveAsPngAsync(memoryStream);
-
-			memoryStream.Seek(0, SeekOrigin.Begin);
-
-			var nsImage = NSImage.FromStream(memoryStream);
-
-			nsImage.Flipped = true;
-
-			var left = metadata.Border.Select(b => b.Longitude).Aggregate(180.0, (x, y) => Math.Min(x, y));
-			var right = metadata.Border.Select(b => b.Longitude).Aggregate(-180.0, (x, y) => Math.Max(x, y));
-			var top = metadata.Border.Select(b => b.Latitude).Aggregate(-90.0, (x, y) => Math.Max(x, y));
-			var bottom = metadata.Border.Select(b => b.Latitude).Aggregate(90.0, (x, y) => Math.Min(x, y));
-
-			var bottomLeft = new CLLocationCoordinate2D(bottom, left);
-			var topRight = new CLLocationCoordinate2D(top, right);
-
-			var bottomLeftCoordinate = MKMapPoint.FromCoordinate(bottomLeft);
-			var topRightPoint = MKMapPoint.FromCoordinate(topRight);
-
-			var bounds = new MKMapRect(
-				Math.Min(bottomLeftCoordinate.X, topRightPoint.X),
-				Math.Min(bottomLeftCoordinate.Y, topRightPoint.Y),
-				Math.Abs(topRightPoint.X - bottomLeftCoordinate.X),
-				Math.Abs(topRightPoint.Y - bottomLeftCoordinate.Y));
-
-			var center = new CLLocationCoordinate2D(
-				bottomLeft.Latitude + ((topRight.Latitude - bottomLeft.Latitude) / 2),
-				bottomLeft.Longitude = ((topRight.Longitude - bottomLeft.Longitude) / 2));
-
-			this.mapView.AddOverlay(new ImageOverlay(nsImage, bounds, center), MKOverlayLevel.AboveLabels);
+			this.mapView.AddOverlay(new ImageOverlay(image, bounds, center), MKOverlayLevel.AboveLabels);
         }
 
         protected override void Dispose(bool disposing)

@@ -234,6 +234,8 @@
     <Compile Include="Views\Overlays\ImageOverlayRenderer.cs" />
     <Compile Include="Services\Http\IHttpClientManager.cs" />
     <Compile Include="Services\Http\HttpClientManager.cs" />
+    <Compile Include="Utils\BsbChartExtensions.cs" />
+    <Compile Include="Utils\BsbMetadataExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Main.storyboard" />
