@@ -137,14 +137,22 @@ jobs:
       run: |
         $VM_ASSETS/select-xamarin-sdk-v2.sh --mono=6.12 --mac=8.2
     
-    - name: Install Dependencies
+    - name: Install .NET Dependencies
       run: |
         dotnet restore src/SoundCharts.Explorer.Common/SoundCharts.Explorer.Common.csproj
-        dotnet restore src/SoundCharts.Explorer.MacOS/SoundCharts.Explorer.MacOS.csproj
         dotnet restore src/SoundCharts.Explorer.ManagedLogging/SoundCharts.Explorer.ManagedLogging.csproj
 
-    - name: Build
-      run: dotnet build src/SoundCharts.Explorer.MacOS/SoundCharts.Explorer.MacOS.csproj --configuration Release
+    - name: Install Xamarin Dependencies
+      run: |
+        nuget restore src/SoundCharts.Explorer.MacOS/SoundCharts.Explorer.MacOS.csproj -SolutionDirectory src
+
+    - name: Build .NET Projects
+      run: |
+        dotnet build src/SoundCharts.Explorer.Common/SoundCharts.Explorer.Common.csproj --configuration Release --no-restore
+        dotnet build src/SoundCharts.Explorer.ManagedLogging/SoundCharts.Explorer.ManagedLogging.csproj --configuration Release --no-restore
+
+    - name: Build Xamarin Projects
+      run: msbuild build src/SoundCharts.Explorer.MacOS/SoundCharts.Explorer.MacOS.csproj --configuration Release
 
     - name: 'Upload Artifact'
       uses: actions/upload-artifact@v2
