@@ -152,7 +152,7 @@ jobs:
         dotnet build src/SoundCharts.Explorer.ManagedLogging/SoundCharts.Explorer.ManagedLogging.csproj --configuration Release --no-restore
 
     - name: Build Xamarin Projects
-      run: msbuild build src/SoundCharts.Explorer.MacOS/SoundCharts.Explorer.MacOS.csproj --configuration Release
+      run: msbuild src/SoundCharts.Explorer.MacOS/SoundCharts.Explorer.MacOS.csproj /p:Configuration=Release /t:Build
 
     - name: 'Upload Artifact'
       uses: actions/upload-artifact@v2
