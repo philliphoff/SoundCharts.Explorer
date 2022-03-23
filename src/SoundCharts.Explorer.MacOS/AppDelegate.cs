@@ -1,10 +1,12 @@
 ﻿using System;
+using System.IO;
 using System.Net.Http;
 using AppKit;
 using Foundation;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SoundCharts.Explorer.Charts;
+using SoundCharts.Explorer.Charts.Caches;
 using SoundCharts.Explorer.Charts.Sources;
 using SoundCharts.Explorer.MacOS.Components;
 using SoundCharts.Explorer.MacOS.Services.Collections;
@@ -28,8 +30,11 @@ namespace SoundCharts.Explorer.MacOS
 					.AddSingleton<IChartSource>(
 						_ =>
                         {
+							string cacheDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".soundcharts", "explorer", "caches");
+							string chartCacheDirectory = Path.Combine(cacheDirectory, "charts");
+
 							return new CachedChartSource(
-								new InMemoryChartCache(),
+								new FileChartCache(chartCacheDirectory),
 								new LocalChartSource());
                         })
 					.AddSingleton<IChartCollectionManager, ChartCollectionManager>()
