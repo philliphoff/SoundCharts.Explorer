@@ -8,66 +8,67 @@ using SoundCharts.Explorer.Charts.Sources;
 using SoundCharts.Explorer.MacOS.Utils;
 using SoundCharts.Explorer.Utilities;
 
-namespace SoundCharts.Explorer.MacOS.Views.Overlays;
-
-internal sealed class ChartOverlayManager : IDisposable
+namespace SoundCharts.Explorer.MacOS.Views.Overlays
 {
-    private readonly IDisposable chartsSubscription;
-    private readonly MKMapView mapView;
-    private IImmutableDictionary<Uri, ImageOverlay> overlays = ImmutableDictionary<Uri, ImageOverlay>.Empty;
-
-    public ChartOverlayManager(IObservable<IImmutableSet<Uri>> chartManager, IChartSource chartSource, MKMapView mapView)
+    internal sealed class ChartOverlayManager : IDisposable
     {
-        this.mapView = mapView ?? throw new ArgumentNullException(nameof(mapView));
+        private readonly IDisposable chartsSubscription;
+        private readonly MKMapView mapView;
+        private IImmutableDictionary<Uri, ImageOverlay> overlays = ImmutableDictionary<Uri, ImageOverlay>.Empty;
 
-        this.chartsSubscription =
-            chartManager
-                .ToChangeSet()
-                .Select(
-                    async changes =>
-                    {
-                        // TODO: Serialize this.
-                        foreach (var name in changes.Added)
+        public ChartOverlayManager(IObservable<IImmutableSet<Uri>> chartManager, IChartSource chartSource, MKMapView mapView)
+        {
+            this.mapView = mapView ?? throw new ArgumentNullException(nameof(mapView));
+
+            this.chartsSubscription =
+                chartManager
+                    .ToChangeSet()
+                    .Select(
+                        async changes =>
                         {
-                            var chart = await chartSource.GetChartAsync(name);
-
-                            if (chart != null)
+                            // TODO: Serialize this.
+                            foreach (var name in changes.Added)
                             {
-                                var (bounds, center) = chart.Metadata.ToMapBounds();
+                                var chart = await chartSource.GetChartAsync(name);
 
-                                // TODO: Add appropriate timeout.
-                                var image = await chart.ToNSImageAsync();
+                                if (chart != null)
+                                {
+                                    var (bounds, center) = chart.Metadata.ToMapBounds();
 
-                                var overlay = new ImageOverlay(image, bounds, center);
+                                    // TODO: Add appropriate timeout.
+                                    var image = await chart.ToNSImageAsync();
 
-                                this.mapView.AddOverlay(overlay);
+                                    var overlay = new ImageOverlay(image, bounds, center);
 
-                                this.overlays = this.overlays.Add(name, overlay);
+                                    this.mapView.AddOverlay(overlay);
+
+                                    this.overlays = this.overlays.Add(name, overlay);
+                                }
                             }
-                        }
 
-                        foreach (var name in changes.Removed)
-                        {
-                            if (this.overlays.TryGetValue(name, out ImageOverlay overlay))
+                            foreach (var name in changes.Removed)
                             {
-                                this.mapView.RemoveOverlay(overlay);
+                                if (this.overlays.TryGetValue(name, out ImageOverlay overlay))
+                                {
+                                    this.mapView.RemoveOverlay(overlay);
 
-                                this.overlays = this.overlays.Remove(name);
+                                    this.overlays = this.overlays.Remove(name);
+                                }
                             }
-                        }
-                    })
-                .SubscribeOn(SynchronizationContext.Current)
-                .Subscribe();
+                        })
+                    .SubscribeOn(SynchronizationContext.Current)
+                    .Subscribe();
+        }
+
+        #region IDisposable Members
+
+        public void Dispose()
+        {
+            this.chartsSubscription.Dispose();
+            this.mapView.RemoveOverlays(this.overlays.Values.ToArray());
+            this.overlays = this.overlays.Clear();
+        }
+
+        #endregion
     }
-
-    #region IDisposable Members
-
-    public void Dispose()
-    {
-        this.chartsSubscription.Dispose();
-        this.mapView.RemoveOverlays(this.overlays.Values.ToArray());
-        this.overlays = this.overlays.Clear();
-    }
-
-    #endregion
 }
