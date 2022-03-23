@@ -135,7 +135,7 @@ jobs:
 
     - name: Set default Xamarin SDK versions
       run: |
-        $VM_ASSETS/select-xamarin-sdk-v2.sh --mono=6.12 --mac=8.2
+        $VM_ASSETS/select-xamarin-sdk-v2.sh --mono=6.12 --mac=8.8
     
     - name: Install Dependencies
       run: |
