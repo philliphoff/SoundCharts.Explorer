@@ -6,6 +6,7 @@ using SoundCharts.Explorer.MacOS.Views.SourceList;
 using SoundCharts.Explorer.MacOS.Services.Tilesets;
 using System;
 using SoundCharts.Explorer.MacOS.Services.State;
+using SoundCharts.Explorer.MacOS.Services.Collections;
 
 namespace SoundCharts.Explorer.MacOS
 {
@@ -28,6 +29,7 @@ namespace SoundCharts.Explorer.MacOS
             {
                 this.dataSource = new SourceListDataSource(
                     AppDelegate.Services.GetRequiredService<IApplicationStateManager>(),
+                    AppDelegate.Services.GetRequiredService<IChartCollectionManager>(),
                     AppDelegate.Services.GetRequiredService<ITilesetManager>());
                 this.@delegate = new SourceListDelegate();
 

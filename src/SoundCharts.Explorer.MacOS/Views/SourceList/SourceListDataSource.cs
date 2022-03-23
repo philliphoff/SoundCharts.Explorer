@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Immutable;
+using System.IO;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading;
 using AppKit;
 using Foundation;
+using SoundCharts.Explorer.MacOS.Services.Collections;
 using SoundCharts.Explorer.MacOS.Services.State;
 using SoundCharts.Explorer.MacOS.Services.Tilesets;
 
@@ -17,7 +20,10 @@ namespace SoundCharts.Explorer.MacOS.Views.SourceList
         private SourceListItem[] items = Array.Empty<SourceListItem>();
         private readonly OfflineTilesetsSwitchItem switchItem = new OfflineTilesetsSwitchItem("Use Offline Tilesets");
 
-        public SourceListDataSource(IApplicationStateManager applicationStateManager, ITilesetManager tilesetManager)
+        public SourceListDataSource(
+            IApplicationStateManager applicationStateManager,
+            IChartCollectionManager chartCollectionManager,
+            ITilesetManager tilesetManager)
         {            
             if (tilesetManager is null)
             {
@@ -43,18 +49,26 @@ namespace SoundCharts.Explorer.MacOS.Views.SourceList
             this.subscription =
                 tilesetManager
                     .Tilesets
+                    .CombineLatest(chartCollectionManager.Collections)
                     .ObserveOn(SynchronizationContext.Current)
                     .Subscribe(
-                        tilesets =>
+                        ((IImmutableSet<ManagedTileset> Tilesets, IImmutableSet<ChartCollection> Collections) combined) =>
                         {
                             this.items =
                                 new[]
                                 {
                                     new HeaderItem(
+                                        "Collections",
+                                        combined.Collections
+                                            .Select(collection =>
+                                                new HeaderItem(
+                                                        collection.Name,
+                                                        collection.Charts.Select(chart => new CollectionFileItem(Path.GetFileName(chart)))))),
+                                    new HeaderItem(
                                         "Tilesets",
                                         new SourceListItem[] { this.switchItem }
                                             .Concat(
-                                                tilesets
+                                                combined.Tilesets
                                                     .Select(tileset =>
                                                         new TilesetItem(
                                                             tileset.Description ?? tileset.Id,

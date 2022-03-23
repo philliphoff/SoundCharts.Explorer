@@ -168,6 +168,7 @@
     <Folder Include="Services\Tiles\" />
     <Folder Include="Views\Overlays\" />
     <Folder Include="Services\Http\" />
+    <Folder Include="Services\Collections\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -236,6 +237,11 @@
     <Compile Include="Services\Http\HttpClientManager.cs" />
     <Compile Include="Utils\BsbChartExtensions.cs" />
     <Compile Include="Utils\BsbMetadataExtensions.cs" />
+    <Compile Include="Services\Collections\IChartCollectionManager.cs" />
+    <Compile Include="Services\Collections\ChartCollectionManager.cs" />
+    <Compile Include="Views\SourceList\CollectionFileItem.cs" />
+    <Compile Include="Views\Overlays\ChartOverlayManager.cs" />
+    <Compile Include="Utils\ChartDataExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Main.storyboard" />

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
 using AppKit;
 using Foundation;
 
@@ -26,6 +25,7 @@ namespace SoundCharts.Explorer.MacOS.Views.SourceList
         {
             return item switch
             {
+                CollectionFileItem fileItem => this.MakeView(outlineView, fileItem),
                 HeaderItem header => this.MakeView(outlineView, header),
                 OfflineTilesetsSwitchItem offlineTilesetsSwitch => this.MakeView(outlineView, offlineTilesetsSwitch),
                 TilesetItem tileset => this.MakeView(outlineView, tileset),
@@ -41,6 +41,23 @@ namespace SoundCharts.Explorer.MacOS.Views.SourceList
         public override bool ShouldEditTableColumn(NSOutlineView outlineView, NSTableColumn? tableColumn, NSObject item)
         {
             return false;
+        }
+
+        public override void SelectionDidChange(NSNotification notification)
+        {
+            if (notification.Object is NSOutlineView view && view.SelectedRowCount > 0)
+            {
+                var item = view.ItemAtRow(view.SelectedRow);
+            }
+        }
+
+        private NSView MakeView(NSOutlineView outlineView, CollectionFileItem fileItem)
+        {
+            var view = (NSTableCellView)outlineView.MakeView("CollectionFileCell", this);
+
+            view.TextField.StringValue = fileItem.Title;
+
+            return view;
         }
 
         private NSView MakeView(NSOutlineView outlineView, HeaderItem item)

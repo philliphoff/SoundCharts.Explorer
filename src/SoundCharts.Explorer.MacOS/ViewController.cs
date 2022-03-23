@@ -1,26 +1,22 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using AppKit;
 using CoreLocation;
 using Foundation;
 using MapKit;
 using Microsoft.Extensions.DependencyInjection;
-using NauticalCharts;
-using SixLabors.ImageSharp;
+using SoundCharts.Explorer.Charts.Sources;
 using SoundCharts.Explorer.MacOS.Services.State;
-using SoundCharts.Explorer.MacOS.Utils;
 using SoundCharts.Explorer.MacOS.Views.Overlays;
-using SoundCharts.Explorer.Tiles;
 
 namespace SoundCharts.Explorer.MacOS
 {
-	public partial class ViewController : NSViewController
+    public partial class ViewController : NSViewController
 	{
 		private IDisposable? applicationStateListener;
+		private ChartOverlayManager? chartOverlayManager;
 		private TileSourceOverlay? overlay;
 		private IDisposable? regionChangeListener;
 
@@ -44,9 +40,9 @@ namespace SoundCharts.Explorer.MacOS
 
 			var applicationStateManager = AppDelegate.Services.GetRequiredService<IApplicationStateManager>();
 
-			this.applicationStateListener = applicationStateManager?.CurrentState
-				.Where(update => update.State?.MapRegion is not null && update.Context != this)
-				.Select(update => update.State!.MapRegion!)
+			this.applicationStateListener = applicationStateManager.CurrentState
+				.Where(update => update.State?.Map?.Region is not null && update.Context != this)
+				.Select(update => update.State!.Map!.Region!)
 				.ObserveOn(SynchronizationContext.Current)
 				.Subscribe(
 					region =>
@@ -56,6 +52,16 @@ namespace SoundCharts.Explorer.MacOS
 								new CLLocationCoordinate2D(region.Center.Latitude, region.Center.Longitude),
 								new MKCoordinateSpan(region.Span.LatitudeDegrees, region.Span.LongitudeDegrees));
 					});
+
+			var chartsObserver =
+
+			this.chartOverlayManager = new ChartOverlayManager(
+				applicationStateManager.CurrentState
+					.Where(update => update.State?.Map?.Charts is not null)
+					.Select(update => update.State!.Map!.Charts!)
+					.DistinctUntilChanged(),
+				AppDelegate.Services.GetRequiredService<IChartSource>(),
+				this.mapView);
 
 			this.regionChangeListener = Observable
 				.FromEventPattern<EventHandler<MKMapViewChangeEventArgs>, MKMapViewChangeEventArgs>(
@@ -70,9 +76,13 @@ namespace SoundCharts.Explorer.MacOS
 							{
 								return (state ?? new ApplicationState()) with
 								{
-									MapRegion = new MapRegion(
-										new MapCoordinate(region.Center.Latitude, region.Center.Longitude),
-										new MapSpan(region.Span.LatitudeDelta, region.Span.LongitudeDelta))
+									Map = (state?.Map ?? new Map()) with
+									{
+										Region =
+											new MapRegion(
+												new MapCoordinate(region.Center.Latitude, region.Center.Longitude),
+												new MapSpan(region.Span.LatitudeDelta, region.Span.LongitudeDelta))
+									}
 								};
 							},
 							this);
@@ -81,26 +91,7 @@ namespace SoundCharts.Explorer.MacOS
 			//this.overlay = new TileSourceOverlay(AppDelegate.Services.GetRequiredService<IObservableTileSource>());
 
 			//this.mapView.AddOverlay(this.overlay, MKOverlayLevel.AboveLabels);
-
-			this.TryLoadChart()
-				.ContinueWith(_ => { });
 		}
-
-		private async Task TryLoadChart()
-        {
-			string path = "/Users/phoff/Downloads/RM-PAC02 (31-Jan-22 Update)/BSBCHART/342401.KAP";
-
-			using var stream = File.Open(path, FileMode.Open);
-
-			var chart = await BsbChartReader.ReadChartAsync(stream);
-			var metadata = BsbMetadataReader.ReadMetadata(chart.TextSegment);
-
-			var image = await chart.ToNSImageAsync();
-
-			var (bounds, center) = metadata.ToMapBounds();
-
-			this.mapView.AddOverlay(new ImageOverlay(image, bounds, center), MKOverlayLevel.AboveLabels);
-        }
 
         protected override void Dispose(bool disposing)
         {
@@ -110,6 +101,8 @@ namespace SoundCharts.Explorer.MacOS
 				{
 					this.mapView.RemoveOverlay(this.overlay);
 				}
+
+				this.chartOverlayManager?.Dispose();
 
 				this.applicationStateListener?.Dispose();
 				this.regionChangeListener?.Dispose();

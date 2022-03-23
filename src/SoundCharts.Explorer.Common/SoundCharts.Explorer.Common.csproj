@@ -23,6 +23,11 @@
     <None Remove="System.Text.Json" />
     <None Remove="System.Collections.Immutable" />
     <None Remove="System.Reactive" />
+    <None Remove="Charts\" />
+    <None Remove="OncaInc.NauticalCharts" />
+    <None Remove="OncaInc.NauticalCharts.ImageSharp" />
+    <None Remove="Charts\Caches\" />
+    <None Remove="Charts\Sources\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Tiles\" />
@@ -30,6 +35,9 @@
     <Folder Include="Tiles\Caches\" />
     <Folder Include="Utilities\" />
     <Folder Include="Tiles\Tilesets\" />
+    <Folder Include="Charts\" />
+    <Folder Include="Charts\Caches\" />
+    <Folder Include="Charts\Sources\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="LiteDB" Version="5.0.11" />
@@ -38,5 +46,7 @@
     <PackageReference Include="System.Text.Json" Version="6.0.2" />
     <PackageReference Include="System.Collections.Immutable" Version="6.0.0" />
     <PackageReference Include="System.Reactive" Version="5.0.0" />
+    <PackageReference Include="OncaInc.NauticalCharts" Version="0.3.1" />
+    <PackageReference Include="OncaInc.NauticalCharts.ImageSharp" Version="0.3.1" />
   </ItemGroup>
 </Project>

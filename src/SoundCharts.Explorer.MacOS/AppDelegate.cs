@@ -4,7 +4,10 @@ using AppKit;
 using Foundation;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using SoundCharts.Explorer.Charts;
+using SoundCharts.Explorer.Charts.Sources;
 using SoundCharts.Explorer.MacOS.Components;
+using SoundCharts.Explorer.MacOS.Services.Collections;
 using SoundCharts.Explorer.MacOS.Services.Http;
 using SoundCharts.Explorer.MacOS.Services.Logging;
 using SoundCharts.Explorer.MacOS.Services.State;
@@ -22,6 +25,14 @@ namespace SoundCharts.Explorer.MacOS
 				new ServiceCollection()
 					.AddSingleton<IApplicationStateManager, ApplicationStateManager>()
 					.AddSingleton<IApplicationComponent, ApplicationStateMonitor>()
+					.AddSingleton<IChartSource>(
+						_ =>
+                        {
+							return new CachedChartSource(
+								new InMemoryChartCache(),
+								new LocalChartSource());
+                        })
+					.AddSingleton<IChartCollectionManager, ChartCollectionManager>()
 					.AddSingleton<IHttpClientManager, HttpClientManager>()
 					.AddSingleton<ILoggerFactory>(
 						_ =>
