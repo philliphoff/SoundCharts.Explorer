@@ -1,6 +1,7 @@
 using System;
 using AppKit;
 using Foundation;
+using ObjCRuntime;
 
 namespace SoundCharts.Explorer.MacOS.Views.SourceList
 {
@@ -13,7 +14,7 @@ namespace SoundCharts.Explorer.MacOS.Views.SourceList
         {
         }
 
-        public OfflineTilesetsSwitchView(IntPtr handle)
+        public OfflineTilesetsSwitchView(NativeHandle handle)
             : base(handle)
         {
         }

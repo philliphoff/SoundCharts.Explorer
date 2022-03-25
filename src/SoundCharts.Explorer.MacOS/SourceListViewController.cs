@@ -7,6 +7,7 @@ using SoundCharts.Explorer.MacOS.Services.Tilesets;
 using System;
 using SoundCharts.Explorer.MacOS.Services.State;
 using SoundCharts.Explorer.MacOS.Services.Collections;
+using ObjCRuntime;
 
 namespace SoundCharts.Explorer.MacOS
 {
@@ -17,7 +18,7 @@ namespace SoundCharts.Explorer.MacOS
 
         private bool sourceListInitialized;
 
-		public SourceListViewController (IntPtr handle) : base (handle)
+		public SourceListViewController (NativeHandle handle) : base (handle)
 		{
 		}
 

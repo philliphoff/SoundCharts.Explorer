@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Threading.Tasks;
 using AppKit;
 using Foundation;
+using ObjCRuntime;
 
 namespace SoundCharts.Explorer.MacOS.Views.SourceList
 {
@@ -11,7 +12,7 @@ namespace SoundCharts.Explorer.MacOS.Views.SourceList
 	{
         private Func<Task>? onAction;
 
-        public OfflineTilesetView(IntPtr handle)
+        public OfflineTilesetView(NativeHandle handle)
             : base(handle)
         {
         }

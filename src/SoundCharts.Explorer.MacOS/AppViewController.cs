@@ -1,13 +1,14 @@
 using System;
 using AppKit;
 using Foundation;
+using ObjCRuntime;
 
 namespace SoundCharts.Explorer.MacOS
 {
 	[Register("AppViewController")]
 	public partial class AppViewController : NSWindowController
 	{
-		public AppViewController(IntPtr handle)
+		public AppViewController(NativeHandle handle)
 			: base(handle)
 		{
 		}

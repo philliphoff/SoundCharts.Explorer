@@ -1,269 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\Microsoft.Net.Compilers.4.1.0\build\Microsoft.Net.Compilers.props" Condition="Exists('..\packages\Microsoft.Net.Compilers.4.1.0\build\Microsoft.Net.Compilers.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{032E280F-1341-4278-B004-BD63F82C04E1}</ProjectGuid>
-    <ProjectTypeGuids>{A3F8F2AB-B479-4A4A-A458-A89E7DC349F1};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <TargetFramework>net6.0-macos</TargetFramework>
     <OutputType>Exe</OutputType>
     <RootNamespace>SoundCharts.Explorer.MacOS</RootNamespace>
     <AssemblyName>SoundCharts Explorer</AssemblyName>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
-    <TargetFrameworkIdentifier>Xamarin.Mac</TargetFrameworkIdentifier>
-    <MonoMacResourcePrefix>Resources</MonoMacResourcePrefix>
     <Nullable>enable</Nullable>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <ResolveAssemblyConflicts>true</ResolveAssemblyConflicts>
+    <SupportedOSPlatformVersion>10.15</SupportedOSPlatformVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug</OutputPath>
-    <DefineConstants>DEBUG;</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
     <EnableCodeSigning>false</EnableCodeSigning>
-    <CodeSigningKey>Mac Developer</CodeSigningKey>
-    <CreatePackage>false</CreatePackage>
-    <EnablePackageSigning>false</EnablePackageSigning>
-    <IncludeMonoRuntime>false</IncludeMonoRuntime>
-    <UseSGen>true</UseSGen>
-    <UseRefCounting>true</UseRefCounting>
-    <Profiling>true</Profiling>
-    <LinkMode>None</LinkMode>
-    <AOTMode>None</AOTMode>
-    <LangVersion>latest</LangVersion>
+    <UseSGen>false</UseSGen>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release</OutputPath>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
     <EnableCodeSigning>false</EnableCodeSigning>
-    <CreatePackage>true</CreatePackage>
-    <EnablePackageSigning>false</EnablePackageSigning>
-    <IncludeMonoRuntime>true</IncludeMonoRuntime>
-    <UseSGen>true</UseSGen>
-    <UseRefCounting>true</UseRefCounting>
-    <CodeSignEntitlements>Entitlements.plist</CodeSignEntitlements>
-    <LinkMode>SdkOnly</LinkMode>
-    <AOTMode>None</AOTMode>
-    <LangVersion>latest</LangVersion>
+    <UseSGen>false</UseSGen>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="Xamarin.Mac" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Buffers">
-      <HintPath>..\packages\System.Buffers.4.5.1\lib\netstandard2.0\System.Buffers.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Runtime.CompilerServices.Unsafe">
-      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.6.0.0\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Memory">
-      <HintPath>..\packages\System.Memory.4.5.4\lib\netstandard2.0\System.Memory.dll</HintPath>
-    </Reference>
-    <Reference Include="SixLabors.ImageSharp">
-      <HintPath>..\packages\SixLabors.ImageSharp.2.0.0\lib\netstandard2.1\SixLabors.ImageSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Reactive">
-      <HintPath>..\packages\System.Reactive.5.0.0\lib\netstandard2.0\System.Reactive.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Bcl.AsyncInterfaces">
-      <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.6.0.0\lib\netstandard2.1\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions">
-      <HintPath>..\packages\Microsoft.Extensions.DependencyInjection.Abstractions.6.0.0\lib\netstandard2.1\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Extensions.DependencyInjection">
-      <HintPath>..\packages\Microsoft.Extensions.DependencyInjection.6.0.0\lib\netstandard2.1\Microsoft.Extensions.DependencyInjection.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Diagnostics.DiagnosticSource">
-      <HintPath>..\packages\System.Diagnostics.DiagnosticSource.6.0.0\lib\netstandard2.0\System.Diagnostics.DiagnosticSource.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Security.Principal.Windows">
-      <HintPath>..\packages\System.Security.Principal.Windows.5.0.0\lib\netstandard2.0\System.Security.Principal.Windows.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Diagnostics.EventLog">
-      <HintPath>..\packages\System.Diagnostics.EventLog.6.0.0\lib\netstandard2.0\System.Diagnostics.EventLog.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Text.Encodings.Web">
-      <HintPath>..\packages\System.Text.Encodings.Web.6.0.0\lib\netstandard2.0\System.Text.Encodings.Web.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Text.Json">
-      <HintPath>..\packages\System.Text.Json.6.0.2\lib\netstandard2.0\System.Text.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="LiteDB">
-      <HintPath>..\packages\LiteDB.5.0.11\lib\netstandard2.0\LiteDB.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Extensions.Logging.Abstractions">
-      <HintPath>..\packages\Microsoft.Extensions.Logging.Abstractions.6.0.1\lib\netstandard2.0\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Extensions.Options">
-      <HintPath>..\packages\Microsoft.Extensions.Options.6.0.0\lib\netstandard2.1\Microsoft.Extensions.Options.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Extensions.Primitives">
-      <HintPath>..\packages\Microsoft.Extensions.Primitives.6.0.0\lib\netstandard2.0\Microsoft.Extensions.Primitives.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Extensions.Logging">
-      <HintPath>..\packages\Microsoft.Extensions.Logging.6.0.0\lib\netstandard2.1\Microsoft.Extensions.Logging.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Extensions.Configuration.Abstractions">
-      <HintPath>..\packages\Microsoft.Extensions.Configuration.Abstractions.6.0.0\lib\netstandard2.0\Microsoft.Extensions.Configuration.Abstractions.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Extensions.Configuration">
-      <HintPath>..\packages\Microsoft.Extensions.Configuration.6.0.1\lib\netstandard2.0\Microsoft.Extensions.Configuration.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Extensions.Configuration.Binder">
-      <HintPath>..\packages\Microsoft.Extensions.Configuration.Binder.6.0.0\lib\netstandard2.0\Microsoft.Extensions.Configuration.Binder.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Extensions.Options.ConfigurationExtensions">
-      <HintPath>..\packages\Microsoft.Extensions.Options.ConfigurationExtensions.6.0.0\lib\netstandard2.0\Microsoft.Extensions.Options.ConfigurationExtensions.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Extensions.Logging.Configuration">
-      <HintPath>..\packages\Microsoft.Extensions.Logging.Configuration.6.0.0\lib\netstandard2.0\Microsoft.Extensions.Logging.Configuration.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Extensions.Logging.Console">
-      <HintPath>..\packages\Microsoft.Extensions.Logging.Console.6.0.0\lib\netstandard2.0\Microsoft.Extensions.Logging.Console.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Collections.Immutable">
-      <HintPath>..\packages\System.Collections.Immutable.6.0.0\lib\netstandard2.0\System.Collections.Immutable.dll</HintPath>
-    </Reference>
-    <Reference Include="System.IO.Pipelines">
-      <HintPath>..\packages\System.IO.Pipelines.6.0.2\lib\netstandard2.0\System.IO.Pipelines.dll</HintPath>
-    </Reference>
-    <Reference Include="OncaInc.NauticalCharts">
-      <HintPath>..\packages\OncaInc.NauticalCharts.0.3.1\lib\netstandard2.1\OncaInc.NauticalCharts.dll</HintPath>
-    </Reference>
-    <Reference Include="OncaInc.NauticalCharts.ImageSharp">
-      <HintPath>..\packages\OncaInc.NauticalCharts.ImageSharp.0.3.1\lib\netstandard2.1\OncaInc.NauticalCharts.ImageSharp.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\AppIcon-128.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\AppIcon-128%402x.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\AppIcon-16.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\AppIcon-16%402x.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\AppIcon-256.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\AppIcon-256%402x.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\AppIcon-32.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\AppIcon-32%402x.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\AppIcon-512.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\AppIcon-512%402x.png" />
-    <ImageAsset Include="Assets.xcassets\Contents.json" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Resources\" />
-    <Folder Include="Services\" />
-    <Folder Include="Services\State\" />
-    <Folder Include="Components\" />
-    <Folder Include="Views\" />
-    <Folder Include="Services\Tilesets\" />
-    <Folder Include="Services\Logging\" />
-    <Folder Include="Views\SourceList\" />
-    <Folder Include="Services\Tiles\" />
-    <Folder Include="Views\Overlays\" />
-    <Folder Include="Services\Http\" />
-    <Folder Include="Services\Collections\" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Info.plist" />
-    <None Include="Entitlements.plist" />
-    <None Include="packages.config" />
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Main.cs" />
-    <Compile Include="AppDelegate.cs" />
-    <Compile Include="ViewController.cs" />
-    <Compile Include="ViewController.designer.cs">
-      <DependentUpon>ViewController.cs</DependentUpon>
-    </Compile>
-    <Compile Include="TileSourceOverlay.cs" />
-    <Compile Include="Services\State\IApplicationStateManager.cs" />
-    <Compile Include="Services\State\ApplicationState.cs" />
-    <Compile Include="Services\State\ApplicationStateManager.cs" />
-    <Compile Include="IsExternalInit.cs" />
-    <Compile Include="Components\IApplicationComponent.cs" />
-    <Compile Include="Components\ApplicationStateMonitor.cs" />
-    <Compile Include="Services\Tilesets\ITilesetManager.cs" />
-    <Compile Include="Services\Tilesets\TilesetManager.cs" />
-    <Compile Include="SourceListViewController.cs" />
-    <Compile Include="SourceListViewController.designer.cs">
-      <DependentUpon>SourceListViewController.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Services\Logging\OSLoggerProvider.cs" />
-    <Compile Include="Services\Logging\OSLogger.cs" />
-    <Compile Include="Views\SourceList\SourceListDataSource.cs" />
-    <Compile Include="Views\SourceList\SourceListDelegate.cs" />
-    <Compile Include="Views\SourceList\SourceListItem.cs" />
-    <Compile Include="Views\SourceList\SourceListView.cs" />
-    <Compile Include="Views\SourceList\SourceListView.designer.cs">
-      <DependentUpon>..\Views\SourceListView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Views\SourceList\HeaderItem.cs" />
-    <Compile Include="Views\SourceList\TilesetItem.cs" />
-    <Compile Include="Views\SourceList\OfflineTilesetsSwitchItem.cs" />
-    <Compile Include="Views\SourceList\OfflineTilesetsSwitchView.cs" />
-    <Compile Include="Views\SourceList\OfflineTilesetsSwitchView.designer.cs">
-      <DependentUpon>Views\SourceList\OfflineTilesetsSwitchView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="PreferencesViewController.cs" />
-    <Compile Include="PreferencesViewController.designer.cs">
-      <DependentUpon>PreferencesViewController.cs</DependentUpon>
-    </Compile>
-    <Compile Include="TIleSourceOverlayRenderer.cs" />
-    <Compile Include="Services\Tiles\ApplicationTileSource.cs" />
-    <Compile Include="Services\Tiles\OnlineTileSource.cs" />
-    <Compile Include="Services\Tiles\OfflineTileSource.cs" />
-    <Compile Include="Services\Tilesets\ITilesetCache.cs" />
-    <Compile Include="Services\Tilesets\TilesetCache.cs" />
-    <Compile Include="Views\SourceList\OfflineTilesetView.cs" />
-    <Compile Include="Views\SourceList\OfflineTilesetView.designer.cs">
-      <DependentUpon>Views\SourceList\OfflineTilesetView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="AppViewController.cs" />
-    <Compile Include="AppViewController.designer.cs">
-      <DependentUpon>AppViewController.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Services\Logging\ILoggingBuilderExtensions.cs" />
-    <Compile Include="Views\Overlays\ImageOverlay.cs" />
-    <Compile Include="Views\Overlays\ImageOverlayRenderer.cs" />
-    <Compile Include="Services\Http\IHttpClientManager.cs" />
-    <Compile Include="Services\Http\HttpClientManager.cs" />
-    <Compile Include="Utils\BsbChartExtensions.cs" />
-    <Compile Include="Utils\BsbMetadataExtensions.cs" />
-    <Compile Include="Services\Collections\IChartCollectionManager.cs" />
-    <Compile Include="Services\Collections\ChartCollectionManager.cs" />
-    <Compile Include="Views\SourceList\CollectionFileItem.cs" />
-    <Compile Include="Views\Overlays\ChartOverlayManager.cs" />
-    <Compile Include="Utils\ChartDataExtensions.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <InterfaceDefinition Include="Main.storyboard" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\SoundCharts.Explorer.Common\SoundCharts.Explorer.Common.csproj">
-      <Project>{0180F69C-D4F3-451B-9B42-53B6362255A5}</Project>
-      <Name>SoundCharts.Explorer.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\SoundCharts.Explorer.ManagedLogging\SoundCharts.Explorer.ManagedLogging.csproj">
-      <Project>{5A044DD0-B65E-46AD-B723-3F2262D7A42B}</Project>
-      <Name>SoundCharts.Explorer.ManagedLogging</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <!--
     <NativeReference Include="..\SoundCharts.Explorer.NativeLogging\build\Release\libSoundCharts.Explorer.NativeLogging.dylib">
       <Kind>Dynamic</Kind>
-      <SmartLink>False</SmartLink>
     </NativeReference>
+    -->
   </ItemGroup>
-  <Import Project="$(MSBuildExtensionsPath)\Xamarin\Mac\Xamarin.Mac.CSharp.targets" />
-  <Import Project="..\packages\System.Text.Json.6.0.2\build\System.Text.Json.targets" Condition="Exists('..\packages\System.Text.Json.6.0.2\build\System.Text.Json.targets')" />
-  <Import Project="..\packages\Microsoft.Extensions.Logging.Abstractions.6.0.1\build\Microsoft.Extensions.Logging.Abstractions.targets" Condition="Exists('..\packages\Microsoft.Extensions.Logging.Abstractions.6.0.1\build\Microsoft.Extensions.Logging.Abstractions.targets')" />
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="6.0.0" />
+  </ItemGroup>
 </Project>

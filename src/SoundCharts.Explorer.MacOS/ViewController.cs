@@ -7,6 +7,7 @@ using CoreLocation;
 using Foundation;
 using MapKit;
 using Microsoft.Extensions.DependencyInjection;
+using ObjCRuntime;
 using SoundCharts.Explorer.Charts.Sources;
 using SoundCharts.Explorer.MacOS.Services.State;
 using SoundCharts.Explorer.MacOS.Views.Overlays;
@@ -20,7 +21,7 @@ namespace SoundCharts.Explorer.MacOS
 		private TileSourceOverlay? overlay;
 		private IDisposable? regionChangeListener;
 
-		public ViewController (IntPtr handle) : base (handle)
+		public ViewController (NativeHandle handle) : base (handle)
 		{
 		}
 

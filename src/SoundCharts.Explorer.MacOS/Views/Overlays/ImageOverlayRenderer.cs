@@ -2,6 +2,7 @@
 using AppKit;
 using CoreGraphics;
 using MapKit;
+using ObjCRuntime;
 
 namespace SoundCharts.Explorer.MacOS.Views.Overlays
 {
