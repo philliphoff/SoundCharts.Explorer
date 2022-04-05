@@ -9,6 +9,13 @@ public sealed record ChangeSet<T>(IImmutableSet<T> Added, IImmutableSet<T> Chang
 
 public static class ObservableExtensions
 {
+	public static IObservable<T> WhereNonNull<T>(this IObservable<T?> observable)
+    {
+		return observable
+			.Where(value => value is not null)
+			.Select(value => value!);
+    }
+
 	public static IObservable<ChangeSet<T>> ToChangeSet<T>(this IObservable<IImmutableSet<T>> observable, IEqualityComparer<T>? comparer = default)
 	{
 		if (observable is null)

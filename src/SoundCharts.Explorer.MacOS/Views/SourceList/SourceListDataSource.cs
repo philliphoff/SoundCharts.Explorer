@@ -63,7 +63,7 @@ namespace SoundCharts.Explorer.MacOS.Views.SourceList
                                             .Select(collection =>
                                                 new HeaderItem(
                                                         collection.Name,
-                                                        collection.Charts.Select(chart => new CollectionFileItem(Path.GetFileName(chart)))))),
+                                                        collection.Charts.Select(chart => new CollectionFileItem(chart.Title))))),
                                     new HeaderItem(
                                         "Tilesets",
                                         new SourceListItem[] { this.switchItem }

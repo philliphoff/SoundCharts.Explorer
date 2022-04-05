@@ -27,6 +27,7 @@ namespace SoundCharts.Explorer.MacOS
 				new ServiceCollection()
 					.AddSingleton<IApplicationStateManager, ApplicationStateManager>()
 					.AddSingleton<IApplicationComponent, ApplicationStateMonitor>()
+					.AddSingleton<IChartProcessor, ChartProcessor>()
 					.AddSingleton<IChartSource>(
 						_ =>
                         {

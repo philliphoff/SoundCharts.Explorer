@@ -45,7 +45,7 @@ namespace SoundCharts.Explorer.MacOS.Components
                                     Local =
                                         ImmutableHashSet<LocalChartCollection>
                                             .Empty
-                                            .Add(new LocalChartCollection("Canadian Pacific South", "/Users/phoff/Downloads/RM-PAC02 (31-Jan-22 Update)/BSBCHART"))
+                                            .Add(new LocalChartCollection("RM-PAC02", "Canadian Pacific South", "/Users/phoff/Downloads/RM-PAC02 (31-Jan-22 Update)/BSBCHART"))
                                 },
                             Map = (state.Map ?? new Map()) with
                             {

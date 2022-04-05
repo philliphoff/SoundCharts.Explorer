@@ -46,7 +46,7 @@
     <PackageReference Include="System.Text.Json" Version="6.0.2" />
     <PackageReference Include="System.Collections.Immutable" Version="6.0.0" />
     <PackageReference Include="System.Reactive" Version="5.0.0" />
-    <PackageReference Include="OncaInc.NauticalCharts" Version="0.3.1" />
-    <PackageReference Include="OncaInc.NauticalCharts.ImageSharp" Version="0.3.1" />
+    <PackageReference Include="OncaInc.NauticalCharts" Version="0.4.0" />
+    <PackageReference Include="OncaInc.NauticalCharts.ImageSharp" Version="0.4.0" />
   </ItemGroup>
 </Project>

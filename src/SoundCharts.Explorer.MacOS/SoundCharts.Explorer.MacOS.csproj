@@ -137,10 +137,13 @@
       <HintPath>..\packages\System.IO.Pipelines.6.0.2\lib\netstandard2.0\System.IO.Pipelines.dll</HintPath>
     </Reference>
     <Reference Include="OncaInc.NauticalCharts">
-      <HintPath>..\packages\OncaInc.NauticalCharts.0.3.1\lib\netstandard2.1\OncaInc.NauticalCharts.dll</HintPath>
+      <HintPath>..\packages\OncaInc.NauticalCharts.0.4.0\lib\netstandard2.1\OncaInc.NauticalCharts.dll</HintPath>
     </Reference>
     <Reference Include="OncaInc.NauticalCharts.ImageSharp">
-      <HintPath>..\packages\OncaInc.NauticalCharts.ImageSharp.0.3.1\lib\netstandard2.1\OncaInc.NauticalCharts.ImageSharp.dll</HintPath>
+      <HintPath>..\packages\OncaInc.NauticalCharts.ImageSharp.0.4.0\lib\netstandard2.1\OncaInc.NauticalCharts.ImageSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Threading.Channels">
+      <HintPath>..\packages\System.Threading.Channels.6.0.0\lib\netstandard2.1\System.Threading.Channels.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -243,6 +246,8 @@
     <Compile Include="Views\SourceList\CollectionFileItem.cs" />
     <Compile Include="Views\Overlays\ChartOverlayManager.cs" />
     <Compile Include="Utils\ChartDataExtensions.cs" />
+    <Compile Include="Services\Collections\IChartProcessor.cs" />
+    <Compile Include="Services\Collections\ChartProcessor.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Main.storyboard" />

@@ -3,7 +3,7 @@ using System.Collections.Immutable;
 
 namespace SoundCharts.Explorer.MacOS.Services.State
 {
-	internal sealed record LocalChartCollection(string Name, string Path);
+	internal sealed record LocalChartCollection(string Id, string Name, string Path);
 
 	internal sealed record ChartCollections
     {
