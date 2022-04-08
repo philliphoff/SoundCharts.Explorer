@@ -120,15 +120,6 @@ namespace SoundCharts.Explorer.MacOS.Views.SourceList
             };
         }
 
-        public override NSObject GetObjectValue(NSOutlineView outlineView, NSTableColumn? tableColumn, NSObject? item)
-        {
-            return item switch
-            {
-                SourceListItem sourceListItem => new NSString(sourceListItem.Title),
-                _ => base.GetObjectValue(outlineView, tableColumn, item)
-            };
-        }
-
         public override bool ItemExpandable(NSOutlineView outlineView, NSObject item)
         {
             return item is HeaderItem;

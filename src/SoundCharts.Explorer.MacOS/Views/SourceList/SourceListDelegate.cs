@@ -1,6 +1,7 @@
 ﻿using System;
 using AppKit;
 using Foundation;
+using SoundCharts.Explorer.MacOS.Views.SourceList.Objects;
 
 namespace SoundCharts.Explorer.MacOS.Views.SourceList
 {
@@ -10,7 +11,7 @@ namespace SoundCharts.Explorer.MacOS.Views.SourceList
         {
             return item switch
             {
-                TilesetItem => 36,
+                OfflineTilesetObject => 36,
                 _ => 17
             };
         }
@@ -25,10 +26,10 @@ namespace SoundCharts.Explorer.MacOS.Views.SourceList
         {
             return item switch
             {
-                CollectionFileItem fileItem => this.MakeView(outlineView, fileItem),
-                HeaderItem header => this.MakeView(outlineView, header),
-                OfflineTilesetsSwitchItem offlineTilesetsSwitch => this.MakeView(outlineView, offlineTilesetsSwitch),
-                TilesetItem tileset => this.MakeView(outlineView, tileset),
+                ChartCollectionChartObject fileItem => this.MakeView(outlineView, fileItem),
+                HeaderObject header => this.MakeView(outlineView, header),
+                SwitchObject offlineTilesetsSwitch => this.MakeView(outlineView, offlineTilesetsSwitch),
+                OfflineTilesetObject tileset => this.MakeView(outlineView, tileset),
                 _ => base.GetView(outlineView, tableColumn, item)
             };
         }
@@ -51,7 +52,7 @@ namespace SoundCharts.Explorer.MacOS.Views.SourceList
             }
         }
 
-        private NSView MakeView(NSOutlineView outlineView, CollectionFileItem fileItem)
+        private NSView MakeView(NSOutlineView outlineView, ChartCollectionChartObject fileItem)
         {
             var view = (NSTableCellView)outlineView.MakeView("CollectionFileCell", this);
 
@@ -60,7 +61,7 @@ namespace SoundCharts.Explorer.MacOS.Views.SourceList
             return view;
         }
 
-        private NSView MakeView(NSOutlineView outlineView, HeaderItem item)
+        private NSView MakeView(NSOutlineView outlineView, HeaderObject item)
         {
             var view = (NSTableCellView)outlineView.MakeView("HeaderCell", this);
 
@@ -69,7 +70,7 @@ namespace SoundCharts.Explorer.MacOS.Views.SourceList
             return view;
         }
 
-        private NSView MakeView(NSOutlineView outlineView, OfflineTilesetsSwitchItem item)
+        private NSView MakeView(NSOutlineView outlineView, SwitchObject item)
         {
             var view = (OfflineTilesetsSwitchView)outlineView.MakeView("OfflineTilesetsSwitchCell", this);
 
@@ -78,7 +79,7 @@ namespace SoundCharts.Explorer.MacOS.Views.SourceList
             return view;
         }
 
-        private NSView MakeView(NSOutlineView outlineView, TilesetItem item)
+        private NSView MakeView(NSOutlineView outlineView, OfflineTilesetObject item)
         {
             var view = (OfflineTilesetView)outlineView.MakeView("OfflineTilesetView", this);
 

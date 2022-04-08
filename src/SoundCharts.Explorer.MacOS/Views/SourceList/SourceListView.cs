@@ -1,4 +1,6 @@
-using System;
+﻿using System;
+using System.Reactive.Linq;
+using System.Threading;
 using AppKit;
 using Foundation;
 
@@ -7,7 +9,7 @@ namespace SoundCharts.Explorer.MacOS.Views.SourceList
     [Register("SourceListView")]
     internal sealed partial class SourceListView : NSOutlineView
     {
-        private SourceListDataSource? dataSource;
+        private IDisposable? changedDataSubscription;
 
         public SourceListView()
         {
@@ -32,11 +34,9 @@ namespace SoundCharts.Explorer.MacOS.Views.SourceList
         {
             try
             {
-                if (disposing && this.dataSource is not null)
+                if (disposing)
                 {
-                    this.dataSource.ItemsChanged -= OnTilesetsChanged;
-
-                    this.dataSource = null;
+                    this.changedDataSubscription?.Dispose();
                 }
             }
             finally
@@ -45,19 +45,26 @@ namespace SoundCharts.Explorer.MacOS.Views.SourceList
             }
         }
 
-        public void Initialize(SourceListDataSource dataSource, SourceListDelegate @delegate)
+        public void Initialize(ISourceListDataSource dataSource, SourceListDelegate @delegate)
         {
-            this.dataSource = dataSource;
-            this.dataSource.ItemsChanged += OnTilesetsChanged;
+            if (dataSource is null)
+            {
+                throw new ArgumentNullException(nameof(dataSource));
+            }
+
+            this.changedDataSubscription =
+                dataSource
+                    .ChangedData
+                    .ObserveOn(SynchronizationContext.Current)
+                    .Subscribe(
+                        data =>
+                        {
+                            this.ReloadData();
+                            this.ExpandItem(null, expandChildren: true);
+                        });
 
             this.DataSource = dataSource;
             this.Delegate = @delegate;
-        }
-
-        private void OnTilesetsChanged(object sender, EventArgs e)
-        {
-            this.ReloadData();
-            this.ExpandItem(null, expandChildren: true);
         }
     }
 }
