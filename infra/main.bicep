@@ -28,7 +28,7 @@ resource workspace 'Microsoft.OperationalInsights/workspaces@2020-08-01' = {
   }
 }
 
-resource environment 'Microsoft.Web/kubeEnvironments@2021-03-01' = {
+resource environment 'Microsoft.App/managedEnvironments@2022-01-01-preview' = {
   name: environmentName
   location: appsLocation
   properties: {
@@ -44,12 +44,12 @@ resource environment 'Microsoft.Web/kubeEnvironments@2021-03-01' = {
   }
 }
 
-resource tileServiceContainerApp 'Microsoft.Web/containerapps@2021-03-01' = {
+resource tileServiceContainerApp 'Microsoft.App/containerApps@2022-01-01-preview' = {
   name: 'tile-service'
   kind: 'containerapps'
   location: appsLocation
   properties: {
-    kubeEnvironmentId: environment.id
+    managedEnvironmentId: environment.id
     configuration: {
       registries: []
       ingress: {
@@ -73,12 +73,12 @@ resource tileServiceContainerApp 'Microsoft.Web/containerapps@2021-03-01' = {
   }
 }
 
-resource tilesetServiceContainerApp 'Microsoft.Web/containerapps@2021-03-01' = {
+resource tilesetServiceContainerApp 'Microsoft.App/containerapps@2022-01-01-preview' = {
   name: 'tileset-service'
   kind: 'containerapps'
   location: appsLocation
   properties: {
-    kubeEnvironmentId: environment.id
+    managedEnvironmentId: environment.id
     configuration: {
       secrets: [
         {
@@ -130,12 +130,12 @@ resource tilesetServiceContainerApp 'Microsoft.Web/containerapps@2021-03-01' = {
   }
 }
 
-resource ingressContainerApp 'Microsoft.Web/containerapps@2021-03-01' = {
+resource ingressContainerApp 'Microsoft.App/containerapps@2022-01-01-preview' = {
   name: 'ingress'
   kind: 'containerapps'
   location: appsLocation
   properties: {
-    kubeEnvironmentId: environment.id
+    managedEnvironmentId: environment.id
     configuration: {
       registries: []
       ingress: {
