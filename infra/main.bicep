@@ -184,11 +184,11 @@ resource apiContainerApp 'Microsoft.App/containerapps@2022-01-01-preview' = {
     configuration: {
       secrets: [
         {
-          name: 'config.service.endpoint'
+          name: 'config-service-endpoint'
           value: apiEndpoint
         }
         {
-          name: 'config.service.auth'
+          name: 'config-service-auth'
           value: apiAuth
         }
       ]
@@ -211,11 +211,11 @@ resource apiContainerApp 'Microsoft.App/containerapps@2022-01-01-preview' = {
           'env': [
             {
               'name':'config.service.endpoint'
-              'secretRef':'config.service.endpoint'
+              'secretRef':'config-service-endpoint'
             }
             {
               'name':'config.service.auth'
-              'secretRef':'config.service.auth'
+              'secretRef':'config-service-auth'
             }
           ]
         }
