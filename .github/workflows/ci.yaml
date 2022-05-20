@@ -112,6 +112,8 @@ jobs:
             --resource-group ${{ env.RESOURCE_GROUP }} \
             --template-file ./infra/main.bicep \
             --parameters \
+              apiEndpoint='${{ secrets.API_ENDPOINT }}' \
+              apiAuth='${{ secrets.API_AUTH }}' \
               environmentName='sound-charts' \
               ingressTag='${{ env.REGISTRY }}/${{ needs.services-build.outputs.ingress-tag }}' \
               tileServiceTag='${{ env.REGISTRY }}/${{ needs.services-build.outputs.tile-service-tag }}' \

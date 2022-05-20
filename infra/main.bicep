@@ -14,6 +14,12 @@ param tilesetServiceAccountName string
 @secure()
 param tilesetServiceConnectionString string
 
+@secure()
+param apiEndpoint string
+
+@secure()
+param apiAuth string
+
 var workspaceName = '${environmentName}-logs'
 
 resource workspace 'Microsoft.OperationalInsights/workspaces@2020-08-01' = {
@@ -161,6 +167,55 @@ resource ingressContainerApp 'Microsoft.App/containerapps@2022-01-01-preview' = 
             {
               'name':'TILESET-SERVICE_SERVICE_ENDPOINT'
               'value':'https://${tilesetServiceContainerApp.properties.configuration.ingress.fqdn}'
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
+
+resource apiContainerApp 'Microsoft.App/containerapps@2022-01-01-preview' = {
+  name: 'api'
+  kind: 'containerapps'
+  location: appsLocation
+  properties: {
+    managedEnvironmentId: environment.id
+    configuration: {
+      secrets: [
+        {
+          name: 'config.service.endpoint'
+          value: apiEndpoint
+        }
+        {
+          name: 'config.service.auth'
+          value: apiAuth
+        }
+      ]
+      registries: []
+      ingress: {
+        'external': true
+        'targetPort': 8080
+      }
+    }
+    template: {
+      containers: [
+        {
+          'name':'api-container'
+          'image': 'mcr.microsoft.com/azure-api-management/gateway:latest'
+          'command':[]
+          'resources':{
+            'cpu':'.25'
+            'memory':'.5Gi'
+          }
+          'env': [
+            {
+              'name':'config.service.endpoint'
+              'secretRef':'config.service.endpoint'
+            }
+            {
+              'name':'config.service.auth'
+              'secretRef':'config.service.auth'
             }
           ]
         }
