@@ -11,20 +11,31 @@ namespace SoundCharts.Explorer.MacOS.Views.SourceList;
 internal sealed class SourceListTreeDataSource<TModel> : NSOutlineViewDataSource, ISourceListDataSource
     where TModel : notnull
 {
-    private readonly ITreeDataProvider<TModel> treeDataProvider;
+    private readonly ITreeDataProvider<TModel, NSObject> treeDataProvider;
 
     private IImmutableDictionary<NSObject, TModel> objectToModel = ImmutableDictionary<NSObject, TModel>.Empty;
     private IImmutableDictionary<TModel, NSObject> modelToObject = ImmutableDictionary<TModel, NSObject>.Empty;
+    private IImmutableList<TModel>? rootChildren;
 
-    public SourceListTreeDataSource(ITreeDataProvider<TModel> treeDataProvider)
+    public SourceListTreeDataSource(ITreeDataProvider<TModel, NSObject> treeDataProvider)
     {
-        this.treeDataProvider = treeDataProvider ?? throw new ArgumentNullException(nameof(treeDataProvider));
+        this.treeDataProvider = new CachedTreeDataProvider<TModel, NSObject>(treeDataProvider ?? throw new ArgumentNullException(nameof(treeDataProvider)));
 
         this.ChangedData =
             this.treeDataProvider
                 .ChangedData
-                .SubscribeOn(SynchronizationContext.Current)
-                .Select(items => items.Select(item => this.modelToObject[item]).ToImmutableHashSet());
+                .Select(
+                    items =>
+                    {
+                        // TODO: Support individual model changes.
+                        var changedObjects = items.Select(item => this.modelToObject[item]).ToImmutableHashSet();
+
+                        this.objectToModel = ImmutableDictionary<NSObject, TModel>.Empty;
+                        this.modelToObject = ImmutableDictionary<TModel, NSObject>.Empty;
+                        this.rootChildren = null;
+
+                        return changedObjects;
+                    });
     }
 
     #region ISourceListDataSource Members
@@ -60,7 +71,23 @@ internal sealed class SourceListTreeDataSource<TModel> : NSOutlineViewDataSource
             model = this.objectToModel[item];
         }
 
-        return this.treeDataProvider.GetChildren(model);
+        IImmutableList<TModel>? children = null;
+
+        if (model is null)
+        {
+            children = this.rootChildren;
+
+            if (children is null)
+            {
+                this.rootChildren = children = this.treeDataProvider.GetChildren(model);
+            }
+        }
+        else
+        {
+            children = this.treeDataProvider.GetChildren(model);
+        }
+
+        return children;
     }
 
     public override nint GetChildrenCount(NSOutlineView outlineView, NSObject? item)

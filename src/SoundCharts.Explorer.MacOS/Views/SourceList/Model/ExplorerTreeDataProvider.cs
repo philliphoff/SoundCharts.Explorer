@@ -9,41 +9,29 @@ using SoundCharts.Explorer.MacOS.Services.Tilesets;
 
 namespace SoundCharts.Explorer.MacOS.Views.SourceList.Model;
 
-internal sealed class ExplorerTreeDataProvider : ITreeDataProvider<ExplorerItem>, IDisposable
+internal sealed class ExplorerTreeDataProvider : ITreeDataProvider<ExplorerItem, TreeObject>, IDisposable
 {
     private readonly IDisposable collectionsSubscription;
     private readonly Subject<IImmutableSet<ExplorerItem>> changedData = new ();
-    private readonly ITilesetManager tilesetManager;
-    private readonly IDisposable tilesetsSubscription;
+    private readonly OfflineTilesetsItem tilesets;
 
     private IImmutableSet<ChartCollection> currentCollections = ImmutableHashSet<ChartCollection>.Empty;
-    private IImmutableSet<ManagedTileset> currentTilesets = ImmutableHashSet<ManagedTileset>.Empty;
 
     public ExplorerTreeDataProvider(
             IApplicationStateManager applicationStateManager,
             IChartCollectionManager chartCollectionManager,
             ITilesetManager tilesetManager)
     {
-        this.tilesetManager = tilesetManager ?? throw new ArgumentNullException(nameof(tilesetManager));
+        this.tilesets = new (tilesetManager, items => this.changedData.OnNext(items.Any() ? items : ImmutableHashSet.Create<ExplorerItem>(this.tilesets!)));
 
         this.collectionsSubscription =
             chartCollectionManager
                 .Collections
+                .DistinctUntilChanged()
                 .Subscribe(
                     collections =>
                     {
                         this.currentCollections = collections;
-
-                        this.NotifyOfChangedData();
-                    });
-
-        this.tilesetsSubscription =
-            tilesetManager
-                .Tilesets
-                .Subscribe(
-                    tilesets =>
-                    {
-                        this.currentTilesets = tilesets;
 
                         this.NotifyOfChangedData();
                     });
@@ -59,8 +47,7 @@ internal sealed class ExplorerTreeDataProvider : ITreeDataProvider<ExplorerItem>
         {
             return ImmutableList.Create<ExplorerItem>(
                     ToChartCollectionsItem(this.currentCollections),
-                    this.ToTilesetsItem(this.currentTilesets)
-                );
+                    this.tilesets);
         }
         else
         {
@@ -80,9 +67,10 @@ internal sealed class ExplorerTreeDataProvider : ITreeDataProvider<ExplorerItem>
     public void Dispose()
     {
         this.collectionsSubscription.Dispose();
-        this.tilesetsSubscription.Dispose();
 
         this.changedData.Dispose();
+
+        this.tilesets.Dispose();
     }
 
     #endregion
@@ -109,39 +97,6 @@ internal sealed class ExplorerTreeDataProvider : ITreeDataProvider<ExplorerItem>
     private static ExplorerItem ToChartItem(ChartCollectionChart chart)
     {
         return new ChartCollectionChartItem(chart.Title, "TODO: Description");
-    }
-
-    private ExplorerItem ToTilesetsItem(IImmutableSet<ManagedTileset> tilesets)
-    {
-        return new HeaderItem(
-            "Tilesets",
-            () => tilesets.Select(this.ToTilesetItem).ToImmutableList());
-    }
-
-    private ExplorerItem ToTilesetItem(ManagedTileset tileset)
-    {
-        return new OfflineTilesetItem(
-            tileset.Description ?? tileset.Id,
-            tileset.Name ?? tileset.Id,
-            async () =>
-            {
-                switch (tileset.State)
-                {
-                    case TilesetState.Downloaded:
-
-                        await tilesetManager.DeleteTilesetAsync(tileset.Id);
-
-                        break;
-
-                    case TilesetState.NotDownloaded:
-
-                        await tilesetManager.DownloadTilesetAsync(tileset.Id);
-
-                        break;
-                }
-
-            },
-            tileset.State == TilesetState.NotDownloaded);
     }
 }
 

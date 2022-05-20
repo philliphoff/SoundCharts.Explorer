@@ -264,6 +264,8 @@
     <Compile Include="Views\SourceList\Model\SwitchItem.cs" />
     <Compile Include="Views\SourceList\Objects\SwitchObject.cs" />
     <Compile Include="Views\SourceList\ISourceListDataSource.cs" />
+    <Compile Include="Views\SourceList\CachedTreeDataProvider.cs" />
+    <Compile Include="Views\SourceList\Model\OfflineTilesetsItem.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Main.storyboard" />
