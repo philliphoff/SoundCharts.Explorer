@@ -75,6 +75,9 @@ resource tileServiceContainerApp 'Microsoft.App/containerApps@2022-01-01-preview
           }
         }
       ]
+      scale: {
+        minReplicas: 1
+      }
     }
   }
 }
@@ -132,6 +135,9 @@ resource tilesetServiceContainerApp 'Microsoft.App/containerapps@2022-01-01-prev
           ]
         }
       ]
+      scale: {
+        minReplicas: 1
+      }
     }
   }
 }
@@ -171,6 +177,9 @@ resource ingressContainerApp 'Microsoft.App/containerapps@2022-01-01-preview' = 
           ]
         }
       ]
+      scale: {
+        minReplicas: 1
+      }
     }
   }
 }
@@ -221,6 +230,9 @@ resource apiContainerApp 'Microsoft.App/containerapps@2022-01-01-preview' = {
           ]
         }
       ]
+      scale: {
+        minReplicas: 1
+      }
     }
   }
 }
