@@ -195,6 +195,7 @@ resource apiContainerApp 'Microsoft.App/containerapps@2022-01-01-preview' = {
       registries: []
       ingress: {
         'external': true
+        'allowInsecure': false
         'targetPort': 8080
       }
     }
