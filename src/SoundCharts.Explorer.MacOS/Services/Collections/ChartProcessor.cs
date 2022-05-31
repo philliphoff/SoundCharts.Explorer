@@ -55,7 +55,7 @@ internal sealed class ChartProcessor : IChartProcessor, IDisposable
     {
         try
         {
-            while (await this.channel.Reader.WaitToReadAsync(this.disposalTokenSource.Token))
+            while (await this.channel.Reader.WaitToReadAsync(this.disposalTokenSource.Token).ConfigureAwait(false))
             {
                 var result = this.channel.Reader.TryRead(out var name);
 

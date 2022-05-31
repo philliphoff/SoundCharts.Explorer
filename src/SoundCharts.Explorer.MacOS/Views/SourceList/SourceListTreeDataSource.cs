@@ -48,6 +48,11 @@ internal sealed class SourceListTreeDataSource<TModel> : NSOutlineViewDataSource
     {
         var children = this.GetChildren(item);
 
+        if (childIndex >= children.Count)
+        {
+            return null!;
+        }
+
         var child = children[(int)childIndex];
 
         var childObject = this.treeDataProvider.GetObject(child);
@@ -66,9 +71,13 @@ internal sealed class SourceListTreeDataSource<TModel> : NSOutlineViewDataSource
         {
             model = default;
         }
-        else
+        else if (this.objectToModel.TryGetValue(item, out model))
         {
             model = this.objectToModel[item];
+        }
+        else
+        {
+            return ImmutableList<TModel>.Empty;
         }
 
         IImmutableList<TModel>? children = null;
